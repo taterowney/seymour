@@ -49,7 +49,7 @@ alias CircuitPredicate.axiom_c1 := CircuitPredicate.not_circuit_empty
 
 /-- Axiom (C2): no circuit is a subset of another circuit. -/
 def CircuitPredicate.circuit_not_ssubset {α : Type*} (P : CircuitPredicate α) : Prop :=
-  ∀ C C', P C → P C' → ¬(C' ⊂ C)
+  ∀ C C', P C → P C' → ¬C' ⊂ C  -- todo: swap to ¬C ⊂ C'
 alias CircuitPredicate.axiom_c2 := CircuitPredicate.circuit_not_ssubset
 
 /-- Axiom (C3) from Bruhn et al. -/
@@ -123,8 +123,8 @@ lemma CircuitPredicate.strong_circuit_elim_weak_circuit_elim {α : Type*} (P : C
   else
     push_neg at hf
     simp only [Set.mem_diff, not_and, not_not] at hf
-    let hC₁sC₂ : C₁ ⊆ C₂ := hf
-    let hC₂dC₁ : (C₂ \ C₁).Nonempty := by
+    have hC₁sC₂ : C₁ ⊆ C₂ := hf
+    have hC₂dC₁ : (C₂ \ C₁).Nonempty := by
       rw [Set.diff_nonempty]
       by_contra hC₂sC₁
       apply Set.Subset.antisymm hC₂sC₁ at hC₁sC₂
@@ -171,7 +171,7 @@ lemma CircuitPredicate.ToIndep_ToCircuit {α : Type*} (P : CircuitPredicate α) 
   · unfold ToIndepPredicate at hCdep hCmin
     push_neg at hCdep
     obtain ⟨D, hDC, hD⟩ := hCdep hCE
-    let hDok : (fun K => ¬(K ⊆ E ∧ ∀ C ⊆ K, ¬P C) ∧ K ⊆ E) D := ⟨
+    have hDok : (fun K => ¬(K ⊆ E ∧ ∀ C ⊆ K, ¬P C) ∧ K ⊆ E) D := ⟨
       (by
         push_neg
         intro _hDE
@@ -225,19 +225,19 @@ lemma IndepPredicate.Matroid_ToCircuit_ToIndep_iff {α : Type*} (M : Matroid α)
       specialize hIE ∅ M.empty_indep I.empty_subset
       obtain ⟨J, _hJ0, ⟨hJindep, hJI⟩, hJ⟩ := hIE
       simp at hJ
-      let hJeqI : J = I := by
+      have hJeqI : J = I := by
         by_contra hJneqI
-        let haIJ : ∃ a, a ∈ I \ J := Set.nonempty_of_ssubset (HasSubset.Subset.ssubset_of_ne hJI hJneqI)
+        have haIJ : ∃ a, a ∈ I \ J := Set.nonempty_of_ssubset (HasSubset.Subset.ssubset_of_ne hJI hJneqI)
         obtain ⟨a, ha⟩ := haIJ
-        let hJanindep : ¬M.Indep (J ∪ {a}) := sorry
-        let hC : ∃ C, C ⊆ J ∪ {a} ∧ ¬M.Indep C ∧ ∀ C' ⊂ C, M.Indep C' := by sorry
+        have hJanindep : ¬M.Indep (J ∪ {a}) := sorry
+        have hC : ∃ C, C ⊆ J ∪ {a} ∧ ¬M.Indep C ∧ ∀ C' ⊂ C, M.Indep C' := by sorry
         obtain ⟨C, hCJa, hCnindep, hCsindep⟩ := hC
-        let hJE : J ⊆ M.E := fun ⦃a⦄ a_1 => hIE (hJI a_1)
-        let haE : {a} ⊆ M.E := Set.singleton_subset_iff.mpr (hIE (Set.mem_of_mem_diff ha))
-        let hCE : C ⊆ M.E := fun _ a_1 => (Set.union_subset hJE haE) (hCJa a_1)
-        let haI : {a} ⊆ I := (Set.singleton_subset_iff.mpr (Set.mem_of_mem_diff ha))
-        let hJaI : J ∪ {a} ⊆ I := Set.union_subset hJI haI
-        let hCI : C ⊆ I := hCJa.trans hJaI
+        have hJE : J ⊆ M.E := fun ⦃a⦄ a_1 => hIE (hJI a_1)
+        have haE : {a} ⊆ M.E := Set.singleton_subset_iff.mpr (hIE (Set.mem_of_mem_diff ha))
+        have hCE : C ⊆ M.E := fun _ a_1 => (Set.union_subset hJE haE) (hCJa a_1)
+        have haI : {a} ⊆ I := (Set.singleton_subset_iff.mpr (Set.mem_of_mem_diff ha))
+        have hJaI : J ∪ {a} ⊆ I := Set.union_subset hJI haI
+        have hCI : C ⊆ I := hCJa.trans hJaI
         unfold IndepPredicate.ToCircuitPredicate Minimal at hI
         push_neg at hI
         specialize hI C hCI ⟨hCnindep, hCE⟩
@@ -298,7 +298,7 @@ lemma CircuitPredicate.ToIndepPredicate.indep_aug {α : Type*} {P : CircuitPredi
   -- if hzI' : z ∈ I' then
   --   exact ⟨z, Set.mem_diff_of_mem hzI' hzI, indep_subset hBindep (Set.insert_subset hzB hIB)⟩
   -- else
-  --   let J' := z ᕃ I'
+  --   have J' := z ᕃ I'
   --   have hJ'ground : J' ⊆ E := Set.insert_subset (hBground hzB) hPI'.1.1
   --   have hJ' : ¬P.ToIndepPredicate E J'
   --   · intro hJ'indep
@@ -310,7 +310,7 @@ lemma CircuitPredicate.ToIndepPredicate.indep_aug {α : Type*} {P : CircuitPredi
   --   specialize hJ' hJ'ground
   --   obtain ⟨C, ⟨hCcirc, hCJ'⟩⟩ := hJ'
 
-  --   let X := C \ B
+  --   have X := C \ B
   --   have hXJ' : X ⊆ J' := fun _ x => hCJ' (Set.diff_subset x)
   --   have hzX : z ∉ X := Set.not_mem_diff_of_mem hzB
   --   have hXI' : X ⊆ I' := (Set.subset_insert_iff_of_not_mem hzX).mp hXJ'
@@ -338,7 +338,7 @@ lemma CircuitPredicate.ToIndepPredicate.indep_aug {α : Type*} {P : CircuitPredi
   --     exact nmem_insert hzx hzI
 
   --   -- for every `x ∈ X`, take corresponding `C` from `hx` and put it into `F`
-  --   let F : ValidXFamily P C X := sorry -- todo: construction
+  --   have F : ValidXFamily P C X := sorry -- todo: construction
   --   have hzxF : ∀ x, F.F x ⊆ (x : α) ᕃ I := sorry -- holds by constructoin
   --   have hzF : z ∈ C \ F.union := sorry -- holds by construction
   --   apply hPC3 at hzF
@@ -378,11 +378,11 @@ lemma CircuitPredicate.ToIndepPredicate.finite_weak_circuit_elim_indep_aug {α :
   by_contra heJ
   push_neg at heJ
 
-  let hKmin : ∃ K, P.ToIndepPredicate E K ∧ K ⊆ I ∪ J ∧ I.ncard < K.ncard ∧
+  have hKmin : ∃ K, P.ToIndepPredicate E K ∧ K ⊆ I ∪ J ∧ I.ncard < K.ncard ∧
       (∀ K', (P.ToIndepPredicate E K' ∧ K' ⊆ I ∪ J ∧ I.ncard < K'.ncard) → (I \ K).ncard ≤ (I \ K').ncard) := by
     sorry
   obtain ⟨K, hK⟩ := hKmin
-  let hImKnonempty : (I \ K).Nonempty := sorry
+  have hImKnonempty : (I \ K).Nonempty := sorry
   obtain ⟨e, he⟩ := hImKnonempty
   sorry
 -- todo: formalize proof below (taken from Oxley)
@@ -390,7 +390,7 @@ lemma CircuitPredicate.ToIndepPredicate.finite_weak_circuit_elim_indep_aug {α :
 -- Assume that (I3) fails for the pair (I1, I2). Now I has a member that is a subset
 -- of I1 ∪ I2 and has more elements than I1. Choose such a subset I3 for which
 -- |I1 − I3| is minimal. As (I3) fails, I1 − I3 is non-empty, so we can choose an
--- element e from this set. Now, for each element f of I3 −I1, let Tf be (I3 ∪e)−f.
+-- element e from this set. Now, for each element f of I3 −I1, have Tf be (I3 ∪e)−f.
 -- Then Tf ⊆ I1 ∪ I2 and |I1 − Tf| < |I1 − I3|. Therefore Tf /∈ I, so Tf contains
 -- a member Cf of C. Hence Cf ⊆ (I3 ∪ e) − f, so f /∈ Cf. Moreover, e ∈ Cf,
 -- otherwise Cf ⊆ I3 contradicting the fact that I3 ∈ I.

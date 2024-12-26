@@ -34,15 +34,15 @@ lemma DisjointCircuitFamily.union_indep_empty {α : Type*} {M : Matroid α} {Idx
     M.Indep F.union → F.union = ∅ := by
   intro hFindep
   by_contra hFnempty
-  let hx : ∃ x, (F.F x).Nonempty := by
+  have hx : ∃ x, (F.F x).Nonempty := by
     by_contra h
     push_neg at h
     unfold union at hFnempty
     simp_all only [Set.iUnion_coe_set, Set.iUnion_empty, not_true_eq_false]
   obtain ⟨x, hx⟩ := hx
-  let hFxdep := Matroid.Dep.not_indep (F.hCircuit x).1
-  let hFxsubF : F.F x ⊆ F.union := Set.subset_iUnion_of_subset x Set.Subset.rfl
-  let hFxindep := Matroid.Indep.subset hFindep hFxsubF
+  have hFxdep := Matroid.Dep.not_indep (F.hCircuit x).1
+  have hFxsubF : F.F x ⊆ F.union := Set.subset_iUnion_of_subset x Set.Subset.rfl
+  have hFxindep := Matroid.Indep.subset hFindep hFxsubF
   exact hFxdep hFxindep
 
 /-- Nonempty union of disjoint circuits is dependent. -/

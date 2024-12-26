@@ -34,7 +34,7 @@ def BinaryMatroid_1sum (hXY : M₁.X ⫗ M₂.Y) (hYX : M₁.Y ⫗ M₂.X) :
 /-- Binary matroid `M` is a result of 1-summing `M₁` and `M₂` (should be equivalent to disjoint sums). -/
 def BinaryMatroid.Is1sumOf (M : BinaryMatroid α) (M₁ M₂ : BinaryMatroid α) : Prop :=
   ∃ hXY : M₁.X ⫗ M₂.Y, ∃ hYX : M₁.Y ⫗ M₂.X,
-    let M₀ := BinaryMatroid_1sum hXY hYX
+    have M₀ := BinaryMatroid_1sum hXY hYX
     M.matroid = M₀.fst.matroid ∧ M₀.snd
 
 /-- Matroid constructed from a valid 1-sum of binary matroids is the same as disjoint sum of matroids constructed from them. -/
@@ -67,7 +67,7 @@ lemma BinaryMatroid_1sum_Regular [Fintype M₁.X] [Fintype M₁.Y] [Fintype M₂
   obtain ⟨B₂, hB₂, hBB₂⟩ := hM₂
   have hB : (BinaryMatroid_1sum hXY hYX).fst.B = (Matrix_1sumComposition M₁.B M₂.B).toMatrixUnionUnion
   · rfl
-  let B' := Matrix_1sumComposition B₁ B₂ -- the signing is obtained using the same function but for `ℚ`
+  have B' := Matrix_1sumComposition B₁ B₂ -- the signing is obtained using the same function but for `ℚ`
   use B'.toMatrixUnionUnion
   constructor
   · exact (Matrix.fromBlocks_isTotallyUnimodular hB₁ hB₂).toMatrixUnionUnion

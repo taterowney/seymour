@@ -55,7 +55,7 @@ lemma Matroid.indep_aug_alt {α : Type*} (M : Matroid α) :
     M.IndepPredicate.indep_aug := by
   -- Follows part of proof from Theorem 4.1 (i) from Bruhn et al.
   intro I I' hI hInmax hI'max
-  let ⟨B, hIB, hBmax⟩ := M.maximality M.E Set.Subset.rfl I hI (Matroid.Indep.subset_ground hI)
+  have ⟨B, hIB, hBmax⟩ := M.maximality M.E Set.Subset.rfl I hI (Matroid.Indep.subset_ground hI)
   if hBdiffI: (B \ I).Nonempty then
     obtain ⟨x, hx⟩ := hBdiffI
     if hxI' : x ∈ I' then
@@ -65,7 +65,7 @@ lemma Matroid.indep_aug_alt {α : Type*} (M : Matroid α) :
         Matroid.Indep.subset hBmax.1.1 (Set.insert_subset (Set.mem_of_mem_diff hx) hIB),
       ⟩
     else
-      let hB : Maximal M.Indep B := ⟨hBmax.1.1, fun C hC hBC => hBmax.2 ⟨hC, Matroid.Indep.subset_ground hC⟩ hBC⟩
+      have hB : Maximal M.Indep B := ⟨hBmax.1.1, fun C hC hBC => hBmax.2 ⟨hC, Matroid.Indep.subset_ground hC⟩ hBC⟩
       unfold Matroid.IndepPredicate at hI'max
       rw [←Matroid.base_iff_maximal_indep] at hI'max hB
       obtain ⟨y, hy, hybase⟩ := M.base_exchange B I' hB hI'max x (Set.mem_diff_of_mem (Set.mem_of_mem_diff hx) hxI')
@@ -76,8 +76,8 @@ lemma Matroid.indep_aug_alt {α : Type*} (M : Matroid α) :
           (Set.insert_subset_insert (Set.subset_diff_singleton hIB (Set.not_mem_of_mem_diff hx))),
       ⟩
   else
-    let hIeqB : I = B := Set.union_empty I ▸ (Set.not_nonempty_iff_eq_empty.mp hBdiffI) ▸ Set.union_diff_cancel hIB
-    let hBmax : Maximal M.Indep B := ⟨hBmax.1.1, fun _ hC hBC => hBmax.2 ⟨hC, Matroid.Indep.subset_ground hC⟩ hBC⟩
+    have hIeqB : I = B := Set.union_empty I ▸ (Set.not_nonempty_iff_eq_empty.mp hBdiffI) ▸ Set.union_diff_cancel hIB
+    have hBmax : Maximal M.Indep B := ⟨hBmax.1.1, fun _ hC hBC => hBmax.2 ⟨hC, Matroid.Indep.subset_ground hC⟩ hBC⟩
     exact False.elim (hInmax (hIeqB ▸ hBmax))
 
 /-- Independence predicate of matroid satisfies (IM): set of all independent sets has the maximal subset property. -/

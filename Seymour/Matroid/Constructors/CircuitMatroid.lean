@@ -97,16 +97,16 @@ lemma CircuitMatroid.Maximal_iff {α : Type*} (M : CircuitMatroid α) (B : Set �
     unfold Matroid.Circuit Matroid.Dep at hC
     obtain ⟨⟨hCdep, hCE⟩, hCmin⟩ := hC
     -- by_contra hCncirc
-    let hMax := M.circuit_maximal C hCE
+    have hMax := M.circuit_maximal C hCE
     specialize hMax ∅ (CircuitPredicate.ToIndepPredicate.indep_empty M.not_circuit_empty M.E) (Set.empty_subset C)
     obtain ⟨D, ⟨_, ⟨⟨hDindep, hDC⟩, hDmax⟩⟩⟩ := hMax
-    let hDneqC : D ≠ C := by
+    have hDneqC : D ≠ C := by
       by_contra hDeqC
       rw [CircuitMatroid.indep_iff, ←hDeqC] at hCdep
       exact hCdep hDindep
-    let hDssubC := Set.ssubset_iff_subset_ne.mpr ⟨hDC, hDneqC⟩
+    have hDssubC := Set.ssubset_iff_subset_ne.mpr ⟨hDC, hDneqC⟩
     obtain ⟨x, hxC, hxnD⟩ := Set.exists_of_ssubset hDssubC
-    let hDextC : insert x D = C := sorry
+    have hDextC : insert x D = C := sorry
     sorry -- todo: finish
   · intro ⟨_, hC⟩
     constructor
@@ -123,9 +123,9 @@ lemma CircuitMatroid.Maximal_iff {α : Type*} (M : CircuitMatroid α) (B : Set �
       unfold IndepPred CircuitPredicate.ToIndepPredicate at hDdep
       push_neg at hDdep
       obtain ⟨C', hC'D, hC'⟩ := hDdep hDE
-      let hC'C := hC'D.trans hDC
-      let hC'nssubC := M.circuit_not_ssubset C C' hC hC'
-      let hC'eqC := eq_of_subset_of_not_ssubset hC'C hC'nssubC
+      have hC'C := hC'D.trans hDC
+      have hC'nssubC := M.circuit_not_ssubset C C' hC hC'
+      have hC'eqC := eq_of_subset_of_not_ssubset hC'C hC'nssubC
       exact hC'eqC ▸ hC'D
 
 /-- todo: desc -/

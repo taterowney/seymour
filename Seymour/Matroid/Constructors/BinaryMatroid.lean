@@ -2,50 +2,53 @@ import Seymour.Basic
 import Seymour.Matroid.Constructors.VectorMatroid
 
 
-/-- Binary matroid given by its standard matrix representation. -/
-structure BinaryMatroid (α : Type*) [DecidableEq α] where
-  X : Set α -- row index set
-  Y : Set α -- column index set
-  decmemX : ∀ a, Decidable (a ∈ X) -- able to check if an element is in `X`
-  decmemY : ∀ a, Decidable (a ∈ Y) -- able to check if an element is in `Y`
-  hXY : X ⫗ Y -- `X` and `Y` are disjoint
-  B : Matrix X Y Z2 -- standard representation matrix
+/-- Binary matroid is vector matroid of matrix over `Z2`. -/
+abbrev BinaryMatroid (α : Type) := VectorMatroid α Z2
 
--- Automatically infer decidability when `BinaryMatroid` is present.
-attribute [instance] BinaryMatroid.decmemX
-attribute [instance] BinaryMatroid.decmemY
+/-- Standard matrix representation of binary matroid. -/
+structure BinaryMatroid.StandardRepr (α : Type) [DecidableEq α] where
+  /-- row index set -/
+  X : Set α
+  /-- column index set -/
+  Y : Set α
+  /-- ability to check if an element belongs to `X` -/
+  decmemX : ∀ a, Decidable (a ∈ X)
+  /-- ability to check if an element belongs to `Y` -/
+  decmemY : ∀ a, Decidable (a ∈ Y)
+  /-- `X` and `Y` are disjoint -/
+  hXY : X ⫗ Y
+  /-- standard representation matrix -/
+  B : Matrix X Y Z2
+
+-- Automatically infer decidability when `StandardRepresentation` is present.
+attribute [instance] BinaryMatroid.StandardRepr.decmemX
+attribute [instance] BinaryMatroid.StandardRepr.decmemY
 
 /-- Maps a matrix with columns indexed by a sum of two sets to a matrix with columns indexed by union of these sets. -/
-def Matrix.GlueColumns {α : Type*} {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidable (a ∈ Y)]
+def Matrix.GlueColumns {α : Type} {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidable (a ∈ Y)]
     (M : Matrix X (X ⊕ Y) Z2) : Matrix X (X ∪ Y).Elem Z2 :=
-  fun i j => M i j.toSum
+  Matrix.of fun i j => M i j.toSum
+
+/-- Binary matroid constructed using standard representation. -/
+def BinaryMatroid.ofStandardRepr {α : Type} [DecidableEq α] (R : BinaryMatroid.StandardRepr α) : BinaryMatroid α :=
+  ⟨R.X, R.X ∪ R.Y, (Matrix.fromCols 1 R.B).GlueColumns⟩
+
+-- question: introduce API and prove useful properties for standard representation?
+
+
+section API
 
 /-- Ground set of a binary matroid is union of row and column index sets of its standard matrix representation. -/
-def BinaryMatroid.E {α : Type*} [DecidableEq α]
-    (M : BinaryMatroid α) : Set α := M.X ∪ M.Y
+@[simp]
+lemma BinaryMatroid.StandardRepr.E_eq {α : Type} [DecidableEq α] (R : BinaryMatroid.StandardRepr α) :
+  (BinaryMatroid.ofStandardRepr R).matroid.E = R.X ∪ R.Y := rfl
 
 /-- Full representation matrix of binary matroid is `[I | B]`. -/
-def BinaryMatroid.A {α : Type*} [DecidableEq α]
-    (M : BinaryMatroid α) : Matrix M.X (M.X ∪ M.Y).Elem Z2 :=
-  (Matrix.fromCols 1 M.B).GlueColumns
+@[simp]
+lemma BinaryMatroid.StandardRepr.A_eq {α : Type} [DecidableEq α] (R : BinaryMatroid.StandardRepr α) :
+  (BinaryMatroid.ofStandardRepr R).A = (Matrix.fromCols 1 R.B).GlueColumns := rfl
 
-/-- Binary matroid converted to `VectorMatroid`. -/
-def BinaryMatroid.VectorMatroid {α : Type*} [DecidableEq α]
-    (M : BinaryMatroid α) : VectorMatroid M.X α Z2 :=
-  ⟨M.X ∪ M.Y, M.A⟩
-
-/-- Binary matroid converted to `Matroid`. -/
-def BinaryMatroid.matroid {α : Type*} [DecidableEq α] (M : BinaryMatroid α) : Matroid α :=
-  M.VectorMatroid.matroid
-
-@[simp] -- API
-lemma BinaryMatroid.E_eq {α : Type*} [DecidableEq α] (M : BinaryMatroid α) : M.matroid.E = M.X ∪ M.Y :=
-  rfl
-
-@[simp] -- API
-lemma BinaryMatroid.indep_eq {α : Type*} [DecidableEq α] (M : BinaryMatroid α) : M.matroid.Indep = M.VectorMatroid.IndepCols :=
-  rfl
-
-/-- Registered conversion from `BinaryMatroid` to `Matroid`. -/
-instance {α : Type*} [DecidableEq α] : Coe (BinaryMatroid α) (Matroid α) where
-  coe := BinaryMatroid.matroid
+/-- Set is independent in binary matroid iff corresponding set of columns of `[I | B]` is linearly independent over `Z2`. -/
+@[simp]
+lemma BinaryMatroid.StandardRepr.indep_eq {α : Type} [DecidableEq α] (R : BinaryMatroid.StandardRepr α) :
+  (BinaryMatroid.ofStandardRepr R).matroid.Indep = (BinaryMatroid.ofStandardRepr R).IndepCols := rfl
