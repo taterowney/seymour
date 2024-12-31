@@ -9,17 +9,7 @@ We do not use out custom notation here because this file is higher than `Basic.l
 variable {α : Type*} {X Y : Set α}
 
 lemma setminus_inter_union_eq_union : X \ (X ∩ Y) ∪ Y = X ∪ Y := by
-  ext a
-  constructor
-  · intro ha
-    cases ha with
-    | inl ha' =>
-      left
-      exact Set.mem_of_mem_diff ha'
-    | inr haY =>
-      right
-      exact haY
-  · simp
+  aesop
 
 variable {a : α}
 

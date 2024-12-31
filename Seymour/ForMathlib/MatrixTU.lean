@@ -2,7 +2,40 @@ import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyUnimodular
 import Seymour.ForMathlib.FunctionDecompose
 
 
-variable {X₁ X₂ Y₁ Y₂ R : Type*}
+variable {R : Type*}
+
+lemma zero_in_set_range_singType_cast [LinearOrderedRing R] : (0 : R) ∈ Set.range SignType.cast :=
+  ⟨0, rfl⟩
+
+lemma in_set_range_singType_cast_mul_in_set_range_singType_cast [LinearOrderedRing R] {a b : R}
+    (ha : a ∈ Set.range SignType.cast) (hb : b ∈ Set.range SignType.cast) :
+    a * b ∈ Set.range SignType.cast := by
+  sorry
+
+lemma in_set_range_singType_cast_iff_abs [LinearOrderedCommRing R] (a : R) :
+    a ∈ Set.range SignType.cast ↔ |a| ∈ Set.range SignType.cast := by
+  sorry
+
+variable {X₁ X₂ Y₁ Y₂ : Type*}
+
+lemma Matrix.fromBlocks_submatrix [Zero R] (A₁ : Matrix X₁ Y₁ R) (A₂ : Matrix X₂ Y₂ R)
+    {α : Type*} (f : α → X₁ ⊕ X₂) (g : α → Y₁ ⊕ Y₂) :
+    (fromBlocks A₁ 0 0 A₂).submatrix f g =
+    (fromBlocks
+      (A₁.submatrix
+        ((·.val.snd) : { x₁ : α × X₁ // f x₁.fst = Sum.inl x₁.snd } → X₁)
+        ((·.val.snd) : { y₁ : α × Y₁ // g y₁.fst = Sum.inl y₁.snd } → Y₁)
+      ) 0 0
+      (A₂.submatrix
+        ((·.val.snd) : { x₂ : α × X₂ // f x₂.fst = Sum.inr x₂.snd } → X₂)
+        ((·.val.snd) : { y₂ : α × Y₂ // g y₂.fst = Sum.inr y₂.snd } → Y₂)
+      )
+    ).submatrix f.decomposeSum g.decomposeSum := by
+  rw [
+    f.eq_comp_decomposeSum,
+    g.eq_comp_decomposeSum,
+    ←Matrix.submatrix_submatrix]
+  aesop
 
 lemma Matrix.IsTotallyUnimodular.comp_rows [CommRing R] {A : Matrix X₁ Y₁ R}
     (hA : A.IsTotallyUnimodular) (e : X₂ → X₁) :
@@ -17,34 +50,6 @@ lemma Matrix.IsTotallyUnimodular.comp_cols [CommRing R] {A : Matrix X₁ Y₁ R}
   rw [Matrix.isTotallyUnimodular_iff] at hA ⊢
   intro k f g
   exact hA k f (e ∘ g)
-
-lemma Matrix.fromBlocks_submatrix [Zero R] (A₁ : Matrix X₁ Y₁ R) (A₂ : Matrix X₂ Y₂ R)
-    {α : Type*} (f : α → X₁ ⊕ X₂) (g : α → Y₁ ⊕ Y₂) :
-    (fromBlocks A₁ 0 0 A₂).submatrix f g =
-    (fromBlocks
-      (A₁.submatrix
-        ((·.val.snd) : { x₁ : α × X₁ // f x₁.fst = Sum.inl x₁.snd } → X₁)
-        ((·.val.snd) : { y₁ : α × Y₁ // g y₁.fst = Sum.inl y₁.snd } → Y₁)
-      ) 0 0
-      (A₂.submatrix
-        ((·.val.snd) : { x₂ : α × X₂ // f x₂.fst = Sum.inr x₂.snd } → X₂)
-        ((·.val.snd) : { y₂ : α × Y₂ // g y₂.fst = Sum.inr y₂.snd } → Y₂)
-      )
-     ).submatrix f.decomposeSum g.decomposeSum := by
-  rw [
-    f.eq_comp_decomposeSum,
-    g.eq_comp_decomposeSum,
-    ←Matrix.submatrix_submatrix]
-  aesop
-
-lemma in_set_range_singType_cast_mul_in_set_range_singType_cast [LinearOrderedRing R] {a b : R}
-    (ha : a ∈ Set.range SignType.cast) (hb : b ∈ Set.range SignType.cast) :
-    a * b ∈ Set.range SignType.cast := by
-  sorry
-
-lemma in_set_range_singType_cast_iff_abs [LinearOrderedCommRing R] (a : R) :
-    a ∈ Set.range SignType.cast ↔ |a| ∈ Set.range SignType.cast := by
-  sorry
 
 lemma Matrix.fromBlocks_isTotallyUnimodular [LinearOrderedCommRing R]
     [Fintype X₁] [DecidableEq X₁] [Fintype X₂] [DecidableEq X₂] [Fintype Y₁] [DecidableEq Y₁] [Fintype Y₂] [DecidableEq Y₂]
@@ -61,9 +66,9 @@ lemma Matrix.fromBlocks_isTotallyUnimodular [LinearOrderedCommRing R]
          = Fintype.card { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd }
   then -- square case
     -- bijections between indexing types of equal cardinalities
-    let eY₁ : { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ≃ { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } :=
+    let e₁ : { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ≃ { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } :=
       Fintype.equivOfCardEq hxy.1
-    let eY₂ : { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd } ≃ { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd } :=
+    let e₂ : { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd } ≃ { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd } :=
       Fintype.equivOfCardEq hxy.2
     -- relating submatrices in blocks to submatrices of `A₁` and `A₂`
     have hAfg :
@@ -75,29 +80,17 @@ lemma Matrix.fromBlocks_isTotallyUnimodular [LinearOrderedCommRing R]
         (A₂.submatrix
           ((·.val.snd) : { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd } → X₂)
           ((·.val.snd) : { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd } → Y₂)
-        )).submatrix
-          f.decomposeSum
-          g.decomposeSum
+        )
+      ).submatrix f.decomposeSum g.decomposeSum
       =
       (fromBlocks
-        (A₁.submatrix (·.val.snd)
-          (((·.val.snd) : { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } → Y₁) ∘ eY₁)
-        ) 0 0
-        (A₂.submatrix (·.val.snd)
-          (((·.val.snd) : { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd } → Y₂) ∘ eY₂)
-        )).submatrix
-          f.decomposeSum
-          (g.decomposeSum.trans (Equiv.sumCongr eY₁.symm eY₂.symm))
+        (A₁.submatrix (·.val.snd) ((·.val.snd) ∘ e₁)) 0 0
+        (A₂.submatrix (·.val.snd) ((·.val.snd) ∘ e₂))
+      ).submatrix f.decomposeSum (g.decomposeSum.trans (Equiv.sumCongr e₁.symm e₂.symm))
     · ext
       simp only [Function.decomposeSum, Equiv.coe_fn_mk, Equiv.coe_trans, Equiv.sumCongr_apply, Function.comp_apply,
         Matrix.submatrix, Matrix.of_apply]
-      split
-      · split
-        · simp
-        · rfl
-      · split
-        · rfl
-        · simp
+      split <;> split <;> simp
     -- absolute value of determinant was preserved by previous mappings,
     -- and we now express it as a product of determinants of submatrices in blocks
     rw [hAfg, in_set_range_singType_cast_iff_abs, Matrix.abs_det_submatrix_equiv_equiv, Matrix.det_fromBlocks_zero₁₂,
@@ -119,10 +112,15 @@ lemma Matrix.fromBlocks_isTotallyUnimodular [LinearOrderedCommRing R]
       rw [Fintype.card_sum] at hk₁ hk₂
       cases hxy <;> omega
     clear hxy
-    -- goal: prove that `det` is `0`
+    convert zero_in_set_range_singType_cast
     if hxy₁ :
         Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } <
         Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } then
-      sorry -- the bottom half of our submatrix is singular
+      -- we need new indexing type
+      -- `X₁' = { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ⊕ part of { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd }`
+      -- of the same cardinality as `{ y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd }`
+      -- then the bottom left blocks will be all `0`s, hence we can multiply the two determinants, and the top left block will
+      -- have at least one row made of `0`s, hence its determinant is `0`
+      sorry
     else
-      sorry -- the top half of our submatrix is singular
+      sorry -- both inequalities are opposite (and strict) here
