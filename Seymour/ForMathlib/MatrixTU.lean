@@ -1,39 +1,9 @@
 import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyUnimodular
+import Seymour.ForMathlib.Basic
 import Seymour.ForMathlib.FunctionDecompose
 
--- TODO name and home
-lemma llll {α β : Type*} [Fintype α] [Fintype β] {n : ℕ} (_ : Fintype.card α < n) (_ : n ≤ Fintype.card α + Fintype.card β) :
-    ∃ b : Finset β, Fintype.card (α ⊕ b) = n ∧ Nonempty b := by
-  have beta' : n - Fintype.card α ≤ Fintype.card β
-  · omega
-  obtain ⟨s, hs⟩ : ∃ s : Finset β, s.card = n - Fintype.card α :=
-    (Finset.exists_subset_card_eq beta').imp (by simp)
-  use s
-  rw [Fintype.card_sum, Fintype.card_coe, hs]
-  constructor
-  · omega
-  · by_contra ifempty
-    have : s.card = 0
-    · rw [Finset.card_eq_zero]
-      rw [nonempty_subtype, not_exists] at ifempty
-      exact Finset.eq_empty_of_forall_not_mem ifempty
-    omega
 
-variable {R : Type*}
-
-lemma zero_in_set_range_singType_cast [LinearOrderedRing R] : (0 : R) ∈ Set.range SignType.cast :=
-  ⟨0, rfl⟩
-
-lemma in_set_range_singType_cast_mul_in_set_range_singType_cast [LinearOrderedRing R] {a b : R}
-    (ha : a ∈ Set.range SignType.cast) (hb : b ∈ Set.range SignType.cast) :
-    a * b ∈ Set.range SignType.cast := by
-  sorry
-
-lemma in_set_range_singType_cast_iff_abs [LinearOrderedCommRing R] (a : R) :
-    a ∈ Set.range SignType.cast ↔ |a| ∈ Set.range SignType.cast := by
-  sorry
-
-variable {X₁ X₂ Y₁ Y₂ : Type*}
+variable {R X₁ Y₁ X₂ Y₂ : Type*}
 
 lemma Matrix.fromBlocks_submatrix [Zero R] (A₁ : Matrix X₁ Y₁ R) (A₂ : Matrix X₂ Y₂ R)
     {α : Type*} (f : α → X₁ ⊕ X₂) (g : α → Y₁ ⊕ Y₂) :
@@ -68,11 +38,20 @@ lemma Matrix.IsTotallyUnimodular.comp_cols [CommRing R] {A : Matrix X₁ Y₁ R}
   intro k f g
   exact hA k f (e ∘ g)
 
-lemma Matrix.fromBlocks_isTotallyUnimodular [LinearOrderedCommRing R]
-    [Fintype X₁] [DecidableEq X₁] [Fintype X₂] [DecidableEq X₂] [Fintype Y₁] [DecidableEq Y₁] [Fintype Y₂] [DecidableEq Y₂]
-    {A₁ : Matrix X₁ Y₁ R} {A₂ : Matrix X₂ Y₂ R} (hA₁ : A₁.IsTotallyUnimodular) (hA₂ : A₂.IsTotallyUnimodular) :
-    (fromBlocks A₁ 0 0 A₂).IsTotallyUnimodular := by
-  intro k f g hf hg
+variable [LinearOrderedCommRing R]
+  [Fintype X₁] [DecidableEq X₁] [Fintype Y₁] [DecidableEq Y₁]
+  [Fintype X₂] [DecidableEq X₂] [Fintype Y₂] [DecidableEq Y₂]
+
+--set_option maxHeartbeats 205000 in
+lemma Matrix.fromBlocks_submatrix_det_in_set_range_singType_cast_of_isTotallyUnimodular_of_card_le
+    {A₁ : Matrix X₁ Y₁ R} (hA₁ : A₁.IsTotallyUnimodular)
+    {A₂ : Matrix X₂ Y₂ R} (hA₂ : A₂.IsTotallyUnimodular)
+    {k : ℕ} {f : Fin k → X₁ ⊕ X₂} {g : Fin k → Y₁ ⊕ Y₂}
+    (hkfg :
+      Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ≤
+      Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd }) :
+    ((fromBlocks A₁ 0 0 A₂).submatrix f g).det ∈
+      Set.range SignType.cast := by
   rw [Matrix.isTotallyUnimodular_iff_fintype] at hA₁ hA₂
   rw [Matrix.fromBlocks_submatrix]
   -- look at sizes of submatrices in blocks
@@ -125,69 +104,63 @@ lemma Matrix.fromBlocks_isTotallyUnimodular [LinearOrderedCommRing R]
       simp only [Function.decomposeSum, Equiv.coe_fn_mk, Equiv.coe_trans, Equiv.sumCongr_apply, Function.comp_apply,
         Matrix.submatrix, Matrix.of_apply]
       split <;> split <;> simp
+    rw [hAfg,
     -- absolute value of determinant was preserved by previous mappings,
-    -- and we now express it as a product of determinants of submatrices in blocks
-    rw [hAfg, in_set_range_singType_cast_iff_abs, Matrix.abs_det_submatrix_equiv_equiv, Matrix.det_fromBlocks_zero₁₂,
-      ←in_set_range_singType_cast_iff_abs]
-    -- determinants of submatrices in blocks are `0` or `±1` by TUness of `A₁` and `A₂`
+      in_set_range_singType_cast_iff_abs, Matrix.abs_det_submatrix_equiv_equiv,
+    -- we now express it as a product of determinants of submatrices in blocks
+      Matrix.det_fromBlocks_zero₁₂, ←in_set_range_singType_cast_iff_abs]
+    -- determinants of submatrices in blocks are `∈ Set.range SignType.cast` by TUness of `A₁` and `A₂`
     apply in_set_range_singType_cast_mul_in_set_range_singType_cast
     · apply hA₁
     · apply hA₂
-  else -- the submatrix of `A₁` or the submatrix of `A₂` is non-square
-    -- actually both submatrices are non-square
-    obtain ⟨cardine₁, cardine₂⟩ :
-        Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ≠
-        Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } ∧
-        Fintype.card { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd } ≠
-        Fintype.card { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd }
+  else -- the submatrix of `A₁` or the submatrix of `A₂` is non-square (in fact, both)
+    convert zero_in_set_range_singType_cast
+    have hxy₁ :
+        Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } <
+        Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd }
     · rw [not_and_or] at hxy
       have hk₁ := Fintype.card_fin k ▸ Fintype.card_congr f.decomposeSum
       have hk₂ := Fintype.card_fin k ▸ Fintype.card_congr g.decomposeSum
       rw [Fintype.card_sum] at hk₁ hk₂
       cases hxy <;> omega
-    clear hxy
-    convert zero_in_set_range_singType_cast
-    if hxy₁ :
-        Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } <
-        Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } then
       -- we need new indexing type
       -- `X' = { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ⊕ part of { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd }`
       -- of the same cardinality as `{ y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd }`
       -- then the bottom left blocks will be all `0`s, hence we can multiply the two determinants, and the top left block will
       -- have at least one row made of `0`s, hence its determinant is `0`
-      have hY₁ :
-          Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } ≤
-          Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } +
-          Fintype.card { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd }
-      · convert_to Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } ≤ Fintype.card (Fin k)
-        · rw [←Fintype.card_sum]
-          exact Fintype.card_congr f.decomposeSum.symm
-        apply Fintype.card_le_of_embedding
-        use (·.val.fst)
-        intro ⟨⟨_, u⟩, _⟩ ⟨⟨_, v⟩, _⟩ huv
-        simp_all only [Subtype.mk.injEq, Prod.mk.injEq, true_and]
-        simp_all only [Sum.inl.injEq]
-      obtain ⟨X', hX', nonempt⟩ := llll hxy₁ hY₁
-      let e₁ := Fintype.equivOfCardEq hX'
-      have hY₂ : Fintype.card { y // y ∉ X' } = Fintype.card { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd }
-      · have :
+    have hkY₁ :
+        Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } ≤
+        Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } +
+        Fintype.card { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd }
+    · convert_to Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } ≤ Fintype.card (Fin k)
+      · rw [←Fintype.card_sum]
+        exact Fintype.card_congr f.decomposeSum.symm
+      apply Fintype.card_le_of_embedding
+      use (·.val.fst)
+      intro ⟨⟨_, _⟩, _⟩ ⟨⟨_, _⟩, _⟩ _
+      simp_all only [Subtype.mk.injEq, Prod.mk.injEq, true_and]
+      simp_all only [Sum.inl.injEq]
+    obtain ⟨X', hX', hY₁⟩ := finset_of_cardinality_between hxy₁ hkY₁
+    let e₁ := Fintype.equivOfCardEq hX'
+    have hY₂ : Fintype.card { y // y ∉ X' } = Fintype.card { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd }
+    · suffices :
           Fintype.card { y // y ∉ X' } + Fintype.card ({ x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ⊕ X') =
           Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } +
           Fintype.card { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd }
-        · convert Eq.refl (Fintype.card (Fin k))
-          · rw [Fintype.card_sum, add_comm, add_assoc, ←Fintype.card_sum, Fintype.card_congr (Equiv.sumCompl (· ∈ X')),
-               ←Fintype.card_sum]
-            exact Fintype.card_congr f.decomposeSum.symm
-          · rw [←Fintype.card_sum]
-            exact Fintype.card_congr g.decomposeSum.symm
-        omega
-      let e₂ := Fintype.equivOfCardEq hY₂
-      let e₀ :
-          { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ⊕ (X' ⊕ { x // x ∉ X' }) ≃
-          ({ x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ⊕ X') ⊕ { x // x ∉ X' } :=
-        (Equiv.sumAssoc ..).symm
-      let e' : { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd } ≃ X' ⊕ { x // x ∉ X' } :=
-        (Equiv.sumCompl (· ∈ X')).symm
+      · omega
+      convert Eq.refl (Fintype.card (Fin k))
+      · rw [Fintype.card_sum, add_comm, add_assoc, ←Fintype.card_sum, Fintype.card_congr (Equiv.sumCompl (· ∈ X')),
+            ←Fintype.card_sum]
+        exact Fintype.card_congr f.decomposeSum.symm
+      · rw [←Fintype.card_sum]
+        exact Fintype.card_congr g.decomposeSum.symm
+    let e₂ := Fintype.equivOfCardEq hY₂
+    let e₀ :
+        { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ⊕ (X' ⊕ { x // x ∉ X' }) ≃
+        ({ x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ⊕ X') ⊕ { x // x ∉ X' } :=
+      (Equiv.sumAssoc ..).symm
+    let e' : { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd } ≃ X' ⊕ { x // x ∉ X' } :=
+      (Equiv.sumCompl (· ∈ X')).symm
 /-
     ` f :  [k] -> X₁ ⊕ X₂ `
     ` g :  [k] -> Y₁ ⊕ Y₂ `
@@ -214,47 +187,62 @@ lemma Matrix.fromBlocks_isTotallyUnimodular [LinearOrderedCommRing R]
 
     ` e₀ ∘ (I | e') :  [k] ≃ (ₖX₁ ⊕ X') ⊕ (ₖX₂ \ X') `
 -/
-      have hAfg' : -- relating submatrices in blocks to submatrices of `A₁` and `A₂`
-        (fromBlocks
-          (A₁.submatrix
-            ((·.val.snd) : { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } → X₁)
-            ((·.val.snd) : { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } → Y₁)
-          ) 0 0
-          (A₂.submatrix
-            ((·.val.snd) : { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd } → X₂)
-            ((·.val.snd) : { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd } → Y₂)
-          )
-        ).submatrix f.decomposeSum g.decomposeSum
-        =
-        (fromBlocks
-          (fromRows (A₁.submatrix (·.val.snd) ((·.val.snd) ∘ e₁)) 0)
-          (fromRows 0 (A₂.submatrix (·.val.val.snd) ((·.val.snd) ∘ e₂)))
-          0
-          (A₂.submatrix (·.val.val.snd) ((·.val.snd) ∘ e₂))
-        ).submatrix
-          ((f.decomposeSum.trans ((Equiv.refl _).sumCongr e')).trans e₀)
-          (g.decomposeSum.trans (Equiv.sumCongr e₁.symm e₂.symm))
-      · ext
-        simp only [Function.decomposeSum, Equiv.coe_fn_mk, Equiv.coe_trans, Equiv.sumCongr_apply, Function.comp_apply,
-          Matrix.submatrix, Matrix.of_apply, e₀, e']
-        split
-        · split <;> simp [Equiv.sumCompl, Equiv.sumAssoc, Matrix.fromBlocks, Matrix.fromRows]
-        · split <;>
-            simp only [Matrix.fromBlocks, Matrix.fromRows, Sum.elim_inl, Sum.elim_inr, Sum.map_inl, Sum.map_inr,
-              Equiv.sumAssoc, Equiv.sumCompl, Equiv.coe_fn_symm_mk, Set.mem_range, Matrix.zero_apply] <;>
-            split <;>
-            simp_all only [Sum.elim_inr, Sum.elim_inl, Function.comp_apply, Matrix.of_apply, Matrix.zero_apply,
-              Equiv.apply_symm_apply]
-      rw [hAfg', ←abs_eq_zero, Matrix.abs_det_submatrix_equiv_equiv, abs_eq_zero]
-      convert_to
-        (fromRows (A₁.submatrix (·.val.snd) ((·.val.snd) ∘ e₁)) 0).det * (A₂.submatrix (·.val.val.snd) ((·.val.snd) ∘ e₂)).det
-          = 0
-      · convert Matrix.det_fromBlocks_zero₂₁
-          (fromRows (A₁.submatrix (·.val.snd) ((·.val.snd) ∘ e₁)) 0)
-          (fromRows 0 (A₂.submatrix (·.val.val.snd) ((·.val.snd) ∘ e₂)))
-          (A₂.submatrix (·.val.val.snd) ((·.val.snd) ∘ e₂))
-      convert zero_mul _
-      apply Matrix.det_eq_zero_of_row_eq_zero (Sum.inr (Classical.choice nonempt))
-      simp
-    else
-      sorry -- both inequalities are opposite (and strict) here
+    have hAfg' :
+      (fromBlocks
+        (A₁.submatrix
+          ((·.val.snd) : { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } → X₁)
+          ((·.val.snd) : { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } → Y₁)
+        ) 0 0
+        (A₂.submatrix
+          ((·.val.snd) : { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd } → X₂)
+          ((·.val.snd) : { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd } → Y₂)
+        )
+      ).submatrix f.decomposeSum g.decomposeSum
+      =
+      (fromBlocks
+        (fromRows (A₁.submatrix (·.val.snd) ((·.val.snd) ∘ e₁)) 0)
+        (fromRows 0 (A₂.submatrix (·.val.val.snd) ((·.val.snd) ∘ e₂)))
+        0
+        (A₂.submatrix (·.val.val.snd) ((·.val.snd) ∘ e₂))
+      ).submatrix
+        ((f.decomposeSum.trans ((Equiv.refl _).sumCongr e')).trans e₀)
+        (g.decomposeSum.trans (Equiv.sumCongr e₁.symm e₂.symm))
+    · ext
+      simp only [Function.decomposeSum, Equiv.coe_fn_mk, Equiv.coe_trans, Equiv.sumCongr_apply, Function.comp_apply,
+        Matrix.submatrix, Matrix.of_apply, e₀, e']
+      split
+      · split <;> simp [Equiv.sumCompl, Equiv.sumAssoc, Matrix.fromBlocks, Matrix.fromRows]
+      · split <;>
+          simp only [Matrix.fromBlocks, Matrix.fromRows, Sum.elim_inl, Sum.elim_inr, Sum.map_inl, Sum.map_inr,
+            Equiv.sumAssoc, Equiv.sumCompl, Equiv.coe_fn_symm_mk, Set.mem_range, Matrix.zero_apply] <;> split <;>
+          simp
+    rw [hAfg', ←abs_eq_zero, Matrix.abs_det_submatrix_equiv_equiv, abs_eq_zero]
+    convert_to
+      (fromRows (A₁.submatrix (·.val.snd) ((·.val.snd) ∘ e₁)) 0).det * (A₂.submatrix (·.val.val.snd) ((·.val.snd) ∘ e₂)).det
+        = 0
+    · convert Matrix.det_fromBlocks_zero₂₁
+        (fromRows (A₁.submatrix (·.val.snd) ((·.val.snd) ∘ e₁)) 0)
+        (fromRows 0 (A₂.submatrix (·.val.val.snd) ((·.val.snd) ∘ e₂)))
+        (A₂.submatrix (·.val.val.snd) ((·.val.snd) ∘ e₂))
+    convert zero_mul _
+    apply Matrix.det_eq_zero_of_row_eq_zero (Sum.inr (Classical.choice hY₁))
+    intro
+    rfl
+
+lemma Matrix.fromBlocks_isTotallyUnimodular {A₁ : Matrix X₁ Y₁ R} {A₂ : Matrix X₂ Y₂ R}
+    (hA₁ : A₁.IsTotallyUnimodular) (hA₂ : A₂.IsTotallyUnimodular) :
+    (fromBlocks A₁ 0 0 A₂).IsTotallyUnimodular :=
+  fun k f g _ _ =>
+    if hxy₀ :
+        Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } ≤
+        Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd }
+    then
+      Matrix.fromBlocks_submatrix_det_in_set_range_singType_cast_of_isTotallyUnimodular_of_card_le hA₁ hA₂ hxy₀
+    else by
+      rw [←Matrix.det_transpose, Matrix.transpose_submatrix, Matrix.fromBlocks_transpose]
+      apply Matrix.fromBlocks_submatrix_det_in_set_range_singType_cast_of_isTotallyUnimodular_of_card_le
+      · rwa [←Matrix.transpose_isTotallyUnimodular_iff] at hA₁
+      · rwa [←Matrix.transpose_isTotallyUnimodular_iff] at hA₂
+      omega
+
+#print axioms Matrix.fromBlocks_isTotallyUnimodular

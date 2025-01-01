@@ -98,7 +98,7 @@
 \begin{lemma}[block-diagonal matrix with TU blocks is TU]
   \label{lem:code_diagonal_with_tu_blocks}
   \uses{def:code_tu_matrix}
-  \lean{Matrix.fromBlocks_TU}
+  \lean{Matrix.fromBlocks_isTotallyUnimodular}
   \leanok
   Let $A$ be a matrix of the form
   \begin{tabular}{cc}
@@ -110,7 +110,8 @@
 \end{lemma}
 
 \begin{proof}[Proof sketch]
-  \uses{def:code_tu_matrix}
+  \uses{def:code_tu_matrix,lem:code_tu_transpose}
+  \leanok
   Any square submatrix $T$ of $A$ has the form
   \begin{tabular}{cc}
     \cline{1-2}
@@ -121,7 +122,7 @@
   \begin{itemize}
     \item If $T_{1}$ is square, then $T_{2}$ is also square, and $\det T = \det T_{1} \cdot \det T_{2} \in \{0, \pm 1\}$.
     \item If $T_{1}$ has more rows than columns, then the rows of $T$ containing $T_{1}$ are linearly dependent, so $\det T = 0$.
-    \item Similar if $T_{1}$ has more columns than rows.
+    \item If $T_{1}$ has more columns than rows, transpose.
   \end{itemize}
 \end{proof}
 
