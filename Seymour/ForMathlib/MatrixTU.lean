@@ -2,7 +2,7 @@ import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyUnimodular
 import Seymour.ForMathlib.FunctionDecompose
 
 
-variable {X₁ X₂ Y₁ Y₂ R : Type*}
+variable {X₁ X₂ Y₁ Y₂ R : Type}
 
 lemma Matrix.IsTotallyUnimodular.comp_rows [CommRing R] {A : Matrix X₁ Y₁ R}
     (hA : A.IsTotallyUnimodular) (e : X₂ → X₁) :

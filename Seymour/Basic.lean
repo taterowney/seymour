@@ -15,7 +15,7 @@ infixr:66 " ᕃ " => Insert.insert -- TODO (low priority) use `syntax` and write
 infix:61 " ⫗ " => Disjoint
 
 
-variable {α : Type*}
+variable {α : Type}
 
 lemma nmem_insert {z x : α} {I : Set α} (hx : z ≠ x) (hI : z ∉ I) : z ∉ x ᕃ I := by
   simp_all [Set.insert]
@@ -51,7 +51,7 @@ lemma toUnion_toSum {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidabl
     i.toUnion.toSum = i := by
   cases i <;> simp [Subtype.toSum, Sum.toUnion, HasSubset.Subset.elem, hXY.symm.ni_of_in]
 
-variable {T₁ T₂ S₁ S₂ : Set α} {β : Type*}
+variable {T₁ T₂ S₁ S₂ : Set α} {β : Type}
   [∀ a, Decidable (a ∈ T₁)]
   [∀ a, Decidable (a ∈ T₂)]
   [∀ a, Decidable (a ∈ S₁)]

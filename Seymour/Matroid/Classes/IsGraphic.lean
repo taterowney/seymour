@@ -22,18 +22,11 @@ def Matroid.IsGraphic {α : Type} (M : Matroid α) : Prop :=
 
 /-- todo: desc -/
 def VectorMatroid.IsCographic {α R : Type} [CommRing R] (M : VectorMatroid α R) : Prop :=
-  M.A.transpose.IsGraphic
+  M.matroid.dual.IsGraphic
 
 /-- todo: desc -/
 def Matroid.IsCographic {α : Type} (M : Matroid α) : Prop :=
-  ∃ R : Type, ∃ _ : CommRing R, ∃ X E : Set α, ∃ A : Matrix X E R,
-  A.transpose.IsGraphic ∧ M = (⟨X, E, A⟩ : VectorMatroid α R).matroid
-
-/-- todo: desc -/
-lemma Matroid.IsGraphic_iff {α : Type} (M : Matroid α) : M.IsGraphic ↔ M.dual.IsCographic := by sorry
-
-/-- todo: desc -/
-lemma Matroid.IsCoraphic_iff {α : Type} (M : Matroid α) : M.IsCographic ↔ M.dual.IsGraphic := by sorry
+  M.dual.IsGraphic
 
 -- /-- todo: desc -/
 -- def Matroid.IsPlanar {α : Type} (M : Matroid α) : Prop := M.IsGraphic ∧ M.IsCoraphic

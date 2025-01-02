@@ -4,35 +4,35 @@ import Seymour.Matroid.Notions.Coloop
 
 
 /-- Connectivity relation, aka ξ in Oxley's book -/
-def Matroid.ConnectivityRelation {α : Type*} (M : Matroid α) (e f : α) : Prop :=
+def Matroid.ConnectivityRelation {α : Type} (M : Matroid α) (e f : α) : Prop :=
   (e = f) ∨ (∃ C, C ⊆ M.E ∧ M.Circuit C ∧ e ∈ C ∧ f ∈ C)
 
 /-- Connectivity relation is an equivalence relation on M.E -/
-lemma Matroid.ConnectivityRelation.is_equiv_rel {α : Type*} (M : Matroid α) :
+lemma Matroid.ConnectivityRelation.is_equiv_rel {α : Type} (M : Matroid α) :
     ∀ e f : α, M.ConnectivityRelation e f → M.ConnectivityRelation f e := by
   intro e f hef
   cases hef with
-  | inl hef => tauto
+  | inl hef => exact Or.inl hef.symm
   | inr hef =>
       right
       obtain ⟨C, hCE, hCcirc, heC, hfC⟩ := hef
       use C
 
 /-- Component is an equivalence class under the connectivity relation, i.e., a ξ-equivalence class -/
-def Matroid.Component {α : Type*} (M : Matroid α) (X : Set α) : Prop :=
+def Matroid.Component {α : Type} (M : Matroid α) (X : Set α) : Prop :=
   ∀ e ∈ X, ∀ f ∈ M.E, M.ConnectivityRelation e f ↔ f ∈ X
 
 /-- Separator is a union of components -/
-def Matroid.Separator {α : Type*} (M : Matroid α) (X : Set α) : Prop :=
+def Matroid.Separator {α : Type} (M : Matroid α) (X : Set α) : Prop :=
   ∀ e ∈ X, ∀ f ∈ M.E, M.ConnectivityRelation e f → f ∈ X
 
 /-- Every component is a separator -/
-lemma Matroid.separator_component {α : Type*} (M : Matroid α) {X : Set α} (hX : M.Component X) :
+lemma Matroid.separator_component {α : Type} (M : Matroid α) {X : Set α} (hX : M.Component X) :
     M.Separator X :=
   fun e he f hf hef => (hX e he f hf).mp hef
 
 /-- Every loop is a separator -/
-lemma Matroid.separator_loop {α : Type*} {M : Matroid α} {x : α} (hx : M.Loop x) :
+lemma Matroid.separator_loop {α : Type} {M : Matroid α} {x : α} (hx : M.Loop x) :
     M.Separator {x} := by
   intro e hex f hfE hf
   cases hf with
@@ -47,7 +47,7 @@ lemma Matroid.separator_loop {α : Type*} {M : Matroid α} {x : α} (hx : M.Loop
       exact hCcirc heC hfC
 
 /-- Every coloop is a separator -/
-lemma Matroid.separator_coloop {α : Type*} {M : Matroid α} {x : α} (hx : M.Coloop x) :
+lemma Matroid.separator_coloop {α : Type} {M : Matroid α} {x : α} (hx : M.Coloop x) :
     M.Separator {x} := by
   intro e hex f hfE hf
   cases hf with
@@ -61,7 +61,7 @@ lemma Matroid.separator_coloop {α : Type*} {M : Matroid α} {x : α} (hx : M.Co
       tauto
 
 /-- Every singleton separator is a loop or a coloop -/
-lemma Matroid.singleton_separator_loop_coloop {α : Type*} {M : Matroid α} {x : α}
+lemma Matroid.singleton_separator_loop_coloop {α : Type} {M : Matroid α} {x : α}
     (hx : x ∈ M.E) : M.Separator {x} → M.Loop x ∨ M.Coloop x := by
   intro hSep
   by_contra h
@@ -94,7 +94,7 @@ lemma Matroid.singleton_separator_loop_coloop {α : Type*} {M : Matroid α} {x :
   exact hfx hSep
 
 /-- Singleton element is a separator iff it is a loop or a coloop -/
-lemma Matroid.singleton_separator_iff {α : Type*} {M : Matroid α} (x : α) :
+lemma Matroid.singleton_separator_iff {α : Type} {M : Matroid α} (x : α) :
     x ∈ M.E ∧ M.Separator {x} ↔ M.Loop x ∨ M.Coloop x := by
   constructor
   · intro hxE
