@@ -1,20 +1,19 @@
 import Seymour.Matroid.Constructors.BinaryMatroid
 import Seymour.Matroid.Classes.IsRegular
 
--- TODO: specific instances of matroids
-def MatroidR10 : BinaryMatroid.StandardRepr (Fin 10) where
-  X := {1, 2, 3, 4, 5}
-  Y := {6, 7, 8, 9, 10}
-  decmemX := sorry
-  decmemY := sorry
-  hXY := sorry
-  B := sorry
-  -- B10 = [
-  --   1 0 0 1 1
-  --   1 1 0 0 1
-  --   0 1 1 0 1
-  --   0 0 1 1 1
-  --   1 1 1 1 1
-  -- ]
+-- TODO: could be computable
+noncomputable def MatroidR10 : BinaryMatroid.StandardRepr (Fin 10) where
+  X := (·.val < 5)
+  Y := (·.val ≥ 5)
+  decmemX _ := Classical.propDecidable _
+  decmemY _ := Classical.propDecidable _
+  hXY := by
+    rw [Set.disjoint_left]
+    intro _ hX hY
+    rw [Set.mem_def] at hX hY
+    omega
+  B := !![1, 0, 0, 1, 1; 1, 1, 0, 0, 1; 0, 1, 1, 0, 1; 0, 0, 1, 1, 1; 1, 1, 1, 1, 1].submatrix
+    (fun i => ⟨i.val, i.property⟩)
+    (fun j => ⟨j.val - 5, by omega⟩)
 
 -- todo: lemma MatroidR10.IsRegular
