@@ -593,15 +593,15 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {α : Type} [Decidab
             rw [hX₂empty, Set.union_empty, Set.inter_empty, Set.diff_empty] at hDX₁X₂
             rw [hDX₁X₂] at hDnempty
             have hpX₁ := hDX₁X₂ ▸ (Set.union_subset_iff.mp hX₁C₁).2
-            have hDp := hp ▸ Set.disjoint_of_subset_left hDE (BinaryMatroid.DeltaSum.E.disjoint_inter M₁ M₂)
-            exact False.elim (hDp hpX₁ Set.Subset.rfl rfl)
+            have hZ₁p := hp ▸ Set.disjoint_of_subset_left hDE (BinaryMatroid.DeltaSum.E.disjoint_inter M₁ M₂)
+            exact False.elim (hZ₁p hpX₁ Set.Subset.rfl rfl)
     | inr hX₁empty =>
         rw [hX₁empty, Set.empty_union, Set.empty_inter, Set.diff_empty] at hDX₁X₂
         have hX₂dep := Matroid.UnionDisjointCircuits.nonempty_dep M₂.matroid X₂ hX₂udc (hDX₁X₂ ▸ hDnempty)
         have hX₂C₂ := (Matroid.Circuit.circuit_iff_def.mp hCM₂p).2 X₂ hX₂dep hX₂C₂
         have hpX₂ := hDX₁X₂ ▸ (Set.union_subset_iff.mp hX₂C₂).2
-        have hDp := hp ▸ Set.disjoint_of_subset_left hDE (BinaryMatroid.DeltaSum.E.disjoint_inter M₁ M₂)
-        exact False.elim (hDp hpX₂ Set.Subset.rfl rfl)
+        have hZ₁p := hp ▸ Set.disjoint_of_subset_left hDE (BinaryMatroid.DeltaSum.E.disjoint_inter M₁ M₂)
+        exact False.elim (hZ₁p hpX₂ Set.Subset.rfl rfl)
 
 
 section CircuitPredCircuit
@@ -953,6 +953,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum {α : Type} [DecidableEq α] {M₁ 
               -- todo: clean up
               rw [hpX₁X₂] at hCX₁X₂
               have t1 : C ∪ {p} = (X₁ ∪ X₂) \ {p} ∪ {p} := congrFun (congrArg Union.union hCX₁X₂) {p}
+              -- todo : use Set.diff_union_of_subset
               rw [Set.diff_union_self] at t1
               have t2 : {p} ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_right hpX₂ X₁
               rw [Set.union_eq_left.mpr t2] at t1
@@ -973,105 +974,159 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum {α : Type} [DecidableEq α] {M₁ 
 
               rw [←t3, a2, a3, a4, b]
 
+            -- todo: make lemma in Sum2
+            have hpncircM₁ : ¬M₁.matroid.Circuit {p} := by
+              by_contra hpcircM₁
+              have hpnloopM₁ := Assumptions.inter_singleton_not_loop_M₁ hp
+              exact hpnloopM₁ ((Matroid.Loop.iff_circuit M₁.matroid).mpr hpcircM₁)
+
+            -- todo: make lemma in Sum2
+            have hpncircM₂ : ¬M₂.matroid.Circuit {p} := by
+              by_contra hpcircM₂
+              have hpnloopM₂ := Assumptions.inter_singleton_not_loop_M₂ hp
+              exact hpnloopM₂ ((Matroid.Loop.iff_circuit M₂.matroid).mpr hpcircM₂)
+
+            have hX₁p : ¬X₁ ⊆ {p} := by
+              by_contra hX₁p
+              have hpcircM₁ : M₁.matroid.Circuit {p} := ⟨
+                hX₁dep.superset hX₁p (singleton_inter_subset_left hp),
+                by
+                  intro Q hQ hQp
+                  simp only [Set.le_eq_subset] at hQp
+                  rw [Set.Nonempty.subset_singleton_iff hQ.nonempty] at hQp
+                  exact le_of_eq_of_le hQp.symm (by rfl)
+              ⟩
+              exact hpncircM₁ hpcircM₁
+
+            have hX₂p : ¬X₂ ⊆ {p} := by
+              by_contra hX₂p
+              have hpcircM₂ : M₂.matroid.Circuit {p} := ⟨
+                hX₂dep.superset hX₂p (singleton_inter_subset_right hp),
+                by
+                  intro Q hQ hQp
+                  simp only [Set.le_eq_subset] at hQp
+                  rw [Set.Nonempty.subset_singleton_iff hQ.nonempty] at hQp
+                  exact le_of_eq_of_le hQp.symm (by rfl)
+              ⟩
+              exact hpncircM₂ hpcircM₂
+
+            have hdisjX₁X₂dp : Disjoint (X₁ \ {p}) (X₂ \ {p}) := disjoint_of_singleton_inter_both_wo hpX₁X₂
+
+            have hCinterM₁ : (C ∩ M₁.E).Nonempty := by
+              rw [hCX₁X₂, hpX₁X₂, Set.union_diff_distrib, Set.union_inter_distrib_right]
+              rw [←Set.diff_nonempty] at hX₁p
+              have t1 : {p} ⊆ M₁.E := singleton_inter_subset_left hp
+              have t2 : X₁ ⊆ M₁.E := hX₁dep.subset_ground
+              have t3 : X₁ \ {p} ⊆ M₁.E := diff_subset_parent t2
+              have t4 : X₁ \ {p} ∩ M₁.E = X₁ \ {p} := (Set.left_eq_inter.mpr t3).symm
+              exact Set.Nonempty.inl (t4.symm ▸ hX₁p)
+
+            have hCinterM₂ : (C ∩ M₂.E).Nonempty := by
+              rw [hCX₁X₂, hpX₁X₂, Set.union_diff_distrib, Set.union_inter_distrib_right]
+              rw [←Set.diff_nonempty] at hX₂p
+              have t1 : {p} ⊆ M₂.E := singleton_inter_subset_right hp
+              have t2 : X₂ ⊆ M₂.E := hX₂dep.subset_ground
+              have t3 : X₂ \ {p} ⊆ M₂.E := diff_subset_parent t2
+              have t4 : X₂ \ {p} ∩ M₂.E = X₂ \ {p} := (Set.left_eq_inter.mpr t3).symm
+              exact Set.Nonempty.inr (t4.symm ▸ hX₂p)
+
             have hX₁circ : M₁.matroid.Circuit X₁ := by
               constructor
               · exact hX₁dep
               · intro Y₁ hY₁ hY₁X₁
-                if hpY₁ : {p} ⊆ Y₁ then
-                  have t1 : ∃ Z₁, M₁.matroid.Circuit Z₁ ∧ {p} ⊆ Z₁ ∧ Z₁ ⊆ Y₁ := sorry
-                  obtain ⟨Z₁, hZ₁, hpZ₁, hZ₁Y₁⟩ := t1
-                  have t2 : CircuitForm M₁ M₂ ((Z₁ ∪ X₂) \ (Z₁ ∩ X₂)) := sorry
-                  specialize hCmin t2 sorry
-                  sorry
-                else
-                  rw [Set.singleton_subset_iff] at hpY₁
-                  have hY₁p : Disjoint Y₁ {p} := Set.disjoint_singleton_right.mpr hpY₁
-                  have ⟨D, hD, hDY₁⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hY₁
-                  have hDp : Disjoint D {p} := Set.disjoint_of_subset_left hDY₁ hY₁p
-                  have hDcf1 : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ D := ⟨hD, hp ▸ hDp⟩
-                  have hDC : D ⊆ C := by
-                    have hDX₁ := hDY₁.trans hY₁X₁
-                    have hDX₁X₂ : D ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_left hDX₁ X₂
-                    have hDX₁X₂p : D ⊆ (X₁ ∪ X₂) \ {p} := Set.subset_diff_singleton hDX₁X₂ fun a => hpY₁ (hDY₁ a)
-                    rw [hCX₁X₂, hpX₁X₂]
-                    exact hDX₁X₂p
-                  specialize hCmin hDcf1.circuit_form hDC
-                  have hCeqD := Set.Subset.antisymm hCmin hDC
+                have ⟨Z₁, hZ₁, hZ₁Y₁⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hY₁
+                have hZ₁X₁ : Z₁ ⊆ X₁ := hZ₁Y₁.trans hY₁X₁
 
-                  have hDinterM₂ : (C ∩ M₂.E).Nonempty := by
-                    rw [hCX₁X₂, hpX₁X₂, Set.union_diff_distrib, Set.union_inter_distrib_right]
-                    if hX₂p : X₂ ⊆ {p} then
-                      have hX₂dep := hX₂dep.superset hX₂p (singleton_inter_subset_right hp)
-                      have t1 : M₂.matroid.Circuit {p} := ⟨
-                        hX₂dep,
-                        by
-                          intro Q hQ hQp
-                          simp only [Set.le_eq_subset] at hQp
-                          rw [Set.Nonempty.subset_singleton_iff hQ.nonempty] at hQp
-                          exact le_of_eq_of_le (id (Eq.symm hQp)) fun ⦃a⦄ a => a
-                      ⟩
-                      have t2 := Assumptions.inter_singleton_not_loop_M₂ hp
-                      rw [Matroid.Loop.iff_circuit] at t2
-                      exfalso
-                      exact t2 t1
-                    else
-                      rw [←Set.diff_nonempty] at hX₂p
-                      have t1 : {p} ⊆ M₂.E := singleton_inter_subset_right hp
-                      have t2 : X₂ ⊆ M₂.E := hX₂dep.subset_ground
-                      have t3 : X₂ \ {p} ⊆ M₂.E := diff_subset_parent t2
-                      have t4 : X₂ \ {p} ∩ M₂.E = X₂ \ {p} := (Set.left_eq_inter.mpr t3).symm
-                      exact Set.Nonempty.inr (t4.symm ▸ hX₂p)
-                  have hDM₂ : Disjoint D M₂.E := hDcf1.disjoint_M₂
-                  rw [hCeqD] at hDinterM₂
-                  exact False.elim (Set.not_nonempty_empty (hDM₂.inter_eq ▸ hDinterM₂))
+                if hpZ₁ : {p} ⊆ Z₁ then
+                  have hpZ₁X₂ : Z₁ ∩ X₂ = {p} := by
+                    apply Set.Subset.antisymm
+                    exact (Set.inter_subset_inter_left X₂ hZ₁X₁).trans hpX₁X₂.subset
+                    exact Set.subset_inter hpZ₁ hpX₂
+                  have hZ₁dp : (Z₁ \ {p}).Nonempty := by
+                    by_contra hZ₁dp
+                    push_neg at hZ₁dp
+                    have hZ₁eqp : Z₁ = {p} := Set.Subset.antisymm (Set.diff_eq_empty.mp hZ₁dp) hpZ₁
+                    exact hpncircM₁ (hZ₁eqp ▸ hZ₁)
+                  have hC'C : ((Z₁ ∪ X₂) \ (Z₁ ∩ X₂)) ⊆ C := by
+                    rw [hpZ₁X₂, hCX₁X₂, hpX₁X₂, Set.union_diff_distrib, Set.union_diff_distrib]
+                    exact Set.union_subset_union (Set.diff_subset_diff_left hZ₁X₁) (by rfl)
+                  have hZ₁sdX₂cf : CircuitForm M₁ M₂ ((Z₁ ∪ X₂) \ (Z₁ ∩ X₂)) := by
+                    constructor
+                    · rw [hpZ₁X₂, Set.union_diff_distrib]
+                      exact Set.Nonempty.inl hZ₁dp
+                    constructor
+                    · exact hC'C.trans hCE
+                    use Z₁, X₂
+                    exact ⟨rfl, Matroid.UnionDisjointCircuits.circuit hZ₁, hX₂udc⟩
+                  specialize hCmin hZ₁sdX₂cf hC'C
+                  have hX₁Z₁ : X₁ ⊆ Z₁ := by
+                    rw [hpZ₁X₂, hCX₁X₂, hpX₁X₂, Set.union_diff_distrib, Set.union_diff_distrib] at hCmin
+                    simp only [Set.le_eq_subset] at hCmin
+                    have hX₁union := (Set.union_subset_iff.mp hCmin).1
+                    have hX₁Z₁dp : X₁ \ {p} ⊆ Z₁ \ {p} := Disjoint.subset_left_of_subset_union hX₁union hdisjX₁X₂dp
+                    rw [Set.diff_subset_iff, Set.union_comm, Set.diff_union_of_subset hpZ₁] at hX₁Z₁dp
+                    exact hX₁Z₁dp
+                  exact hX₁Z₁.trans hZ₁Y₁
+                else
+                  rw [Set.singleton_subset_iff] at hpZ₁
+                  have hZ₁p : Disjoint Z₁ {p} := Set.disjoint_singleton_right.mpr hpZ₁
+                  have hZ₁cf1 : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ Z₁ := ⟨hZ₁, hp ▸ hZ₁p⟩
+                  have hZ₁C : Z₁ ⊆ C := by
+                    have hZ₁X₁X₂ : Z₁ ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_left hZ₁X₁ X₂
+                    have hZ₁X₁X₂p : Z₁ ⊆ (X₁ ∪ X₂) \ {p} := Set.subset_diff_singleton hZ₁X₁X₂ hpZ₁
+                    exact hCX₁X₂ ▸ hpX₁X₂ ▸ hZ₁X₁X₂p
+                  specialize hCmin hZ₁cf1.circuit_form hZ₁C
+                  have hCeqZ₁ := Set.Subset.antisymm hCmin hZ₁C
+                  exact False.elim (Set.not_nonempty_empty (hZ₁cf1.disjoint_M₂.inter_eq ▸ hCeqZ₁ ▸ hCinterM₂))
 
             have hX₂circ : M₂.matroid.Circuit X₂ := by
               constructor
               · exact hX₂dep
               · intro Y₂ hY₂ hY₂X₂
-                if hpY₂ : {p} ⊆ Y₂ then
-                  sorry
-                else
-                  rw [Set.singleton_subset_iff] at hpY₂
-                  have hY₂p : Disjoint Y₂ {p} := Set.disjoint_singleton_right.mpr hpY₂
-                  have ⟨D, hD, hDY₂⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hY₂
-                  have hDp : Disjoint D {p} := Set.disjoint_of_subset_left hDY₂ hY₂p
-                  have hDcf2 : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ D := ⟨hD, hp ▸ hDp⟩
-                  have hDC : D ⊆ C := by
-                    have hDX₂ := hDY₂.trans hY₂X₂
-                    have hDX₁X₂ : D ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_right hDX₂ X₁
-                    have hDX₁X₂p : D ⊆ (X₁ ∪ X₂) \ {p} := Set.subset_diff_singleton hDX₁X₂ fun a => hpY₂ (hDY₂ a)
-                    rw [hCX₁X₂, hpX₁X₂]
-                    exact hDX₁X₂p
-                  specialize hCmin hDcf2.circuit_form hDC
-                  have hCeqD := Set.Subset.antisymm hCmin hDC
+                have ⟨Z₂, hZ₂, hZ₂Y₂⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hY₂
+                have hZ₂X₂ : Z₂ ⊆ X₂ := hZ₂Y₂.trans hY₂X₂
 
-                  have hDinterM₂ : (C ∩ M₁.E).Nonempty := by
-                    rw [hCX₁X₂, hpX₁X₂, Set.union_diff_distrib, Set.union_inter_distrib_right]
-                    if hX₁p : X₁ ⊆ {p} then
-                      have hX₁dep := hX₁dep.superset hX₁p (singleton_inter_subset_left hp)
-                      have t1 : M₁.matroid.Circuit {p} := ⟨
-                        hX₁dep,
-                        by
-                          intro Q hQ hQp
-                          simp only [Set.le_eq_subset] at hQp
-                          rw [Set.Nonempty.subset_singleton_iff hQ.nonempty] at hQp
-                          exact le_of_eq_of_le (id (Eq.symm hQp)) fun ⦃a⦄ a => a
-                      ⟩
-                      have t2 := Assumptions.inter_singleton_not_loop_M₁ hp
-                      rw [Matroid.Loop.iff_circuit] at t2
-                      exfalso
-                      exact t2 t1
-                    else
-                      rw [←Set.diff_nonempty] at hX₁p
-                      have t1 : {p} ⊆ M₁.E := singleton_inter_subset_left hp
-                      have t2 : X₁ ⊆ M₁.E := hX₁dep.subset_ground
-                      have t3 : X₁ \ {p} ⊆ M₁.E := diff_subset_parent t2
-                      have t4 : X₁ \ {p} ∩ M₁.E = X₁ \ {p} := (Set.left_eq_inter.mpr t3).symm
-                      exact Set.Nonempty.inl (t4.symm ▸ hX₁p)
-                  have hDM₂ : Disjoint D M₁.E := hDcf2.disjoint_M₁
-                  rw [hCeqD] at hDinterM₂
-                  exact False.elim (Set.not_nonempty_empty (hDM₂.inter_eq ▸ hDinterM₂))
+                if hpZ₂ : {p} ⊆ Z₂ then
+                  have hpX₁Z₂ : X₁ ∩ Z₂ = {p} := by
+                    apply Set.Subset.antisymm
+                    exact (Set.inter_subset_inter_right X₁ hZ₂X₂).trans hpX₁X₂.subset
+                    exact Set.subset_inter hpX₁ hpZ₂
+                  have hZ₂dp : (Z₂ \ {p}).Nonempty := by
+                    by_contra hZ₂dp
+                    push_neg at hZ₂dp
+                    have hZ₂eqp : Z₂ = {p} := Set.Subset.antisymm (Set.diff_eq_empty.mp hZ₂dp) hpZ₂
+                    exact hpncircM₂ (hZ₂eqp ▸ hZ₂)
+                  have hC'C : ((X₁ ∪ Z₂) \ (X₁ ∩ Z₂)) ⊆ C := by
+                    rw [hpX₁Z₂, hCX₁X₂, hpX₁X₂, Set.union_diff_distrib, Set.union_diff_distrib]
+                    exact Set.union_subset_union (by rfl) (Set.diff_subset_diff_left hZ₂X₂)
+                  have hZ₂sdX₂cf : CircuitForm M₁ M₂ ((X₁ ∪ Z₂) \ (X₁ ∩ Z₂)) := by
+                    constructor
+                    · rw [hpX₁Z₂, Set.union_diff_distrib]
+                      exact Set.Nonempty.inr hZ₂dp
+                    constructor
+                    · exact hC'C.trans hCE
+                    use X₁, Z₂
+                    exact ⟨rfl, hX₁udc, Matroid.UnionDisjointCircuits.circuit hZ₂⟩
+                  specialize hCmin hZ₂sdX₂cf hC'C
+                  have hX₂Z₂ : X₂ ⊆ Z₂ := by
+                    rw [hpX₁Z₂, hCX₁X₂, hpX₁X₂, Set.union_diff_distrib, Set.union_diff_distrib] at hCmin
+                    simp only [Set.le_eq_subset] at hCmin
+                    have hX₂union := (Set.union_subset_iff.mp hCmin).2
+                    have hX₂Z₂dp : X₂ \ {p} ⊆ Z₂ \ {p} := Disjoint.subset_right_of_subset_union hX₂union hdisjX₁X₂dp.symm
+                    rw [Set.diff_subset_iff, Set.union_comm, Set.diff_union_of_subset hpZ₂] at hX₂Z₂dp
+                    exact hX₂Z₂dp
+                  exact hX₂Z₂.trans hZ₂Y₂
+                else
+                  rw [Set.singleton_subset_iff] at hpZ₂
+                  have hZ₂p : Disjoint Z₂ {p} := Set.disjoint_singleton_right.mpr hpZ₂
+                  have hZ₂cf1 : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ Z₂ := ⟨hZ₂, hp ▸ hZ₂p⟩
+                  have hZ₂C : Z₂ ⊆ C := by
+                    have hZ₂X₁X₂ : Z₂ ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_right hZ₂X₂ X₁
+                    have hZ₂X₁X₂p : Z₂ ⊆ (X₁ ∪ X₂) \ {p} := Set.subset_diff_singleton hZ₂X₁X₂ hpZ₂
+                    exact hCX₁X₂ ▸ hpX₁X₂ ▸ hZ₂X₁X₂p
+                  specialize hCmin hZ₂cf1.circuit_form hZ₂C
+                  have hCeqZ₂ := Set.Subset.antisymm hCmin hZ₂C
+                  exact False.elim (Set.not_nonempty_empty (hZ₂cf1.disjoint_M₁.inter_eq ▸ hCeqZ₂ ▸ hCinterM₁))
 
             exact ⟨hp ▸ hC₁eqX₁ ▸ hX₁circ, hp ▸ hC₂eqX₂ ▸ hX₂circ, hCE⟩
 
