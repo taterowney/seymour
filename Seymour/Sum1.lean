@@ -109,3 +109,6 @@ lemma StandardRepresentation.Is1sumOf.isRegular_right (hMsum : M.Is1sumOf M₁ M
     M₂.IsRegular := by
   obtain ⟨B', hB', hBB'⟩ := hMreg
   sorry
+
+#print axioms StandardRepresentation_1sum_isRegular
+#print axioms StandardRepresentation.Is1sumOf.isRegular
