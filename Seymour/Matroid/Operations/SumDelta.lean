@@ -268,8 +268,8 @@ lemma BinaryMatroid.DeltaSum.CircuitForm1.sum2_circuit_pred {α : Type} [Decidab
     cases hX₂udc with
     | inl hX₂dep =>
         have hX₂eq : X₂ = M₁.E ∩ M₂.E := by
-          have hSDsubM₁ := ((symmDiff_def_alt X₁ X₂) ▸ hC'X₁X₂) ▸ (hC'C.trans hC.subset_ground)
-          have hX₂M₁ := M₁.E_eq ▸ (symmDiff_subset_ground_right hSDsubM₁ hX₁udc.subset_ground)
+          have hSDsubM₁ := (symmDiff_eq_alt X₁ X₂ ▸ hC'X₁X₂) ▸ (hC'C.trans hC.subset_ground)
+          have hX₂M₁ := M₁.E_eq ▸ symmDiff_subset_ground_right hSDsubM₁ hX₁udc.subset_ground
           have hX₂sub_inter := Set.subset_inter hX₂M₁ hX₂dep.subset_ground
           have hInterFinite := Set.finite_of_encard_eq_coe hM₁M₂.hInter
           have hEncardInterLeX₂ := le_of_eq_of_le hM₁M₂.hInter (Set.one_le_encard_iff_nonempty.mpr hX₂dep.nonempty)
@@ -367,8 +367,8 @@ lemma BinaryMatroid.DeltaSum.CircuitForm2.sum2_circuit_pred {α : Type} [Decidab
     cases hX₁udc with
     | inl hX₁dep =>
         have hX₁eq : X₁ = M₁.E ∩ M₂.E := by
-          have hSDsubM₂ := ((symmDiff_def_alt X₁ X₂) ▸ hC'X₁X₂) ▸ (hC'C.trans hC.subset_ground)
-          have hX₁M₂ := M₂.E_eq ▸ (symmDiff_subset_ground_left hSDsubM₂ hX₂udc.subset_ground)
+          have hSDsubM₂ := (symmDiff_eq_alt X₁ X₂ ▸ hC'X₁X₂) ▸ (hC'C.trans hC.subset_ground)
+          have hX₁M₂ := M₂.E_eq ▸ symmDiff_subset_ground_left hSDsubM₂ hX₂udc.subset_ground
           have hX₁sub_inter := Set.subset_inter hX₁dep.subset_ground hX₁M₂
           have hInterFinite := Set.finite_of_encard_eq_coe hM₁M₂.hInter
           have hEncardInterLeX₁ := le_of_eq_of_le hM₁M₂.hInter (Set.one_le_encard_iff_nonempty.mpr hX₁dep.nonempty)
@@ -522,7 +522,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.circuit_form {α : Type} [DecidableEq 
   · exact hC.subset_ground
   use C ∩ M₁.E ∪ {p}, C ∩ M₂.E ∪ {p}
   exact ⟨
-    symmDiff_def_alt _ _ ▸ hC.eq_symmDiff,
+    symmDiff_eq_alt _ _ ▸ hC.eq_symmDiff,
     Matroid.UnionDisjointCircuits.circuit hC.to_circuit_M₁,
     Matroid.UnionDisjointCircuits.circuit hC.to_circuit_M₂,
   ⟩
@@ -557,7 +557,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {α : Type} [Decidab
 
     have hX₁C₁ : X₁ ⊆ C ∩ M₁.E ∪ {p} := by
       rw [(Set.diff_union_inter X₁ X₂).symm]
-      rw [←symmDiff_def_alt, symmDiff_def] at hDX₁X₂
+      rw [←symmDiff_eq_alt, symmDiff_def] at hDX₁X₂
       simp only [Set.sup_eq_union] at hDX₁X₂
       have hX₁mX₂C := (hDX₁X₂ ▸ Set.subset_union_left).trans hDC
       have hX₁mX₂M₁ := Set.diff_subset_iff.mpr (Set.subset_union_of_subset_right hX₁udc.subset_ground X₂)
@@ -566,7 +566,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {α : Type} [Decidab
 
     have hX₂C₂ : X₂ ⊆ C ∩ M₂.E ∪ {p} := by
       rw [(Set.diff_union_inter X₂ X₁).symm]
-      rw [←symmDiff_def_alt, symmDiff_def] at hDX₁X₂
+      rw [←symmDiff_eq_alt, symmDiff_def] at hDX₁X₂
       simp only [Set.sup_eq_union] at hDX₁X₂
       have hX₂mX₁C := (hDX₁X₂ ▸ Set.subset_union_right).trans hDC
       have hX₂mX₁M₂ := Set.diff_subset_iff.mpr (Set.subset_union_of_subset_right hX₂udc.subset_ground X₁)
@@ -907,7 +907,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum {α : Type} [DecidableEq α] {M₁ 
             have hX₁C₁ : X₁ ⊆ C ∩ M₁.E ∪ {p} := by
               -- todo: neat, but unused
               rw [(Set.diff_union_inter X₁ X₂).symm]
-              rw [←symmDiff_def_alt, symmDiff_def] at hCX₁X₂
+              rw [←symmDiff_eq_alt, symmDiff_def] at hCX₁X₂
               simp only [Set.sup_eq_union] at hCX₁X₂
               have hX₁mX₂C := hCX₁X₂ ▸ Set.subset_union_left
               have hX₁mX₂M₁ := M₁.E_eq ▸ Set.diff_subset_iff.mpr (Set.subset_union_of_subset_right hX₁udc.subset_ground X₂)
@@ -917,7 +917,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum {α : Type} [DecidableEq α] {M₁ 
             have hX₂C₂ : X₂ ⊆ C ∩ M₂.E ∪ {p} := by
               -- todo: neat, but unused
               rw [(Set.diff_union_inter X₂ X₁).symm]
-              rw [←symmDiff_def_alt, symmDiff_def] at hCX₁X₂
+              rw [←symmDiff_eq_alt, symmDiff_def] at hCX₁X₂
               simp only [Set.sup_eq_union] at hCX₁X₂
               have hX₂mX₁C := hCX₁X₂ ▸ Set.subset_union_right
               have hX₂mX₁M₂ := M₂.E_eq ▸ Set.diff_subset_iff.mpr (Set.subset_union_of_subset_right hX₂udc.subset_ground X₁)
