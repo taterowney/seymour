@@ -19,7 +19,7 @@ def BinaryMatroid.IsRegular {α : Type} [DecidableEq α] (M : BinaryMatroid α) 
 /-- If matroid is represented by a totally unimodular matrix `A` over `ℚ`, then it is represented by `A` over any field `F`. -/
 theorem Matroid.RepresentableTU_RepresentableAnyField {α : Type} {X E : Set α} {A : Matrix X E ℚ}
     (M : Matroid α) (hM : M.IsRepresentedBy A) (hA : A.IsTotallyUnimodular) :
-    ∀ F : Type, ∃ hF : Field F, M.IsRepresentableOver F := by
+    ∀ F : Type, ∀ hF : Field F, M.IsRepresentableOver F := by
   sorry
   -- todo: show that `A` defines the same matroid over `ℚ` and over `F`
   -- key steps:
@@ -32,7 +32,7 @@ theorem BinaryMatroid.isRegularIff1 {α : Type} [DecidableEq α] (M : BinaryMatr
   sorry
 
 theorem BinaryMatroid.isRegularIff2 {α : Type} [DecidableEq α] (M : BinaryMatroid α) :
-    M.IsRegular ↔ ∀ F : Type, ∃ hF : Field F, M.matroid.IsRepresentableOver F := by
+    M.IsRegular ↔ ∀ F : Type, ∀ hF : Field F, M.matroid.IsRepresentableOver F := by
   sorry
 
 theorem BinaryMatroid.isRegularIff3 {α : Type} [DecidableEq α] (M : BinaryMatroid α) :
