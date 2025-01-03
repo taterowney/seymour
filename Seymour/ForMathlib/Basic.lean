@@ -1,6 +1,6 @@
 import Mathlib.Tactic
 
-lemma finset_of_cardinality_between {α β : Type*} [Fintype α] [Fintype β] {n : ℕ}
+lemma finset_of_cardinality_between {α β : Type} [Fintype α] [Fintype β] {n : ℕ}
     (hα : Fintype.card α < n) (hn : n ≤ Fintype.card α + Fintype.card β) :
     ∃ b : Finset β, Fintype.card (α ⊕ b) = n ∧ Nonempty b := by
   have beta' : n - Fintype.card α ≤ Fintype.card β
@@ -19,7 +19,7 @@ lemma finset_of_cardinality_between {α β : Type*} [Fintype α] [Fintype β] {n
     omega
 
 
-variable {R : Type*}
+variable {R : Type}
 
 lemma zero_in_set_range_singType_cast [LinearOrderedRing R] : (0 : R) ∈ Set.range SignType.cast :=
   ⟨0, rfl⟩

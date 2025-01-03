@@ -3,7 +3,7 @@ import Seymour.ForMathlib.Basic
 import Seymour.ForMathlib.FunctionDecompose
 
 
-variable {X₁ X₂ Z : Type*}
+variable {X₁ X₂ Z : Type}
 
 lemma decomposeSum_card_eq [Fintype X₁] [DecidableEq X₁] [Fintype X₂] [DecidableEq X₂] [Fintype Z]
     (f : Z → X₁ ⊕ X₂) :
@@ -12,7 +12,7 @@ lemma decomposeSum_card_eq [Fintype X₁] [DecidableEq X₁] [Fintype X₂] [Dec
   rw [←Fintype.card_sum]
   exact Fintype.card_congr f.decomposeSum.symm
 
-variable {R : Type*}
+variable {R : Type}
 
 lemma Matrix.IsTotallyUnimodular.comp_rows [CommRing R] {A : Matrix X₁ X₂ R}
     (hA : A.IsTotallyUnimodular) (e : Z → X₁) :
@@ -28,7 +28,7 @@ lemma Matrix.IsTotallyUnimodular.comp_cols [CommRing R] {A : Matrix X₁ X₂ R}
   intro k f g
   exact hA k f (e ∘ g)
 
-variable {Y₁ Y₂ : Type*}
+variable {Y₁ Y₂ : Type}
 
 /-- `Matrix.fromBlocks_isTotallyUnimodular` preprocessing. -/
 private lemma Matrix.fromBlocks_submatrix [Zero R] (A₁ : Matrix X₁ Y₁ R) (A₂ : Matrix X₂ Y₂ R)
@@ -65,7 +65,7 @@ In the comments bellow, we will use the following shorthands:
 
 `I` is `Equiv.refl _`
 ` | ` denotes `Equiv.sumCongr`
-`|S|` denotes `Fintype.card S` for any `{S : Type*} [Fintype S]`
+`|S|` denotes `Fintype.card S` for any `{S : Type*} [Fintype S`
 -/
 variable [LinearOrderedCommRing R] [Fintype Z] [DecidableEq Z]
   [Fintype X₁] [DecidableEq X₁] [Fintype Y₁] [DecidableEq Y₁]

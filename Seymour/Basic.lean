@@ -1,4 +1,4 @@
-import Seymour.ForMathlib.Sets
+import Seymour.ForMathlib.SetTheory
 import Seymour.ForMathlib.MatrixTU
 
 /-!
@@ -8,6 +8,9 @@ This file provides notation used in the project and conversions between set-theo
 /-- The finite field on two elements; write `Z2` for "value" type but `Fin 2` for "indexing" type. -/
 abbrev Z2 : Type := ZMod 2
 
+/-- The finite field on three elements; write `Z3` for "value" type but `Fin 3` for "indexing" type. -/
+abbrev Z3 : Type := ZMod 3
+
 /-- Roughly speaking `a ᕃ A` is `A ∪ {a}`. -/
 infixr:66 " ᕃ " => Insert.insert -- TODO (low priority) use `syntax` and write a custom delaborator
 
@@ -15,7 +18,10 @@ infixr:66 " ᕃ " => Insert.insert -- TODO (low priority) use `syntax` and write
 infix:61 " ⫗ " => Disjoint
 
 
-variable {α : Type*}
+variable {α : Type}
+
+lemma nmem_insert {z x : α} {I : Set α} (hx : z ≠ x) (hI : z ∉ I) : z ∉ x ᕃ I := by
+  simp_all [Set.insert]
 
 /-- Given `X ⊆ Y` cast an element of `X` as an element of `Y`. -/
 def HasSubset.Subset.elem {X Y : Set α} (hXY : X ⊆ Y) (x : X.Elem) : Y.Elem :=
@@ -49,7 +55,7 @@ lemma toUnion_toSum {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidabl
   rw [Set.disjoint_right] at hXY
   cases i <;> simp [Subtype.toSum, Sum.toUnion, HasSubset.Subset.elem, hXY]
 
-variable {T₁ T₂ S₁ S₂ : Set α} {β : Type*}
+variable {T₁ T₂ S₁ S₂ : Set α} {β : Type}
   [∀ a, Decidable (a ∈ T₁)]
   [∀ a, Decidable (a ∈ T₂)]
   [∀ a, Decidable (a ∈ S₁)]
