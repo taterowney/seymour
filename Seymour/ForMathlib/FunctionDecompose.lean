@@ -1,12 +1,12 @@
-import Mathlib.Logic.Equiv.Defs
 import Mathlib.Tactic
 
 /-!
 # Function to Sum decomposition
+
 Here we decompose a function `f : α → β₁ ⊕ β₂` into a function and two bijections: `α → α₁ ⊕ α₂ ≃ β₁ ⊕ β₂`
 -/
 
-variable {α β₁ β₂ : Type*}
+variable {α β₁ β₂ : Type}
 
 /-- Given `f : α → β₁ ⊕ β₂` decompose `α` into two preïmages. -/
 @[simp]
@@ -27,6 +27,7 @@ def Function.decomposeSum (f : α → β₁ ⊕ β₂) :
     cases x with
     | inl => aesop
     | inr => aesop
+
 lemma Function.eq_comp_decomposeSum (f : α → β₁ ⊕ β₂) :
     f = Sum.elim (Sum.inl ∘ (·.val.snd)) (Sum.inr ∘ (·.val.snd)) ∘ f.decomposeSum := by
   aesop

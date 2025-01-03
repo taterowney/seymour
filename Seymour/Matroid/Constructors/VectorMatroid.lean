@@ -11,7 +11,7 @@ structure VectorMatroid (α R : Type) [CommRing R] where
   -- however, `Set α` is sufficient to get all vector matroids
 
 /-- Vector matroid corresponding to matrix `A`. -/
-def Matrix.VectorMatroid {α X R : Type} [CommRing R] {E : Set α} (A : Matrix X E R) : VectorMatroid α R :=
+def Matrix.VectorMatroid {α R X : Type} [CommRing R] {E : Set α} (A : Matrix X E R) : VectorMatroid α R :=
   ⟨X, E, A⟩
 
 /-- todo: desc -/
@@ -71,3 +71,6 @@ lemma VectorMatroid.E_eq {α R : Type} [CommRing R]
 @[simp]
 lemma VectorMatroid.indep_eq {α R : Type} [CommRing R]
   (M : VectorMatroid α R) : M.matroid.Indep = M.IndepCols := rfl
+
+
+-- todo: section 6.3 from Oxley: Different matroid representations

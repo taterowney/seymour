@@ -3,7 +3,7 @@ import Mathlib.Data.Matroid.Map
 import Seymour.Matroid.Classes.IsRegular
 import Seymour.Matroid.Classes.IsGraphic
 import Seymour.Matroid.Constructors.ConcreteInstances
-import Seymour.Matroid.Operations.SumDelta
+import Seymour.Matroid.Operations.SumDelta.Basic
 
 /-!
 This file states the "hard" (decomposition) direction of the Seymour decomposition theorem.
@@ -26,5 +26,5 @@ inductive BinaryMatroid.IsGood {α : Type} [DecidableEq α] : BinaryMatroid α �
 | is2sum {M M₁ M₂ : BinaryMatroid α} (hM : M.Is2sumOf M₁ M₂) : M.IsGood
 | is3sum {M M₁ M₂ : BinaryMatroid α} (hM : M.Is3sumOf M₁ M₂) : M.IsGood
 
-theorem hardSeymour {α : Type} [DecidableEq α] {M : BinaryMatroid α} (hM : M.IsRegular) : M.IsGood := by
+theorem hardSeymour {α : Type} [DecidableEq α] {M : BinaryMatroid α} (hM : M.matroid.IsRegular) : M.IsGood := by
   sorry

@@ -9,7 +9,7 @@ This provides lemmas about sets (mostly dealing with disjointness) that are miss
 We do not use out custom notation here because this file is higher than `Basic.lean` in the import hierarchy.
 -/
 
-variable {α : Type*}
+variable {α : Type}
 
 
 section Other
