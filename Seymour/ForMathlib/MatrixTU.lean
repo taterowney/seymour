@@ -252,15 +252,15 @@ lemma Matrix.fromBlocks_isTotallyUnimodular {A₁ : Matrix X₁ Y₁ R} {A₂ : 
     (fromBlocks A₁ 0 0 A₂).IsTotallyUnimodular :=
   fun k f g _ _ =>
     if hxy :
-        Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } =
-        Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } ∧
-        Fintype.card { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd } =
-        Fintype.card { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd }
+      Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } =
+      Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd } ∧
+      Fintype.card { x₂ : Fin k × X₂ // f x₂.fst = Sum.inr x₂.snd } =
+      Fintype.card { y₂ : Fin k × Y₂ // g y₂.fst = Sum.inr y₂.snd }
     then
       Matrix.fromBlocks_submatrix_det_in_set_range_singType_cast_of_isTotallyUnimodular_of_card_eq hA₁ hA₂ hxy
     else if hxy₁ :
-        Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } <
-        Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd }
+      Fintype.card { x₁ : Fin k × X₁ // f x₁.fst = Sum.inl x₁.snd } <
+      Fintype.card { y₁ : Fin k × Y₁ // g y₁.fst = Sum.inl y₁.snd }
     then
       Matrix.fromBlocks_submatrix_det_in_set_range_singType_cast_of_card_lt A₁ A₂ hxy₁
     else by
