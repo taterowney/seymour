@@ -40,11 +40,9 @@ lemma Matroid.Circuit.not_circuit_empty (M : Matroid α) : ¬(M.Circuit ∅) :=
 
 /-- Every circuit is nonempty. -/
 lemma Matroid.Circuit.nonempty {M : Matroid α} {C : Set α} (hC : M.Circuit C) : C.Nonempty := by
-  by_contra hC'
-  push_neg at hC'
+  by_contra! hC'
   rw [hC'] at hC
-  apply Matroid.Circuit.not_circuit_empty at hC
-  exact hC
+  exact hC.not_circuit_empty
 
 /-- Independent set is not a circuit. -/
 lemma Matroid.Circuit.not_circuit_indep {M : Matroid α} {I : Set α} (hI : M.Indep I) : ¬(M.Circuit I) :=
@@ -74,7 +72,7 @@ lemma Matroid.Circuit.indep_ext_dep_has_circuit_w_ext {M : Matroid α} {I : Set 
   obtain ⟨C, hC, hCIa⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hIa
   exact ⟨C, hC, hCIa, by
     by_contra haC
-    exact hC.left.left (hI.subset (Disjoint.subset_right_of_subset_union hCIa (Set.disjoint_singleton_right.mpr haC)))
+    exact hC.left.left (hI.subset ((Set.disjoint_singleton_right.mpr haC).subset_right_of_subset_union hCIa))
   ⟩
 
 /-- If two matroids have the same ground sets and sets of circuits, then they are equal. -/

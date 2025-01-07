@@ -13,7 +13,7 @@ structure VectorMatroid (α R : Type) [Ring R] where
 variable {α R : Type} [Ring R]
 
 /-- Vector matroid corresponding to matrix `A`. -/
-def Matrix.VectorMatroid {X : Type} {E : Set α} (A : Matrix X E R) : VectorMatroid α R :=
+def Matrix.toVectorMatroid {X : Type} {E : Set α} (A : Matrix X E R) : VectorMatroid α R :=
   ⟨X, E, A⟩
 
 /-- todo: desc -/
@@ -22,7 +22,7 @@ def Matrix.IndepCols {X : Type} {E : Set α} (A : Matrix X E R) (S : Set α) : P
 
 /-- A set `S` is independent in `M[A]` iff `S` is a linearly independent subset of columns in `A`. -/
 def VectorMatroid.IndepCols (M : VectorMatroid α R) (S : Set α) : Prop :=
-  ∃ hS : S ⊆ M.E, LinearIndependent R (M.A.submatrix id hS.elem).transpose
+  M.A.IndepCols S
 
 /-- Empty set is independent. -/
 theorem VectorMatroid.IndepCols_empty (M : VectorMatroid α R) :
@@ -31,8 +31,8 @@ theorem VectorMatroid.IndepCols_empty (M : VectorMatroid α R) :
   exact linearIndependent_empty_type
 
 /-- A subset of a linearly independent set of columns is linearly independent. -/
-theorem VectorMatroid.IndepCols_subset (M : VectorMatroid α R)
-    (I J : Set α) (hMJ : M.IndepCols J) (hIJ : I ⊆ J) : M.IndepCols I := by
+theorem VectorMatroid.IndepCols_subset (M : VectorMatroid α R) (I J : Set α) (hMJ : M.IndepCols J) (hIJ : I ⊆ J) :
+    M.IndepCols I := by
   obtain ⟨hJ, hM⟩ := hMJ
   use hIJ.trans hJ
   show LinearIndependent R (fun i j => M.A j (hJ.elem (Subtype.map id hIJ i)))
@@ -63,15 +63,15 @@ def VectorMatroid.IndepMatroid (M : VectorMatroid α R) : IndepMatroid α where
   subset_ground _ := Exists.choose
 
 /-- Vector matroid converted to `Matroid`. -/
-def VectorMatroid.matroid (M : VectorMatroid α R) : Matroid α :=
+def VectorMatroid.toMatroid (M : VectorMatroid α R) : Matroid α :=
   M.IndepMatroid.matroid
 
 @[simp]
-lemma VectorMatroid.E_eq (M : VectorMatroid α R) : M.matroid.E = M.E :=
+lemma VectorMatroid.toMatroid_E (M : VectorMatroid α R) : M.toMatroid.E = M.E :=
   rfl
 
 @[simp]
-lemma VectorMatroid.indep_eq (M : VectorMatroid α R) : M.matroid.Indep = M.IndepCols :=
+lemma VectorMatroid.toMatroid_indep (M : VectorMatroid α R) : M.toMatroid.Indep = M.IndepCols :=
   rfl
 
 

@@ -45,16 +45,16 @@ section CircuitAxioms
 
 /-- Circuit predicate `P` defines independence predicate: independent sets are all non-circuits. -/
 def CircuitPredicate.ToIndepPredicate (P : CircuitPredicate α) (E : Set α) : IndepPredicate α :=
-  fun I => I ⊆ E ∧ ∀ C, C ⊆ I → ¬P C
+  fun I => I ⊆ E ∧ ∀ C, C ⊆ I → ¬(P C)
 
 /-- Axiom (C1): empty set is not a circuit. -/
 def CircuitPredicate.not_circuit_empty (P : CircuitPredicate α) : Prop :=
-  ¬P ∅
+  ¬(P ∅)
 alias CircuitPredicate.axiom_c1 := CircuitPredicate.not_circuit_empty
 
 /-- Axiom (C2): no circuit is a subset of another circuit. -/
 def CircuitPredicate.circuit_not_ssubset (P : CircuitPredicate α) : Prop :=
-  ∀ C C', P C → P C' → ¬C' ⊂ C  -- todo: swap to ¬C ⊂ C'
+  ∀ C C', P C → P C' → ¬(C' ⊂ C)  -- todo: swap to ¬C ⊂ C'
 alias CircuitPredicate.axiom_c2 := CircuitPredicate.circuit_not_ssubset
 
 /-- Axiom (C3) from Bruhn et al. -/

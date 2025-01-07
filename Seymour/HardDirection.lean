@@ -18,13 +18,13 @@ def BinaryMatroid.Is3sumOf {α : Type} [DecidableEq α] (M M₁ M₂ : BinaryMat
   and each of which is isomorphic to a minor of `M`. -/
 inductive BinaryMatroid.IsGood {α : Type} [DecidableEq α] : BinaryMatroid α → Prop
 -- leaf constructors
-| graphic {M : BinaryMatroid α} (hM : M.matroid.IsGraphic) : M.IsGood
-| cographic {M : BinaryMatroid α} (hM : M.matroid.IsCographic) : M.IsGood
-| isomR10 {M : BinaryMatroid α} {e : α ≃ Fin 10} (hM : M.matroid.mapEquiv e = (BinaryMatroid.ofStandardRepr MatroidR10).matroid) : M.IsGood
+| graphic {M : BinaryMatroid α} (hM : M.toMatroid.IsGraphic) : M.IsGood
+| cographic {M : BinaryMatroid α} (hM : M.toMatroid.IsCographic) : M.IsGood
+| isomR10 {M : BinaryMatroid α} {e : α ≃ Fin 10} (hM : M.toMatroid.mapEquiv e = MatroidR10.toBinaryMatroid.toMatroid) : M.IsGood
 -- fork constructors
 | is1sum {M M₁ M₂ : BinaryMatroid α} (hM : M.Is1sumOf M₁ M₂) : M.IsGood
 | is2sum {M M₁ M₂ : BinaryMatroid α} (hM : M.Is2sumOf M₁ M₂) : M.IsGood
 | is3sum {M M₁ M₂ : BinaryMatroid α} (hM : M.Is3sumOf M₁ M₂) : M.IsGood
 
-theorem hardSeymour {α : Type} [DecidableEq α] {M : BinaryMatroid α} (hM : M.matroid.IsRegular) : M.IsGood := by
+theorem hardSeymour {α : Type} [DecidableEq α] {M : BinaryMatroid α} (hM : M.toMatroid.IsRegular) : M.IsGood := by
   sorry

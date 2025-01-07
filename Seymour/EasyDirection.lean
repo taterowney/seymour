@@ -18,7 +18,7 @@ theorem easySeymour.Sum2 {M₁ M₂ : Matroid α} (hM₁ : M₁.IsRegular) (hM�
     (Matroid.TwoSum.matroid Assumptions).IsRegular := by
   sorry
 
-theorem easySeymour.Sum3 [DecidableEq α] {M₁ M₂ : BinaryMatroid α} (hM₁ : M₁.matroid.IsRegular) (hM₂ : M₂.matroid.IsRegular)
+theorem easySeymour.Sum3 [DecidableEq α] {M₁ M₂ : BinaryMatroid α} (hM₁ : M₁.toMatroid.IsRegular) (hM₂ : M₂.toMatroid.IsRegular)
     (Assumptions : BinaryMatroid.DeltaSum.ThreeSumAssumptions M₁ M₂) :
     (BinaryMatroid.DeltaSum.matroid M₁ M₂).IsRegular := by
   sorry

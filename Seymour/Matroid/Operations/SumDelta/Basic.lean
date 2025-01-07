@@ -14,7 +14,7 @@ def BinaryMatroid.DeltaSum.E (M₁ M₂ : BinaryMatroid α) : Set α := (M₁.E 
 /-- Circuits in `M₁ Δ M₂` are nonempty subsets of the ground set of form `X₁ Δ X₂`
     where `X₁`, `X₂` are disjoint unions of circuits in `M₁`, `M₂`, resp -/
 def BinaryMatroid.DeltaSum.CircuitForm.prop (M₁ M₂ : BinaryMatroid α) (C X₁ X₂ : Set α) : Prop :=
-  C = (X₁ ∪ X₂) \ (X₁ ∩ X₂) ∧ M₁.matroid.UnionDisjointCircuits X₁ ∧ M₂.matroid.UnionDisjointCircuits X₂
+  C = (X₁ ∪ X₂) \ (X₁ ∩ X₂) ∧ M₁.toMatroid.IsUnionDisjointCircuits X₁ ∧ M₂.toMatroid.IsUnionDisjointCircuits X₂
 
 /-- A set satisfies circuit form if for some `X₁` and `X₂` it has the form above -/
 def BinaryMatroid.DeltaSum.CircuitForm (M₁ M₂ : BinaryMatroid α) (C : Set α) : Prop :=
@@ -55,11 +55,11 @@ lemma BinaryMatroid.DeltaSum.CircuitForm.prop.eq_symmDiff {M₁ M₂ : BinaryMat
 
 /-- A set of circuit form is related to a union of disjoint circuits of `M₁` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm.prop.udc_left {M₁ M₂ : BinaryMatroid α} {C X₁ X₂ : Set α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm.prop M₁ M₂ C X₁ X₂) : M₁.matroid.UnionDisjointCircuits X₁ := hC.2.1
+    (hC : BinaryMatroid.DeltaSum.CircuitForm.prop M₁ M₂ C X₁ X₂) : M₁.toMatroid.IsUnionDisjointCircuits X₁ := hC.2.1
 
 /-- A set of circuit form is related to a union of disjoint circuits of `M₂` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm.prop.udc_right {M₁ M₂ : BinaryMatroid α} {C X₁ X₂ : Set α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm.prop M₁ M₂ C X₁ X₂) : M₂.matroid.UnionDisjointCircuits X₂ := hC.2.2
+    (hC : BinaryMatroid.DeltaSum.CircuitForm.prop M₁ M₂ C X₁ X₂) : M₂.toMatroid.IsUnionDisjointCircuits X₂ := hC.2.2
 
 end BasicProperties
 

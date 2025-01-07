@@ -28,7 +28,7 @@ section IsCographic
 
 /-- todo: desc -/
 def VectorMatroid.IsCographic {α R : Type} [Ring R] (M : VectorMatroid α R) : Prop :=
-  M.matroid.dual.IsGraphic
+  M.toMatroid.dual.IsGraphic
 
 -- TODO why isn't `VectorMatroid.IsGraphic` defined as well?
 

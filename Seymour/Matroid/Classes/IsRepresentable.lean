@@ -11,11 +11,11 @@ section BasicDefinitions
 
 /-- Matroid `M` is represented by matrix `A` if vector matroid `M[A]` is exactly `M` -/
 def Matroid.IsRepresentedBy {R X : Type} [Ring R] (M : Matroid α) (A : Matrix X M.E R) : Prop :=
-  M = (⟨X, M.E, A⟩ : VectorMatroid α R).matroid
+  M = (⟨X, M.E, A⟩ : VectorMatroid α R).toMatroid
 
 /-- Matroid `M` can be represented over field `F` if it can be represented by some matrix with entries in `F` -/
 def Matroid.IsRepresentableOver (M : Matroid α) (F : Type) [Ring F] : Prop :=
-  ∃ M' : VectorMatroid α F, M'.matroid = M
+  ∃ M' : VectorMatroid α F, M'.toMatroid = M
 
 /-- Matroid `M` is representable if it is representable over some field -/
 def Matroid.IsRepresentable (M : Matroid α) : Prop :=

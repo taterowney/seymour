@@ -19,7 +19,7 @@ structure CircuitMatroid (α : Type) where
   (circuit_not_ssubset : CircuitPred.circuit_not_ssubset)
   /-- Condition (C3) from Bruhn et al. -/
   (circuit_c3 : CircuitPred.axiom_c3)
-  /-- Corresponding family of independent sets satisfies has the maximal subset property -/
+  /-- Corresponding family of independent sets satisfies the maximal subset property -/
   (circuit_maximal : CircuitPred.circuit_maximal E)
   /-- Every circuit is a subset of the ground set -/
   (subset_ground : CircuitPred.subset_ground E) -- question: unused?
@@ -57,7 +57,7 @@ lemma CircuitMatroid.indep_subset_ground (M : CircuitMatroid α) :
   CircuitPredicate.ToIndepPredicate.subset_ground M.CircuitPred M.E
 
 /-- `IndepMatroid` corresponding to circuit matroid. -/
-def CircuitMatroid.IndepMatroid (M : CircuitMatroid α) : IndepMatroid α where
+def CircuitMatroid.toIndepMatroid (M : CircuitMatroid α) : IndepMatroid α where
   E := M.E
   Indep := M.IndepPred
   indep_empty := M.indep_empty
@@ -67,7 +67,7 @@ def CircuitMatroid.IndepMatroid (M : CircuitMatroid α) : IndepMatroid α where
   subset_ground := M.indep_subset_ground
 
 /-- Circuit matroid converted to `Matroid`. -/
-def CircuitMatroid.matroid (M : CircuitMatroid α) : Matroid α := M.IndepMatroid.matroid
+def CircuitMatroid.matroid (M : CircuitMatroid α) : Matroid α := M.toIndepMatroid.matroid
 
 /-- Registered conversion from `CircuitMatroid` to `Matroid`. -/
 instance : Coe (CircuitMatroid α) (Matroid α) where

@@ -2,7 +2,7 @@ import Seymour.Matroid.Constructors.BinaryMatroid
 import Seymour.Matroid.Classes.IsRegular
 
 -- TODO: could be computable
-noncomputable def MatroidR10 : BinaryMatroid.StandardRepr (Fin 10) where
+noncomputable def MatroidR10 : StandardBinRepr (Fin 10) where
   X := (·.val < 5)
   Y := (·.val ≥ 5)
   decmemX _ := Classical.propDecidable _
