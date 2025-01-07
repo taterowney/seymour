@@ -3,6 +3,8 @@ import Seymour.Matroid.Notions.Loop
 import Seymour.Matroid.Notions.Coloop
 
 
+variable {α : Type}
+
 /-- Connectivity relation, aka ξ in Oxley's book -/
 def Matroid.ConnectivityRelation {α : Type} (M : Matroid α) (e f : α) : Prop :=
   (e = f) ∨ (∃ C, C ⊆ M.E ∧ M.Circuit C ∧ e ∈ C ∧ f ∈ C)

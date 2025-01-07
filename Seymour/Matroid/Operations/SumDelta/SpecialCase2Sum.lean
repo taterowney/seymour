@@ -3,10 +3,13 @@ import Seymour.Matroid.Operations.SumDelta.Basic
 import Seymour.Matroid.Operations.SumDelta.CircuitForms
 
 
+variable {α : Type} {M₁ M₂ : BinaryMatroid α}
+
+
 section CircuitFormsProperties
 
 /-- Circuit of form 1 satisfies circuit predicate of `M₁ Δ M₂` if `M₁.E` and `M₂.E` satisfy the 2-sum assumptions -/
-lemma BinaryMatroid.DeltaSum.CircuitForm1.sum2_circuit_pred {α : Type} [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
+lemma BinaryMatroid.DeltaSum.CircuitForm1.sum2_circuit_pred {C : Set α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ C) (hM₁M₂ : Matroid.TwoSum.Assumptions M₁.matroid M₂.matroid) :
     BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C := by
   constructor
@@ -37,7 +40,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm1.sum2_circuit_pred {α : Type} [Decidab
         exact (Matroid.Circuit.circuit_iff_def.mp hC).2 X₁ hX₁dep hC'C
 
 /-- Circuit of form 2 satisfies circuit predicate of `M₁ Δ M₂` if `M₁.E` and `M₂.E` satisfy the 2-sum assumptions -/
-lemma BinaryMatroid.DeltaSum.CircuitForm2.sum2_circuit_pred {α : Type} [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
+lemma BinaryMatroid.DeltaSum.CircuitForm2.sum2_circuit_pred {C : Set α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ C) (hM₁M₂ : Matroid.TwoSum.Assumptions M₁.matroid M₂.matroid) :
     BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C := by
   constructor
@@ -68,7 +71,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm2.sum2_circuit_pred {α : Type} [Decidab
         exact (Matroid.Circuit.circuit_iff_def.mp hC).2 X₂ hX₂dep hC'C
 
 /-- Under 2-sum assumptions, `{p}` in definition of circuits of form 3 is exactly `M₁.E ∩ M₂.E` -/
-lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_singleton_eq {α : Type} [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
+lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_singleton_eq {C : Set α}
     {p : α} (hC : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) (hM₁M₂ : Matroid.TwoSum.Assumptions M₁.matroid M₂.matroid) :
     M₁.E ∩ M₂.E = {p} := by
   have hInterCard := VectorMatroid.E_eq M₁ ▸ VectorMatroid.E_eq M₂ ▸ hM₁M₂.hInter
@@ -77,7 +80,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_singleton_eq {α : Type} [Decidab
   exact (Set.Finite.eq_of_subset_of_encard_le hInterFinite hC.singleton_subset_inter hInterCardLeSingleton).symm
 
 /-- Circuit of form 3 satisfies circuit predicate of `M₁ Δ M₂` if `M₁.E` and `M₂.E` satisfy the 2-sum assumptions -/
-lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {α : Type} [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
+lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {C : Set α}
     {p : α} (hC : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) (hM₁M₂ : Matroid.TwoSum.Assumptions M₁.matroid M₂.matroid) :
     BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C := by
   have hp := hC.sum2_singleton_eq hM₁M₂
@@ -149,7 +152,7 @@ end CircuitFormsProperties
 section Equivalence
 
 /-- If `M₁` and `M₂` satisfy the 2-sum assumptions, then `M₁ Δ M₂ = M₁ ⊕₂ M₂` -/
-lemma BinaryMatroid.DeltaSum.SpecialCase2Sum {α : Type} [DecidableEq α] {M₁ M₂ : BinaryMatroid α}
+lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
     (Assumptions : Matroid.TwoSum.Assumptions M₁.matroid M₂.matroid) :
     Matroid.TwoSum.matroid Assumptions = BinaryMatroid.DeltaSum.matroid M₁ M₂ := by
   rw [Matroid.eq_iff_eq_all_circuits]

@@ -24,13 +24,16 @@ structure BinaryMatroid.StandardRepr (α : Type) [DecidableEq α] where
 attribute [instance] BinaryMatroid.StandardRepr.decmemX
 attribute [instance] BinaryMatroid.StandardRepr.decmemY
 
+
+variable {α : Type}
+
 /-- Maps a matrix with columns indexed by a sum of two sets to a matrix with columns indexed by union of these sets. -/
-def Matrix.GlueColumns {α : Type} {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidable (a ∈ Y)]
+def Matrix.GlueColumns {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidable (a ∈ Y)]
     (M : Matrix X (X ⊕ Y) Z2) : Matrix X (X ∪ Y).Elem Z2 :=
   Matrix.of fun i j => M i j.toSum
 
 /-- Binary matroid constructed using standard representation. -/
-def BinaryMatroid.ofStandardRepr {α : Type} [DecidableEq α] (R : BinaryMatroid.StandardRepr α) : BinaryMatroid α :=
+def BinaryMatroid.ofStandardRepr [DecidableEq α] (R : BinaryMatroid.StandardRepr α) : BinaryMatroid α :=
   ⟨R.X, R.X ∪ R.Y, (Matrix.fromCols 1 R.B).GlueColumns⟩
 
 -- question: introduce API and prove useful properties for standard representation?
@@ -40,17 +43,17 @@ section API
 
 /-- Ground set of a binary matroid is union of row and column index sets of its standard matrix representation. -/
 @[simp]
-lemma BinaryMatroid.StandardRepr.E_eq {α : Type} [DecidableEq α] (R : BinaryMatroid.StandardRepr α) :
+lemma BinaryMatroid.StandardRepr.E_eq [DecidableEq α] (R : BinaryMatroid.StandardRepr α) :
   (BinaryMatroid.ofStandardRepr R).matroid.E = R.X ∪ R.Y := rfl
 
 /-- Full representation matrix of binary matroid is `[I | B]`. -/
 @[simp]
-lemma BinaryMatroid.StandardRepr.A_eq {α : Type} [DecidableEq α] (R : BinaryMatroid.StandardRepr α) :
+lemma BinaryMatroid.StandardRepr.A_eq [DecidableEq α] (R : BinaryMatroid.StandardRepr α) :
   (BinaryMatroid.ofStandardRepr R).A = (Matrix.fromCols 1 R.B).GlueColumns := rfl
 
 /-- Set is independent in binary matroid iff corresponding set of columns of `[I | B]` is linearly independent over `Z2`. -/
 @[simp]
-lemma BinaryMatroid.StandardRepr.indep_eq {α : Type} [DecidableEq α] (R : BinaryMatroid.StandardRepr α) :
+lemma BinaryMatroid.StandardRepr.indep_eq [DecidableEq α] (R : BinaryMatroid.StandardRepr α) :
   (BinaryMatroid.ofStandardRepr R).matroid.Indep = (BinaryMatroid.ofStandardRepr R).IndepCols := rfl
 
 end API

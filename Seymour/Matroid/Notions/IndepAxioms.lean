@@ -4,32 +4,35 @@ import Mathlib.Data.Matroid.Basic
 /-- Independence predicate, defines which sets are independent. -/
 abbrev IndepPredicate (α : Type) := Set α → Prop
 
+
+variable {α : Type}
+
 /-- Independence predicate of matroid. -/
-def Matroid.IndepPredicate {α : Type} (M : Matroid α) : IndepPredicate α := M.Indep
+def Matroid.IndepPredicate (M : Matroid α) : IndepPredicate α := M.Indep
 
 
 section IndepAxioms
 
 /-- Axiom (I1): empty set is independent. -/
-def IndepPredicate.indep_empty {α : Type} (P : IndepPredicate α) : Prop := P ∅
+def IndepPredicate.indep_empty (P : IndepPredicate α) : Prop := P ∅
 alias IndepPredicate.axiom_i1 := IndepPredicate.indep_empty
 
 /-- Axiom (I2): subset of independent set is independent. -/
-def IndepPredicate.indep_subset {α : Type} (P : IndepPredicate α) : Prop := ∀ I J, P J → I ⊆ J → P I
+def IndepPredicate.indep_subset (P : IndepPredicate α) : Prop := ∀ I J, P J → I ⊆ J → P I
 alias IndepPredicate.axiom_i2 := IndepPredicate.indep_subset
 
 /-- Axiom (I3): augmentation property. -/
-def IndepPredicate.indep_aug {α : Type} (P : IndepPredicate α) : Prop :=
+def IndepPredicate.indep_aug (P : IndepPredicate α) : Prop :=
   ∀ I B, P I → ¬Maximal P I → Maximal P B → ∃ x ∈ B \ I, P (insert x I)
 alias IndepPredicate.axiom_i3 := IndepPredicate.indep_aug
 
 /-- Axiom (IM): set of all independent sets has the maximal subset property. -/
-def IndepPredicate.indep_maximal {α : Type} (P : IndepPredicate α) (E : Set α) : Prop :=
+def IndepPredicate.indep_maximal (P : IndepPredicate α) (E : Set α) : Prop :=
   ∀ X, X ⊆ E → Matroid.ExistsMaximalSubsetProperty P X
 alias IndepPredicate.axiom_im := IndepPredicate.indep_maximal
 
 /-- Every independent set is a subset of the ground set. -/
-def IndepPredicate.subset_ground {α : Type} (P : IndepPredicate α) (E : Set α) : Prop := ∀ C, P C → C ⊆ E
+def IndepPredicate.subset_ground (P : IndepPredicate α) (E : Set α) : Prop := ∀ C, P C → C ⊆ E
 alias IndepPredicate.axiom_ce := IndepPredicate.subset_ground
 
 end IndepAxioms
@@ -38,22 +41,22 @@ end IndepAxioms
 section MatroidIndepAxioms
 
 /-- Independence predicate of matroid satisfies (I1): empty set is independent. -/
-lemma Matroid.indep_empty {α : Type} (M : Matroid α) :
+lemma Matroid.indep_empty (M : Matroid α) :
     M.IndepPredicate.indep_empty :=
   M.empty_indep
 
 /-- Independence predicate of matroid satisfies (I2): subset of independent set is independent. -/
-lemma Matroid.indep_subset {α : Type} (M : Matroid α) :
+lemma Matroid.indep_subset (M : Matroid α) :
     M.IndepPredicate.indep_subset :=
   fun _ _ => Matroid.Indep.subset
 
 /-- Independence predicate of matroid satisfies (I3): augmentation property. -/
-lemma Matroid.indep_aug {α : Type} (M : Matroid α) :
+lemma Matroid.indep_aug (M : Matroid α) :
     M.IndepPredicate.indep_aug :=
   fun _ _ hI hInmax hI'max => Indep.exists_insert_of_not_maximal M hI hInmax hI'max
 
 /-- (Alternative proof.) Independence predicate of matroid satisfies (I3): augmentation property. -/
-lemma Matroid.indep_aug_alt {α : Type} (M : Matroid α) :
+lemma Matroid.indep_aug_alt (M : Matroid α) :
     M.IndepPredicate.indep_aug := by
   -- Follows part of proof from Theorem 4.1 (i) from Bruhn et al.
   intro I I' hI hInmax hI'max
@@ -83,12 +86,12 @@ lemma Matroid.indep_aug_alt {α : Type} (M : Matroid α) :
     exact False.elim (hInmax (hIeqB ▸ hBmax))
 
 /-- Independence predicate of matroid satisfies (IM): set of all independent sets has the maximal subset property. -/
-lemma Matroid.indep_maximal {α : Type} (M : Matroid α) :
+lemma Matroid.indep_maximal (M : Matroid α) :
     M.IndepPredicate.indep_maximal M.E :=
   M.maximality
 
 /-- Every independent set is a subset of the ground set. -/
-lemma Matroid.indep_subset_ground {α : Type} (M : Matroid α) :
+lemma Matroid.indep_subset_ground (M : Matroid α) :
     M.IndepPredicate.subset_ground M.E :=
   fun _ => Matroid.Indep.subset_ground
 
