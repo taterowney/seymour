@@ -62,8 +62,9 @@ end Characterizations
 
 section Corollaries
 
-lemma Matroid.IsRegular.Z2_representation_regular {α X : Type} {M : Matroid α} {A : Matrix X M.E Z2}
-    (h : M.IsRepresentedBy A) : A.IsRegular := by
+lemma Matroid.IsRegular.Z2_representation_regular {X : Type} {M : Matroid α} {A : Matrix X M.E Z2}
+    (hMA : M.IsRepresentedBy A) :
+    A.IsRegular := by
   sorry
 
 -- note: if M is regular, every minor of M is regular. however, matroid minors are not currently in mathlib

@@ -68,9 +68,6 @@ lemma CircuitMatroid.Maximal_iff (M : CircuitMatroid α) (B : Set α) :
   ⟨fun hB => ⟨hB.left.left, fun _ hA hBA => hB.right ⟨hA, hA.left⟩ hBA⟩,
    fun hB => ⟨⟨hB.left, hB.left.left⟩, fun _ hA => hB.right hA.left⟩⟩
 
---lemma nmem_insert {z x : α} {I : Set α} (hx : z ≠ x) (hI : z ∉ I) : z ∉ x ᕃ I := by
---  simp_all [Set.insert]
-
 theorem CircuitMatroid.isIndep_aug {I I' : Set α}
     (M : CircuitMatroid α) (hI : M.isIndep I) (hMI : ¬Maximal M.isIndep I) (hMI' : Maximal M.isIndep I') :
     ∃ x ∈ I' \ I, M.isIndep (x ᕃ I) := by

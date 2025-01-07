@@ -27,8 +27,7 @@ lemma Matroid.Circuit.indep_ssub {M : Matroid α} {C C' : Set α} (hC : M.Circui
   have hC'subC : C' ⊆ C := subset_of_ssubset hC'
   have hCsubE : C ⊆ M.E := hC.subset_ground
   have hC'subE : C' ⊆ M.E := hC'subC.trans hCsubE
-  have hCmin_dep := (Matroid.Circuit.circuit_iff_def.mpr hC).2
-  exact hC'.ne.symm ((hCmin_dep (Matroid.dep_of_not_indep contr hC'subE) hC'subC).antisymm hC'subC)
+  exact hC'.ne.symm ((hC.right (Matroid.dep_of_not_indep contr hC'subE) hC'subC).antisymm hC'subC)
 
 /-- Deleting one element from a circuit produces an independent set. -/
 lemma Matroid.Circuit.indep_diff_singleton {M : Matroid α} {C : Set α} {a : α} (hC : M.Circuit C) (ha : a ∈ C) :
@@ -87,4 +86,4 @@ theorem Matroid.eq_if_eq_all_circuits {M₁ M₂ : Matroid α}
 /-- Two matroids are equal iff they have the same ground sets and sets of circuits. -/
 theorem Matroid.eq_iff_eq_all_circuits {M₁ M₂ : Matroid α} :
     M₁ = M₂ ↔ M₁.E = M₂.E ∧ ∀ C ⊆ M₁.E, (M₁.Circuit C ↔ M₂.Circuit C) :=
-  ⟨fun _ => by aesop, fun hM => Matroid.eq_if_eq_all_circuits hM.left hM.right⟩
+  ⟨by aesop, fun hM => Matroid.eq_if_eq_all_circuits hM.left hM.right⟩

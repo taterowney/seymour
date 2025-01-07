@@ -108,8 +108,8 @@ lemma Matroid.disjointSum_circuit_iff (M N : Matroid α) (h : Disjoint M.E N.E) 
         constructor
         · exact hCMeq ▸ hCM
         · intro D hD hDC
-          have hDM : D ⊆ D ∩ M.E := Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCMeq.symm))
-          have hDM : D = D ∩ M.E := Set.Subset.antisymm hDM Set.inter_subset_left
+          have hDM : D = D ∩ M.E :=
+            (Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCMeq.symm))).antisymm Set.inter_subset_left
           have hDdep : (M.disjointSum N h).Dep D := Matroid.disjointSum_dep_iff.mpr ⟨
             Or.inl (hDM ▸ hD),
             hDC.trans hCE
@@ -127,8 +127,8 @@ lemma Matroid.disjointSum_circuit_iff (M N : Matroid α) (h : Disjoint M.E N.E) 
         constructor
         · exact hCMeq ▸ hCN
         · intro D hD hDC
-          have hDN : D ⊆ D ∩ N.E := Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCMeq.symm))
-          have hDN : D = D ∩ N.E := Set.Subset.antisymm hDN Set.inter_subset_left
+          have hDN : D = D ∩ N.E :=
+            (Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCMeq.symm))).antisymm Set.inter_subset_left
           have hDdep : (M.disjointSum N h).Dep D := Matroid.disjointSum_dep_iff.mpr ⟨
             Or.inr (hDN ▸ hD),
             hDC.trans hCE
@@ -144,8 +144,8 @@ lemma Matroid.disjointSum_circuit_iff (M N : Matroid α) (h : Disjoint M.E N.E) 
         · intro D hD hDC
           rw [Matroid.disjointSum_dep_iff] at hD
           have ⟨hD, hDE⟩ := hD
-          have hDMeq : D ⊆ D ∩ M.E := Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCMeq.symm))
-          have hDMeq : D = D ∩ M.E := Set.Subset.antisymm hDMeq Set.inter_subset_left
+          have hDMeq : D = D ∩ M.E :=
+            (Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCMeq.symm))).antisymm Set.inter_subset_left
           have hDNeq : D ∩ N.E = ∅ := Disjoint.inter_eq (Set.disjoint_of_subset_left (Set.inter_eq_left.mp hDMeq.symm) h)
           rw [←hDMeq, hDNeq] at hD
           cases hD with

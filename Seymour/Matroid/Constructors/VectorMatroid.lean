@@ -60,7 +60,7 @@ def VectorMatroid.IndepMatroid (M : VectorMatroid α R) : IndepMatroid α where
   indep_subset := M.IndepCols_subset
   indep_aug := M.IndepCols_aug
   indep_maximal S _ := M.IndepCols_maximal S
-  subset_ground _ := fun ⟨h, _⟩ => h
+  subset_ground _ := Exists.choose
 
 /-- Vector matroid converted to `Matroid`. -/
 def VectorMatroid.matroid (M : VectorMatroid α R) : Matroid α :=

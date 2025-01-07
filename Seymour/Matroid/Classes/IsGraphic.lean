@@ -22,6 +22,9 @@ def Matroid.IsGraphic {α : Type} (M : Matroid α) : Prop :=
 
 -- todo: if M is graphic, M is regular
 
+end IsGraphic
+
+
 section IsCographic
 
 /-- todo: desc -/
@@ -35,6 +38,8 @@ def Matroid.IsCographic {α : Type} (M : Matroid α) : Prop :=
   M.dual.IsGraphic
 
 -- todo: if M is cographic, M is regular
+
+end IsCographic
 
 -- /-- todo: desc -/
 -- def Matroid.IsPlanar {α : Type} (M : Matroid α) : Prop := M.IsGraphic ∧ M.IsCoraphic
