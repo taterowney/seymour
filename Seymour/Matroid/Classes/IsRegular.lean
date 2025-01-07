@@ -10,6 +10,7 @@ def Matrix.IsRegular {X Y : Type} (A : Matrix X Y Z2) : Prop :=
   ∃ A' : Matrix X Y ℚ, -- signed version of `A`
     A'.IsTotallyUnimodular ∧ -- signed matrix is TU
     ∀ i j, if A i j = 0 then A' i j = 0 else A' i j = 1 ∨ A' i j = -1 -- `|A'| = |A|`
+-- TODO rename because "regular matrix" already has different meaning(s): https://en.wikipedia.org/wiki/Regular_matrix
 
 /-- Matroid `M` is regular iff it can be represented by a matrix that has a TU signing. -/
 def Matroid.IsRegular {α : Type} (M : Matroid α) : Prop :=
@@ -49,7 +50,7 @@ lemma Matroid.IsRegular.iff_representable_over_Z2_Z3 {M : Matroid α} :
 
 lemma Matroid.IsRegular.iff_representable_over_Z3 {M : Matroid α} :
     M.IsRegular ↔ M.IsRepresentableOver Z3 ∧
-    (∀ X : Type, ∀ A : Matrix X M.E Z3, M.IsRepresentedBy A → A.IsTotallyUnimodular) := by
+      (∀ X : Type, ∀ A : Matrix X M.E Z3, M.IsRepresentedBy A → A.IsTotallyUnimodular) := by
   sorry
 
 lemma Matroid.IsRegular.iff_representable_over_Z2_F {M : Matroid α} : -- ??

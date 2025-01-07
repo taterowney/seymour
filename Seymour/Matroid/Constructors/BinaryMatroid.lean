@@ -30,7 +30,8 @@ variable {α : Type}
 /-- Maps a matrix with columns indexed by a sum of two sets to a matrix with columns indexed by union of these sets. -/
 def Matrix.GlueColumns {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidable (a ∈ Y)]
     (M : Matrix X (X ⊕ Y) Z2) : Matrix X (X ∪ Y).Elem Z2 :=
-  Matrix.of fun i j => M i j.toSum
+  Matrix.of (fun i j => M i j.toSum)
+-- TODO generalize and move
 
 /-- Binary matroid constructed using standard representation. -/
 def BinaryMatroid.ofStandardRepr [DecidableEq α] (R : BinaryMatroid.StandardRepr α) : BinaryMatroid α :=

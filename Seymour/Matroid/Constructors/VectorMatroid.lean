@@ -20,7 +20,7 @@ def Matrix.VectorMatroid {X : Type} {E : Set α} (A : Matrix X E R) : VectorMatr
 def Matrix.IndepCols {X : Type} {E : Set α} (A : Matrix X E R) (S : Set α) : Prop :=
   ∃ hS : S ⊆ E, LinearIndependent R (A.submatrix id hS.elem).transpose
 
-/-- A set `S` is independent in `M[A]` iff `S` is a subset of linearly independent columns in `A`. -/
+/-- A set `S` is independent in `M[A]` iff `S` is a linearly independent subset of columns in `A`. -/
 def VectorMatroid.IndepCols (M : VectorMatroid α R) (S : Set α) : Prop :=
   ∃ hS : S ⊆ M.E, LinearIndependent R (M.A.submatrix id hS.elem).transpose
 
