@@ -6,35 +6,17 @@ variable {α : Type}
 
 section Basic
 
-/-- Nonempty union of disjoint circuits of `M₁` satisfies circuit form of `M₁ Δ M₂  -/
+/-- Nonempty union of disjoint circuits of `M₁` satisfies circuit form of `M₁ Δ M₂`  -/
 lemma BinaryMatroid.DeltaSum.CircuitForm_left {M₁ M₂ : BinaryMatroid α} {C : Set α}
-    (hCnempty : C.Nonempty) (hCE : C ⊆ BinaryMatroid.DeltaSum.E M₁ M₂) (hC : M₁.matroid.UnionDisjointCircuits C) :
-    BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C := by
-  constructor
-  · exact hCnempty
-  constructor
-  · exact hCE
-  use C, ∅
-  exact ⟨
-    (by rw [Set.union_empty, Set.inter_empty, Set.diff_empty]),
-    hC,
-    Matroid.UnionDisjointCircuits.empty M₂.matroid,
-  ⟩
+    (hC : C.Nonempty) (hCE : C ⊆ BinaryMatroid.DeltaSum.E M₁ M₂) (hCM₁ : M₁.matroid.UnionDisjointCircuits C) :
+    BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C :=
+  ⟨hC, hCE, C, ∅, by simp, hCM₁, Matroid.UnionDisjointCircuits.empty M₂.matroid⟩
 
-/-- Nonempty union of disjoint circuits of `M₂` satisfies circuit form of `M₁ Δ M₂  -/
+/-- Nonempty union of disjoint circuits of `M₂` satisfies circuit form of `M₁ Δ M₂`  -/
 lemma BinaryMatroid.DeltaSum.CircuitForm_right {M₁ M₂ : BinaryMatroid α} {C : Set α}
-    (hCnempty : C.Nonempty) (hCE : C ⊆ BinaryMatroid.DeltaSum.E M₁ M₂) (hC : M₂.matroid.UnionDisjointCircuits C) :
-    BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C := by
-  constructor
-  · exact hCnempty
-  constructor
-  · exact hCE
-  use ∅, C
-  exact ⟨
-    (by rw [Set.empty_union, Set.empty_inter, Set.diff_empty]),
-    Matroid.UnionDisjointCircuits.empty M₁.matroid,
-    hC,
-  ⟩
+    (hC : C.Nonempty) (hCE : C ⊆ BinaryMatroid.DeltaSum.E M₁ M₂) (hCM₂ : M₂.matroid.UnionDisjointCircuits C) :
+    BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C :=
+  ⟨hC, hCE, ∅, C, by simp, Matroid.UnionDisjointCircuits.empty M₁.matroid, hCM₂⟩
 
 
 section CircuitForm1
@@ -47,13 +29,13 @@ def BinaryMatroid.DeltaSum.CircuitForm1 (M₁ M₂ : BinaryMatroid α) (C : Set 
 lemma BinaryMatroid.DeltaSum.CircuitForm1.circuit_M₁ {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ C) :
     M₁.matroid.Circuit C :=
-  hC.1
+  hC.left
 
 /-- Circuit of form 1 is disjoint with `M₁.E ∩ M₂.E` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm1.disjoint_inter {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ C) :
     Disjoint C (M₁.E ∩ M₂.E) :=
-  hC.2
+  hC.right
 
 /-- Circuit of form 1 lies in `M₁.E ∪ M₂.E` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm1.subset_union {M₁ M₂ : BinaryMatroid α} {C : Set α}
@@ -86,24 +68,21 @@ lemma BinaryMatroid.DeltaSum.CircuitForm1.disjoint_M₂ {M₁ M₂ : BinaryMatro
 /-- Circuit of form 1 satisfies circuit form of `M₁ Δ M₂` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm1.circuit_form {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ C) :
-    BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C := by
-  exact BinaryMatroid.DeltaSum.CircuitForm_left hC.circuit_M₁.nonempty hC.subset_ground
+    BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C :=
+  BinaryMatroid.DeltaSum.CircuitForm_left hC.circuit_M₁.nonempty hC.subset_ground
     (Matroid.UnionDisjointCircuits.circuit hC.circuit_M₁)
 
 /-- If `C` satisfies circuit predicate and is a union of disjoint circuits of `M₁`, then `C` is a circuit of `M₁` -/
 lemma BinaryMatroid.DeltaSum.CircuitPred_udc_M₁ {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hCpred : BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C) (hCudc : M₁.matroid.UnionDisjointCircuits C) :
-    M₁.matroid.Circuit C := by
-  have ⟨⟨hCnempty, hCE, _⟩, hCmin⟩ := hCpred
-  constructor
-  · exact Matroid.UnionDisjointCircuits.nonempty_dep M₁.matroid C hCudc hCnempty
-  · intro D hD hDC
-    have ⟨D', hD', hD'D⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hD
-    have hD'form : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ D' := ⟨
-      hD', (Set.subset_diff.mp ((hD'D.trans hDC).trans hCE)).2
-    ⟩
-    specialize hCmin hD'form.circuit_form (hD'D.trans hDC)
-    exact hCmin.trans hD'D
+    M₁.matroid.Circuit C :=
+  have ⟨⟨hC, hCE, _⟩, hCmin⟩ := hCpred
+  ⟨Matroid.UnionDisjointCircuits.nonempty_dep M₁.matroid C hCudc hC, fun D hD hDC =>
+    have ⟨D', hD', hDD'⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hD
+    (hCmin
+        (BinaryMatroid.DeltaSum.CircuitForm1.circuit_form ⟨hD', (Set.subset_diff.mp ((hDD'.trans hDC).trans hCE)).right⟩)
+        (hDD'.trans hDC)
+      ).trans hDD'⟩
 
 
 section CircuitForm2
@@ -116,13 +95,13 @@ def BinaryMatroid.DeltaSum.CircuitForm2 (M₁ M₂ : BinaryMatroid α) (C : Set 
 lemma BinaryMatroid.DeltaSum.CircuitForm2.circuit_M₂ {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ C) :
     M₂.matroid.Circuit C :=
-  hC.1
+  hC.left
 
 /-- Circuit of form 2 is disjoint with `M₁.E ∩ M₂.E` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm2.disjoint_inter {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ C) :
     Disjoint C (M₁.E ∩ M₂.E) :=
-  hC.2
+  hC.right
 
 /-- Circuit of form 2 lies in `M₁.E ∪ M₂.E` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm2.subset_union {M₁ M₂ : BinaryMatroid α} {C : Set α}
@@ -154,24 +133,21 @@ lemma BinaryMatroid.DeltaSum.CircuitForm2.disjoint_M₁ {M₁ M₂ : BinaryMatro
 
 /-- Circuit of form 2 satisfies circuit form of `M₁ Δ M₂` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm2.circuit_form {M₁ M₂ : BinaryMatroid α} {C : Set α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ C) : BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C := by
-  exact BinaryMatroid.DeltaSum.CircuitForm_right hC.circuit_M₂.nonempty hC.subset_ground
+    (hC : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ C) : BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C :=
+  BinaryMatroid.DeltaSum.CircuitForm_right hC.circuit_M₂.nonempty hC.subset_ground
     (Matroid.UnionDisjointCircuits.circuit hC.circuit_M₂)
 
 /-- If `C` satisfies circuit predicate and is a union of disjoint circuits of `M₂`, then `C` is a circuit of `M₂` -/
 lemma BinaryMatroid.DeltaSum.CircuitPred_udc_M₂ {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hCpred : BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C) (hCudc : M₂.matroid.UnionDisjointCircuits C) :
-    M₂.matroid.Circuit C := by
+    M₂.matroid.Circuit C :=
   have ⟨⟨hCnempty, hCE, _⟩, hCmin⟩ := hCpred
-  constructor
-  · exact Matroid.UnionDisjointCircuits.nonempty_dep M₂.matroid C hCudc hCnempty
-  · intro D hD hDC
+  ⟨Matroid.UnionDisjointCircuits.nonempty_dep M₂.matroid C hCudc hCnempty, fun D hD hDC =>
     have ⟨D', hD', hD'D⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hD
-    have hD'form : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ D' := ⟨
-      hD', (Set.subset_diff.mp ((hD'D.trans hDC).trans hCE)).2
-    ⟩
-    specialize hCmin hD'form.circuit_form (hD'D.trans hDC)
-    exact hCmin.trans hD'D
+    (hCmin
+        (BinaryMatroid.DeltaSum.CircuitForm2.circuit_form ⟨hD', (Set.subset_diff.mp ((hD'D.trans hDC).trans hCE)).right⟩)
+        (hD'D.trans hDC)
+      ).trans hD'D⟩
 
 
 section CircuitForm3
@@ -280,8 +256,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.disjoint_inter_M₂_inter_M₁ {M₁ M
 lemma BinaryMatroid.DeltaSum.CircuitForm3.inter_M₁_nonempty {M₁ M₂ : BinaryMatroid α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) (hp : ¬M₁.matroid.Circuit {p}) :
     (C ∩ M₁.E).Nonempty := by
-  by_contra hCM₁empty
-  push_neg at hCM₁empty
+  by_contra! hCM₁empty
   have hCM₁ := hC.to_circuit_M₁
   rw [hCM₁empty, Set.empty_union] at hCM₁
   exact hp hCM₁
@@ -290,8 +265,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.inter_M₁_nonempty {M₁ M₂ : Binar
 lemma BinaryMatroid.DeltaSum.CircuitForm3.inter_M₂_nonempty {M₁ M₂ : BinaryMatroid α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) (hp : ¬M₂.matroid.Circuit {p}) :
     (C ∩ M₂.E).Nonempty := by
-  by_contra hCM₂empty
-  push_neg at hCM₂empty
+  by_contra! hCM₂empty
   have hCM₂ := hC.to_circuit_M₂
   rw [hCM₂empty, Set.empty_union] at hCM₂
   exact hp hCM₂
@@ -311,28 +285,23 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.disjoint_inter_M₂_p {M₁ M₂ : Bin
 lemma BinaryMatroid.DeltaSum.CircuitForm3.eq_symmDiff {M₁ M₂ : BinaryMatroid α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) :
     C = symmDiff ((C ∩ M₁.E) ∪ {p}) ((C ∩ M₂.E) ∪ {p}) := by
-  rw [symmDiff_def,
-      Set.union_diff_distrib, ←Set.diff_diff,
-      hC.disjoint_inter_M₁_inter_M₂.sdiff_eq_left,
-      hC.disjoint_inter_M₁_p.sdiff_eq_left,
-      Set.diff_eq_empty.mpr Set.subset_union_right, Set.union_empty,
-      Set.union_diff_distrib, ←Set.diff_diff,
-      hC.disjoint_inter_M₂_inter_M₁.sdiff_eq_left,
-      hC.disjoint_inter_M₂_p.sdiff_eq_left,
-      Set.diff_eq_empty.mpr Set.subset_union_right, Set.union_empty]
+  rw [
+    symmDiff_def,
+    Set.union_diff_distrib, ←Set.diff_diff,
+    hC.disjoint_inter_M₁_inter_M₂.sdiff_eq_left,
+    hC.disjoint_inter_M₁_p.sdiff_eq_left,
+    Set.diff_eq_empty.mpr Set.subset_union_right, Set.union_empty,
+    Set.union_diff_distrib, ←Set.diff_diff,
+    hC.disjoint_inter_M₂_inter_M₁.sdiff_eq_left,
+    hC.disjoint_inter_M₂_p.sdiff_eq_left,
+    Set.diff_eq_empty.mpr Set.subset_union_right, Set.union_empty]
   exact (sub_parts_eq hC.subset_union).symm
 
 /-- Circuit of form 3 satisfies circuit form of `M₁ Δ M₂` provided it is nonempty -/
 lemma BinaryMatroid.DeltaSum.CircuitForm3.circuit_form {M₁ M₂ : BinaryMatroid α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) (hCnempty : C.Nonempty) :
-    BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C := by
-  constructor
-  · exact hCnempty
-  constructor
-  · exact hC.subset_ground
-  use C ∩ M₁.E ∪ {p}, C ∩ M₂.E ∪ {p}
-  exact ⟨
-    symmDiff_eq_alt _ _ ▸ hC.eq_symmDiff,
-    Matroid.UnionDisjointCircuits.circuit hC.to_circuit_M₁,
-    Matroid.UnionDisjointCircuits.circuit hC.to_circuit_M₂,
-  ⟩
+    (hC : C.Nonempty) (hCp : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) :
+    BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C :=
+  ⟨hC, hCp.subset_ground, C ∩ M₁.E ∪ {p}, C ∩ M₂.E ∪ {p},
+    symmDiff_eq_alt _ _ ▸ hCp.eq_symmDiff,
+    Matroid.UnionDisjointCircuits.circuit hCp.to_circuit_M₁,
+    Matroid.UnionDisjointCircuits.circuit hCp.to_circuit_M₂⟩
