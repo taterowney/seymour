@@ -122,9 +122,9 @@ lemma CircuitMatroid.Maximal_iff (M : CircuitMatroid α) (B : Set α) :
       unfold IndepPred CircuitPredicate.ToIndepPredicate at hDdep
       push_neg at hDdep
       obtain ⟨C', hC'D, hC'⟩ := hDdep hDE
-      have hC'C := hC'D.trans hDC
+      have hCC' := hC'D.trans hDC
       have hC'nssubC := M.circuit_not_ssubset C C' hC hC'
-      have hC'eqC := eq_of_subset_of_not_ssubset hC'C hC'nssubC
+      have hC'eqC := eq_of_subset_of_not_ssubset hCC' hC'nssubC
       exact hC'eqC ▸ hC'D
 
 /-- todo: desc -/

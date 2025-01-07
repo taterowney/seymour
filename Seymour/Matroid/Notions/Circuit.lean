@@ -8,12 +8,12 @@ def Matroid.Circuit (M : Matroid α) (C : Set α) : Prop :=
   Minimal M.Dep C
 
 /-- Every circuit is dependent. -/
-lemma Matroid.Circuit.dep (M : Matroid α) {C : Set α}
-  (hC : M.Circuit C) : M.Dep C := hC.1
+lemma Matroid.Circuit.dep (M : Matroid α) {C : Set α} (hC : M.Circuit C) : M.Dep C :=
+  hC.left
 
 /-- Every circuit is a subset of the ground set. -/
-lemma Matroid.Circuit.subset_ground (M : Matroid α) {C : Set α}
-  (hC : M.Circuit C) : C ⊆ M.E := hC.1.2
+lemma Matroid.Circuit.subset_ground (M : Matroid α) {C : Set α} (hC : M.Circuit C) : C ⊆ M.E :=
+  hC.left.right
 
 /-- Equivalence with explicit definition of circuits. -/
 lemma Matroid.Circuit.circuit_iff_def {M : Matroid α} {C : Set α} :
@@ -21,8 +21,8 @@ lemma Matroid.Circuit.circuit_iff_def {M : Matroid α} {C : Set α} :
   rfl.to_iff
 
 /-- Every strict subset of a circuit is independent. -/
-lemma Matroid.Circuit.indep_ssub {M : Matroid α} {C C' : Set α}
-    (hC : M.Circuit C) (hC' : C' ⊂ C) : M.Indep C' := by
+lemma Matroid.Circuit.indep_ssub {M : Matroid α} {C C' : Set α} (hC : M.Circuit C) (hC' : C' ⊂ C) :
+    M.Indep C' := by
   by_contra h
   have hC'subC : C' ⊆ C := subset_of_ssubset hC'
   have hCsubE : C ⊆ M.E := hC.subset_ground
@@ -32,7 +32,7 @@ lemma Matroid.Circuit.indep_ssub {M : Matroid α} {C C' : Set α}
   exact (ne_of_lt hC').symm (Set.Subset.antisymm hCmin_dep hC'subC)
 
 /-- Deleting one element from a circuit produces an independent set. -/
-lemma Matroid.Circuit.indep_diff_singleton  {M : Matroid α} {C : Set α} {a : α}
+lemma Matroid.Circuit.indep_diff_singleton {M : Matroid α} {C : Set α} {a : α}
     (hC : M.Circuit C) (ha : a ∈ C) : M.Indep (C \ {a}) :=
   Matroid.Circuit.indep_ssub hC (Set.diff_singleton_sSubset.mpr ha)
 
@@ -53,15 +53,15 @@ lemma Matroid.Circuit.not_circuit_indep {M : Matroid α} {I : Set α} (hI : M.In
   fun h => h.1.1 hI
 
 /-- No circuit is a subset of another circuit -/
-lemma Matroid.Circuit.not_ssubset_circuit {M : Matroid α} {C C' : Set α}
-    (hC : M.Circuit C) (hC' : M.Circuit C') : ¬C ⊂ C' :=
+lemma Matroid.Circuit.not_ssubset_circuit {M : Matroid α} {C C' : Set α} (hC : M.Circuit C) (hC' : M.Circuit C') :
+    ¬C ⊂ C' :=
   fun h => h.2 (hC'.2 hC.1 (le_of_lt h))
 
 /-- Strict subset of a circuit is not a circuit. -/
-lemma Matroid.Circuit.ssubset_not_circuit {M : Matroid α} {C C' : Set α}
-    (hC : M.Circuit C) (hC' : C' ⊂ C) : ¬M.Circuit C' := by
+lemma Matroid.Circuit.ssubset_not_circuit {M : Matroid α} {C C' : Set α} (hC : M.Circuit C) (hC' : C' ⊂ C) :
+    ¬M.Circuit C' := by
   intro h
-  exact (Matroid.Circuit.not_ssubset_circuit h hC) hC'
+  exact Matroid.Circuit.not_ssubset_circuit h hC hC'
 
 /-- A set is dependent iff it contains a circuit. -/
 lemma Matroid.Circuit.dep_iff_has_circuit {M : Matroid α} {D : Set α} :
@@ -72,7 +72,8 @@ lemma Matroid.Circuit.dep_iff_has_circuit {M : Matroid α} {D : Set α} :
 
 /-- todo: desc -/
 lemma Matroid.Circuit.indep_ext_dep_has_circuit_w_ext {M : Matroid α} {I : Set α} {a : α}
-    (hI : M.Indep I) (hIa : M.Dep (insert a I)) : ∃ C, M.Circuit C ∧ C ⊆ insert a I ∧ a ∈ C := by
+    (hI : M.Indep I) (hIa : M.Dep (insert a I)) :
+    ∃ C, M.Circuit C ∧ C ⊆ insert a I ∧ a ∈ C := by
   obtain ⟨C, hC, hCIa⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hIa
   use C
   exact ⟨

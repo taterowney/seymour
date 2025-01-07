@@ -25,8 +25,9 @@ def DisjointCircuitFamily.union {M : Matroid α} (F : DisjointCircuitFamily M) :
   Set.iUnion F.F
 
 /-- Every element in `DisjointCircuitFamily` is subset of ground set. -/
-lemma DisjointCircuitFamily.mem_subset_ground {M : Matroid α} (F : DisjointCircuitFamily M)
-    (x : F.Idx) : F.F x ⊆ M.E := (F.hCircuit x).subset_ground
+lemma DisjointCircuitFamily.mem_subset_ground {M : Matroid α} (F : DisjointCircuitFamily M) (x : F.Idx) :
+    F.F x ⊆ M.E :=
+  (F.hCircuit x).subset_ground
 
 /-- Union of sets in `DisjointCircuitFamily` is subset of ground set. -/
 lemma DisjointCircuitFamily.union_subset_ground {M : Matroid α} (F : DisjointCircuitFamily M) :

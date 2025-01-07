@@ -239,7 +239,7 @@ lemma union_ssubset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjo
     rw [Set.mem_union] at hx'
     cases hx' with
     | inl hA => exact hx.2 hA
-    | inr hX => exact (Disjoint.ni_of_in hBX hx.1) hX
+    | inr hX => exact Disjoint.ni_of_in hBX hx.1 hX
 
 /-- todo: desc -/
 lemma union_subset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjoint B X) :

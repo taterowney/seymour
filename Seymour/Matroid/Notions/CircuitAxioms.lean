@@ -32,8 +32,8 @@ lemma ValidXFamily.mem_of_elem {P : CircuitPredicate α} {C X : Set α} (F : Val
   exact x.property
 
 -- question: unused API?
-lemma ValidXFamily.outside {P : CircuitPredicate α} {C X : Set α} {F : ValidXFamily P C X} {z : α}
-    (hzCF : z ∈ C \ F.union) : z ∉ X := by
+lemma ValidXFamily.outside {P : CircuitPredicate α} {C X : Set α} {F : ValidXFamily P C X} {z : α} (hzCF : z ∈ C \ F.union) :
+    z ∉ X := by
   intro hz
   have := F.hF z hz ⟨z, hz⟩
   simp_all [ValidXFamily.union]
@@ -90,15 +90,15 @@ section CircuitAxiomRelations
 lemma CircuitPredicate.circuit_not_ssubset_iff (P : CircuitPredicate α) :
     P.circuit_not_ssubset ↔ ∀ C C', P C → P C' → C' ⊆ C → C ⊆ C' := by
   constructor
-  · intro hP C C' hC hC' hC'C
+  · intro hP C C' hC hC' hCC'
     apply hP C C' hC at hC'
     rw [ssubset_iff_subset_ne] at hC'
     push_neg at hC'
-    exact (hC' hC'C).symm.subset
-  · intro hP C C' hC hC' hC'C
+    exact (hC' hCC').symm.subset
+  · intro hP C C' hC hC' hCC'
     apply hP C C' hC at hC'
-    rw [ssubset_iff_subset_ne] at hC'C
-    exact hC'C.2.symm (Set.Subset.antisymm (hC' hC'C.1) hC'C.1)
+    rw [ssubset_iff_subset_ne] at hCC'
+    exact hCC'.2.symm (Set.Subset.antisymm (hC' hCC'.1) hCC'.1)
 
 /-- Axiom (C3) implies strong circuit elimination. -/
 lemma CircuitPredicate.C3_strong_circuit_elim (P : CircuitPredicate α) :
@@ -188,7 +188,7 @@ lemma CircuitPredicate.ToIndep_ToCircuit (P : CircuitPredicate α) (E C : Set α
       hDC.trans hCE,
     ⟩
     specialize hCmin hDok hDC
-    exact (Set.eq_of_subset_of_subset hCmin hDC) ▸ hD
+    exact Set.eq_of_subset_of_subset hCmin hDC ▸ hD
 
 /-- todo: desc-/
 lemma CircuitPredicate.ToIndep_ToCircuit_iff {P : CircuitPredicate α} (hP : P.circuit_not_ssubset) (E C : Set α) :
@@ -266,7 +266,8 @@ section CircuitToIndepAxioms
 
 /-- Independence predicate constructed from circuit predicate satisfies (I1): empty set is independent. -/
 lemma CircuitPredicate.ToIndepPredicate.indep_empty {P : CircuitPredicate α}
-    (hP : P.not_circuit_empty) (E : Set α) : (P.ToIndepPredicate E).indep_empty :=
+    (hP : P.not_circuit_empty) (E : Set α) :
+    (P.ToIndepPredicate E).indep_empty :=
   ⟨E.empty_subset, fun _ hCempty hC => hP (Set.subset_eq_empty hCempty rfl ▸ hC)⟩
 
 /-- Independence predicate constructed from circuit predicate satisfies (I2): subsets of independent sets are independent. -/
@@ -277,7 +278,8 @@ lemma CircuitPredicate.ToIndepPredicate.indep_subset (P : CircuitPredicate α) (
 
 /-- Independence predicate constructed from circuit predicate satisfies (I3): independent sets have augmentation property. -/
 lemma CircuitPredicate.ToIndepPredicate.indep_aug {P : CircuitPredicate α} {E : Set α}
-    (hPCM : P.circuit_maximal E) (hPC3 : P.axiom_c3) : (P.ToIndepPredicate E).indep_aug := by
+    (hPCM : P.circuit_maximal E) (hPC3 : P.axiom_c3) :
+    (P.ToIndepPredicate E).indep_aug := by
   -- Proof adapted from Bruhn et al., Theorem 4.2 (ii), backward direction
   intro I B hI hInmax hBmax
   sorry -- todo : fix
@@ -353,7 +355,7 @@ lemma CircuitPredicate.ToIndepPredicate.indep_aug {P : CircuitPredicate α} {E :
   --   have hzxF : ∀ x, F.F x ⊆ (x : α) ᕃ I := sorry -- holds by constructoin
   --   have hzF : z ∈ C \ F.union := sorry -- holds by construction
   --   apply hPC3 at hzF
-  --   obtain ⟨C', hC', hzC', hC'CFX⟩ := hzF
+  --   obtain ⟨C', hC', hzC', hCC'FX⟩ := hzF
 
   --   have hCxI : ∀ x, F.F x \ X ⊆ I := sorry -- follows from `hzxF`
   --   have hCxB : ∀ x, F.F x \ X ⊆ B := fun x _ hFFxX => hIB (hCxI x hFFxX)

@@ -63,8 +63,8 @@ lemma Matroid.separator_coloop {α : Type} {M : Matroid α} {x : α} (hx : M.Col
       tauto
 
 /-- Every singleton separator is a loop or a coloop -/
-lemma Matroid.singleton_separator_loop_coloop {α : Type} {M : Matroid α} {x : α}
-    (hx : x ∈ M.E) : M.Separator {x} → M.Loop x ∨ M.Coloop x := by
+lemma Matroid.singleton_separator_loop_coloop {α : Type} {M : Matroid α} {x : α} (hx : x ∈ M.E) :
+    M.Separator {x} → M.Loop x ∨ M.Coloop x := by
   intro hSep
   by_contra h
   push_neg at h

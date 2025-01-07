@@ -68,9 +68,8 @@ lemma CircuitMatroid.Maximal_iff (M : CircuitMatroid α) (B : Set α) :
   ⟨fun hB => ⟨hB.left.left, fun _ hA hBA => hB.right ⟨hA, hA.left⟩ hBA⟩,
    fun hB => ⟨⟨hB.left, hB.left.left⟩, fun _ hA => hB.right hA.left⟩⟩
 
--- TODO move
-lemma nmem_insert {z x : α} {I : Set α} (hx : z ≠ x) (hI : z ∉ I) : z ∉ x ᕃ I := by
-  simp_all [Set.insert]
+--lemma nmem_insert {z x : α} {I : Set α} (hx : z ≠ x) (hI : z ∉ I) : z ∉ x ᕃ I := by
+--  simp_all [Set.insert]
 
 theorem CircuitMatroid.isIndep_aug {I I' : Set α}
     (M : CircuitMatroid α) (hI : M.isIndep I) (hMI : ¬Maximal M.isIndep I) (hMI' : Maximal M.isIndep I') :
@@ -143,7 +142,7 @@ theorem CircuitMatroid.isIndep_aug {I I' : Set α}
     have hzxF : ∀ x, F.F x ⊆ (x : α) ᕃ I := sorry -- holds by constructoin
     have hzF : z ∈ C \ F.union := sorry -- holds by construction
     apply M.circuit_c3 at hzF
-    obtain ⟨C', hC', hzC', hC'CFX⟩ := hzF
+    obtain ⟨C', hC', hzC', hCC'FX⟩ := hzF
 
     have hCxI : ∀ x, F.F x \ X ⊆ I := sorry -- follows from `hzxF`
     have hCxB : ∀ x, F.F x \ X ⊆ B := fun x _ hFFxX => hIB (hCxI x hFFxX)

@@ -161,8 +161,8 @@ lemma Matroid.TwoSum.CircuitType1.subset_M₁_diff_inter {M₁ M₂ : Matroid α
 /-- Circuit of type 1 is disjoint with `M₂.E` -/
 lemma Matroid.TwoSum.CircuitType1.disjoint_M₂ {M₁ M₂ : Matroid α} {C : Set α}
     (hC : Matroid.TwoSum.CircuitType1 M₁ M₂ C) : Disjoint C M₂.E := by
-  have hM₁M₂ := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
-  have hCM₂ := Set.disjoint_of_subset_left hC.subset_M₁_diff_inter hM₁M₂
+  have hMM := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
+  have hCM₂ := Set.disjoint_of_subset_left hC.subset_M₁_diff_inter hMM
   have hCM₂ := Set.disjoint_union_right.mpr ⟨hCM₂, hC.disjoint_inter⟩
   rw [Set.diff_union_of_subset Set.inter_subset_right] at hCM₂
   exact hCM₂
@@ -198,8 +198,8 @@ lemma Matroid.TwoSum.CircuitType2.subset_M₂_diff_inter {M₁ M₂ : Matroid α
 /-- Circuit of type 2 is disjoint with `M₁.E` -/
 lemma Matroid.TwoSum.CircuitType2.disjoint_M₁ {M₁ M₂ : Matroid α} {C : Set α}
     (hC : Matroid.TwoSum.CircuitType2 M₁ M₂ C) : Disjoint C M₁.E := by
-  have hM₁M₂ := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
-  have hCM₁ := (Set.disjoint_of_subset_right hC.subset_M₂_diff_inter hM₁M₂).symm
+  have hMM := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
+  have hCM₁ := (Set.disjoint_of_subset_right hC.subset_M₂_diff_inter hMM).symm
   have hCM₁ := Set.disjoint_union_right.mpr ⟨hCM₁, hC.disjoint_inter⟩
   rw [Set.diff_union_of_subset Set.inter_subset_left] at hCM₁
   exact hCM₁
@@ -280,8 +280,8 @@ lemma Matroid.TwoSum.CircuitType1.disjoint_circuit_type_2 {M₁ M₂ : Matroid �
     Disjoint C₁ C₂ := by
   have hC₁M₁ := hC₁.subset_M₁_diff_inter
   have hC₂M₂ := hC₂.subset_M₂_diff_inter
-  have hM₁M₂ := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
-  exact Set.disjoint_of_subset hC₁M₁ hC₂M₂ hM₁M₂
+  have hMM := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
+  exact Set.disjoint_of_subset hC₁M₁ hC₂M₂ hMM
 
 /-- Circuit of type 1 is not a strict subset of any circuit of type 2 -/
 lemma Matroid.TwoSum.CircuitType1.not_ssubset_circuit_type_2 {M₁ M₂ : Matroid α} {C₁ C₂ : Set α}
@@ -299,7 +299,7 @@ lemma Matroid.TwoSum.CircuitType1.not_ssubset_circuit_type_3 {M₁ M₂ : Matroi
   apply Set.union_subset_union_left (M₁.E ∩ M₂.E) at hC₁C₃
   have hC₁ssubunioninter := ssubset_union_disjoint_nonempty hC₁.disjoint_inter Assumptions.inter_nonempty
   apply Set.ssubset_of_ssubset_of_subset hC₁ssubunioninter at hC₁C₃
-  exact (hC₁.circuit_M₁.not_ssubset_circuit hC₃.to_circuit_M₁) hC₁C₃
+  exact hC₁.circuit_M₁.not_ssubset_circuit hC₃.to_circuit_M₁ hC₁C₃
 
 /-- Circuit of type 1 is not a strict subset of any other circuit -/
 lemma Matroid.TwoSum.CircuitType1.not_ssubset_circuit {M₁ M₂ : Matroid α} {C₁ C : Set α}
@@ -345,7 +345,7 @@ lemma Matroid.TwoSum.CircuitType2.not_ssubset_circuit_type_3 {M₁ M₂ : Matroi
   apply Set.union_subset_union_left (M₁.E ∩ M₂.E) at hC₂C₃
   have hC₂ssubunioninter := ssubset_union_disjoint_nonempty hC₂.disjoint_inter Assumptions.inter_nonempty
   apply Set.ssubset_of_ssubset_of_subset hC₂ssubunioninter at hC₂C₃
-  exact (hC₂.circuit_M₂.not_ssubset_circuit hC₃.to_circuit_M₂) hC₂C₃
+  exact hC₂.circuit_M₂.not_ssubset_circuit hC₃.to_circuit_M₂ hC₂C₃
 
 /-- Circuit of type 2 is not a strict subset of any other circuit -/
 lemma Matroid.TwoSum.CircuitType2.not_ssubset_circuit {M₁ M₂ : Matroid α} {C₂ C : Set α}

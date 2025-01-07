@@ -28,7 +28,7 @@ lemma Matroid.Coloop.iff_in_no_circuit (M : Matroid α) {a : α} :
           (Set.singleton_subset_iff.mpr (Set.singleton_inter_nonempty.mp haB))
         have hCeq : C \ {a} ∪ {a} = C := Set.diff_union_of_subset (Set.singleton_subset_iff.mpr haC)
         exact ⟨hC, hCeq ▸ hCsubB⟩
-      exact (Matroid.Dep.not_indep hBdep) (Matroid.Base.indep hB)
+      exact Matroid.Dep.not_indep hBdep (Matroid.Base.indep hB)
   · intro ⟨haE, haC⟩
     constructor
     · exact haE
@@ -39,5 +39,5 @@ lemma Matroid.Coloop.iff_in_no_circuit (M : Matroid α) {a : α} :
         push_neg at haB
         have haBdep : M.Dep (insert a B) := Base.dep_of_insert hB (Set.singleton_inter_eq_empty.mp haB) haE
         obtain ⟨C', hC', hC'aB, haC'⟩ := Matroid.Circuit.indep_ext_dep_has_circuit_w_ext (Matroid.Base.indep hB) haBdep
-        exact (haC C' hC') haC'
+        exact haC C' hC' haC'
       · exact Set.singleton_subset_iff.mpr haE
