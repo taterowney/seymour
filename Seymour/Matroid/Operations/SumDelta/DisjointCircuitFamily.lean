@@ -38,7 +38,7 @@ lemma Matroid.disjointCircuitFamily.union_subset_ground {M : Matroid α} (F : M.
 /-- If union of disjoint circuits is independent, then it is empty. -/
 lemma Matroid.disjointCircuitFamily.union_indep_empty {M : Matroid α} (F : M.disjointCircuitFamily) (hMF : M.Indep F.union):
     F.union = ∅ := by
-  by_contra hFnempty
+  by_contra
   have ⟨x, hx⟩ : ∃ x, (F.F x).Nonempty := by
     by_contra!
     simp_all only [Matroid.disjointCircuitFamily.union, Set.iUnion_coe_set, Set.iUnion_empty, not_true_eq_false]
