@@ -3,17 +3,17 @@ import Seymour.Basic
 
 
 /-- Independence predicate derived from circuit predicate `P`. -/
-def CircPredToIndep {α : Type*} (P : Set α → Prop) (E I : Set α) : Prop :=
+def CircPredToIndep {α : Type} (P : Set α → Prop) (E I : Set α) : Prop :=
   I ⊆ E ∧ ∀ C : Set α, P C → ¬(C ⊆ I) -- independent sets are all non-circuits
 
 /-- Family of circuits satisfying assumptions of circuit condition (C3) from Bruhn et al. -/
-structure ValidXFamily {α : Type*} (P : Set α → Prop) (C X : Set α) where
+structure ValidXFamily {α : Type} (P : Set α → Prop) (C X : Set α) where
   F : X.Elem → Set α
   hPF : ∀ x : X.Elem, P (F x)
   hF : ∀ x ∈ X, ∀ y : X.Elem, x ∈ F y ↔ x = y.val
 
 section helpersValidXFamily
-variable {α : Type*} {P : Set α → Prop} {C X : Set α}
+variable {α : Type} {P : Set α → Prop} {C X : Set α}
 
 lemma ValidXFamily.mem_of_elem (F : ValidXFamily P C X) (x : X.Elem) : x.val ∈ F.F x := by
   rw [F.hF]
@@ -31,7 +31,7 @@ lemma ValidXFamily.outside {F : ValidXFamily P C X} {z : α} (hzCF : z ∈ C \ F
 end helpersValidXFamily
 
 /-- A matroid defined by circuit conditions. -/
-structure CircuitMatroid (α : Type*) where
+structure CircuitMatroid (α : Type) where
   /-- The ground set -/
   (E : Set α)
   /-- The circuit predicate -/
@@ -48,7 +48,7 @@ structure CircuitMatroid (α : Type*) where
   /-- Every circuit is a subset of the ground set -/
   (subset_ground : ∀ C : Set α, CircuitPred C → C ⊆ E)
 
-variable {α : Type*}
+variable {α : Type}
 
 /-- Independence predicate in circuit matroid construction. -/
 def CircuitMatroid.isIndep (M : CircuitMatroid α) : Set α → Prop :=
