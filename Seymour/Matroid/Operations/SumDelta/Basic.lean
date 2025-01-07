@@ -22,6 +22,8 @@ def BinaryMatroid.DeltaSum.CircuitForm {α : Type} [DecidableEq α] (M₁ M₂ :
 def BinaryMatroid.DeltaSum.CircuitPred {α : Type} [DecidableEq α] (M₁ M₂ : BinaryMatroid α) : CircuitPredicate α :=
   fun C => Minimal (BinaryMatroid.DeltaSum.CircuitForm M₁ M₂) C
 
+end BasicDefinitions
+
 
 section BasicProperties
 
@@ -35,7 +37,6 @@ lemma BinaryMatroid.DeltaSum.disjoint_grounds_diff_inter {α : Type} [DecidableE
     Disjoint (M₁.E \ (M₁.E ∩ M₂.E)) (M₂.E \ (M₁.E ∩ M₂.E)) := by
   rw [Set.diff_self_inter, Set.diff_inter_self_eq_diff]
   exact disjoint_sdiff_sdiff
-
 
 /-- A set of circuit form is nonempty -/
 lemma BinaryMatroid.DeltaSum.CircuitForm.nonempty {α : Type} [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
@@ -56,6 +57,8 @@ lemma BinaryMatroid.DeltaSum.CircuitForm.prop.udc_left {α : Type} [DecidableEq 
 /-- A set of circuit form is related to a union of disjoint circuits of `M₂` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm.prop.udc_right {α : Type} [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C X₁ X₂ : Set α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm.prop M₁ M₂ C X₁ X₂) : M₂.matroid.UnionDisjointCircuits X₂ := hC.2.2
+
+end BasicProperties
 
 
 section CircuitAxioms
@@ -91,6 +94,8 @@ lemma BinaryMatroid.DeltaSum.CircuitPred.subset_ground {α : Type} [DecidableEq 
     ∀ C, CircuitPred M₁ M₂ C → C ⊆ E M₁ M₂ :=
   fun _ hC => hC.1.subset_ground
 
+end CircuitAxioms
+
 
 section API
 
@@ -122,3 +127,5 @@ lemma BinaryMatroid.DeltaSum.circuit_iff {α : Type} [DecidableEq α] (M₁ M₂
   unfold matroid
   rw [CircuitMatroid.circuit_iff]
   exact ⟨fun ⟨_, hC⟩ => hC, fun hC => ⟨hC.subset_ground, hC⟩⟩
+
+end API

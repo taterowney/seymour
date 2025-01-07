@@ -35,6 +35,8 @@ lemma ValidXFamily.outside {α : Type} {P : CircuitPredicate α} {C X : Set α} 
   have := F.hF z hz ⟨z, hz⟩
   simp_all [ValidXFamily.union]
 
+end ValidXFamily
+
 
 section CircuitAxioms
 
@@ -75,6 +77,8 @@ def CircuitPredicate.strong_circuit_elim {α : Type} (P : CircuitPredicate α) :
     then there is circuit `C₃` such that `C₃ ⊆ C₁ ∪ C₂ \ {e}`. -/
 def CircuitPredicate.weak_circuit_elim {α : Type} (P : CircuitPredicate α) : Prop :=
   ∀ C₁ C₂, C₁ ≠ C₂ → P C₁ → P C₂ → ∀ e ∈ C₁ ∩ C₂, ∃ C₃, P C₃ ∧ C₃ ⊆ (C₁ ∪ C₂) \ {e}
+
+end CircuitAxioms
 
 
 section CircuitAxiomRelations
@@ -153,6 +157,8 @@ lemma CircuitPredicate.finite_support_iff {α : Type} (P : CircuitPredicate α) 
 lemma CircuitPredicate.FinSup_weak_circuit_elim_C3 {α : Type} {P : CircuitPredicate α} (hP_fin : P.support.Finite) :
     P.weak_circuit_elim → P.axiom_c3 := by
   sorry
+
+end CircuitAxiomRelations
 
 
 section PredicateRelations
@@ -249,6 +255,8 @@ lemma IndepPredicate.Matroid_ToCircuit_ToIndep_iff {α : Type} (M : Matroid α) 
     · exact hIE
     · intro C hCI ⟨⟨hCdep, hCE⟩, hCmin⟩
       exact hCdep (Matroid.Indep.subset hIindep hCI)
+
+end PredicateRelations
 
 
 section CircuitToIndepAxioms
@@ -401,6 +409,5 @@ lemma CircuitPredicate.ToIndepPredicate.finite_weak_circuit_elim_indep_aug {α :
 -- contradiction. We conclude that (I3) holds. Thus (E, I) is a matroid M.
 
 
-section CircuitsSatisfyCircuitAxioms
 
 -- todo: Matroid.Circuit's satisfy circuit axioms

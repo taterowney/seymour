@@ -32,6 +32,8 @@ alias IndepPredicate.axiom_im := IndepPredicate.indep_maximal
 def IndepPredicate.subset_ground {α : Type} (P : IndepPredicate α) (E : Set α) : Prop := ∀ C, P C → C ⊆ E
 alias IndepPredicate.axiom_ce := IndepPredicate.subset_ground
 
+end IndepAxioms
+
 
 section MatroidIndepAxioms
 
@@ -89,3 +91,5 @@ lemma Matroid.indep_maximal {α : Type} (M : Matroid α) :
 lemma Matroid.indep_subset_ground {α : Type} (M : Matroid α) :
     M.IndepPredicate.subset_ground M.E :=
   fun _ => Matroid.Indep.subset_ground
+
+end MatroidIndepAxioms

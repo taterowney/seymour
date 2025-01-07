@@ -15,7 +15,9 @@ def Matroid.IsRepresentableOver {α : Type} (M : Matroid α) (F : Type) [Field F
 
 /-- Matroid `M` is representable if it is representable over some field -/
 def Matroid.IsRepresentable {α : Type} (M : Matroid α) : Prop :=
-  ∃ F : Type, ∀ hF : Field F, M.IsRepresentableOver F
+  ∃ F : Type, ∀ _ : Field F, M.IsRepresentableOver F
+
+end BasicDefinitions
 
 
 section Binary
@@ -27,6 +29,7 @@ def Matroid.IsBinary {α : Type} (M : Matroid α) : Prop :=
 -- todo: connect with binary constructor
 -- todo: M.IsBinary iff it can be represented by [I | B] over Z2
 
+end Binary
 
 section MatrixRepresentations
 
@@ -34,3 +37,5 @@ section MatrixRepresentations
 -- let F: field, M: F-representable, p ∈ M, and {p} is not a separator.
 -- a) then M can be represented over F by [ A₁ | 0/0/.../1 ] where last column corresponds to p.
 -- b) then M can be represented over F by [ 1/0/.../0 | A₁ ] where first column corresponds to p.
+
+end MatrixRepresentations

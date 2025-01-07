@@ -15,6 +15,8 @@ def Matrix.IsRegular {X Y : Type} (A : Matrix X Y Z2) : Prop :=
 def Matroid.IsRegular {α : Type} (M : Matroid α) : Prop :=
   ∃ X : Type, ∃ A : Matrix X M.E Z2, A.IsRegular ∧ M.IsRepresentedBy A
 
+end Definitions
+
 
 section Characterizations
 
@@ -51,6 +53,8 @@ lemma Matroid.IsRegular.iff_representable_over_Z2_F {α : Type} {M : Matroid α}
     M.IsRegular ↔ M.IsRepresentableOver Z2 ∧ (∃ F : Type, ∀ hF : Field F, ringChar F > 2 ∧ M.IsRepresentableOver F) := by
   sorry
 
+end Characterizations
+
 
 section Corollaries
 
@@ -66,4 +70,7 @@ def Matroid.IsRegular.iff_dual_IsRegular {α : Type} (M : Matroid α) :
   sorry -- prop 2.2.22 in Oxley
 
 -- todo: binary matroid is regular iff its standard representation matrix has a TU signing?
+
+end Corollaries
+
 -- question: implement regular matroid constructor from binary matroid + regularity prop?

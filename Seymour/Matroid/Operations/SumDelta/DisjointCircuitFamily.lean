@@ -87,6 +87,8 @@ lemma DisjointCircuitFamily.One_union {α : Type} {M : Matroid α} {C : Set α} 
     (DisjointCircuitFamily.One p hC).union = C := by
   simp only [One, union, Set.iUnion_coe_set, Set.mem_singleton_iff, Set.iUnion_iUnion_eq_left]
 
+end DisjointCircuitFamily
+
 
 section UnionDisjointCircuits
 
@@ -126,3 +128,5 @@ lemma Matroid.UnionDisjointCircuits.circuit {α : Type} {M : Matroid α} {C : Se
 lemma Matroid.UnionDisjointCircuits.subset_ground {α : Type} (M : Matroid α) (X : Set α) :
     M.UnionDisjointCircuits X → X ⊆ M.E :=
   fun ⟨F, hXF⟩ => hXF ▸ F.union_subset_ground
+
+end UnionDisjointCircuits

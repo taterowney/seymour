@@ -18,7 +18,7 @@ def Matrix.IsGraphic {m n R : Type} [CommRing R] (A : Matrix m n R) : Prop :=
 
 /-- todo: desc -/
 def Matroid.IsGraphic {α : Type} (M : Matroid α) : Prop :=
-  ∃ X R : Type, ∀ hR : CommRing R, ∃ A : Matrix X M.E R, M.IsRepresentedBy A ∧ A.IsGraphic
+  ∃ X R : Type, ∀ _ : CommRing R, ∃ A : Matrix X M.E R, M.IsRepresentedBy A ∧ A.IsGraphic
 
 -- todo: if M is graphic, M is regular
 

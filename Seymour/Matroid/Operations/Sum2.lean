@@ -53,6 +53,7 @@ def Matroid.TwoSum.CircuitPred {α : Type} (M₁ M₂ : Matroid α) : CircuitPre
     Matroid.TwoSum.CircuitType2 M₁ M₂ C ∨
     Matroid.TwoSum.CircuitType3 M₁ M₂ C
 
+end MainDefinitions
 
 
 section PropertiesAssumptions
@@ -110,6 +111,8 @@ lemma Matroid.TwoSum.Assumptions.inter_singleton_not_coloop_M₂ {α : Type} {M�
     (Assumptions : Matroid.TwoSum.Assumptions M₁ M₂) (hp : M₁.E ∩ M₂.E = {p}) : ¬M₂.Coloop p :=
   fun h => (hp ▸ Assumptions.hM₂sep) (Matroid.separator_coloop h)
 
+end PropertiesAssumptions
+
 
 section PropertiesGroundSet
 
@@ -123,6 +126,8 @@ lemma Matroid.TwoSum.disjoint_grounds_diff_inter {α : Type} (M₁ M₂ : Matroi
     Disjoint (M₁.E \ (M₁.E ∩ M₂.E)) (M₂.E \ (M₁.E ∩ M₂.E)) := by
   rw [Set.diff_self_inter, Set.diff_inter_self_eq_diff]
   exact disjoint_sdiff_sdiff
+
+end PropertiesGroundSet
 
 
 section PropertiesCircuitType1
@@ -159,6 +164,8 @@ lemma Matroid.TwoSum.CircuitType1.disjoint_M₂ {α : Type} {M₁ M₂ : Matroid
   rw [Set.diff_union_of_subset Set.inter_subset_right] at hCM₂
   exact hCM₂
 
+end PropertiesCircuitType1
+
 
 section PropertiesCircuitType2
 
@@ -193,6 +200,8 @@ lemma Matroid.TwoSum.CircuitType2.disjoint_M₁ {α : Type} {M₁ M₂ : Matroid
   have hCM₁ := Set.disjoint_union_right.mpr ⟨hCM₁, hC.disjoint_inter⟩
   rw [Set.diff_union_of_subset Set.inter_subset_left] at hCM₁
   exact hCM₁
+
+end PropertiesCircuitType2
 
 
 section PropertiesCircuitType3
@@ -251,6 +260,8 @@ lemma Matroid.TwoSum.CircuitType3.inter_M₂_nonempty {α : Type} {M₁ M₂ : M
   have hpM₂ := Assumptions.inter_singleton_not_loop_M₂ hp
   exact hpM₂ hCM₂
 
+end PropertiesCircuitType3
+
 
 section PropertiesCircuitTypePairs1
 
@@ -298,6 +309,8 @@ lemma Matroid.TwoSum.CircuitType1.not_ssubset_circuit {α : Type} {M₁ M₂ : M
     | inl hC => exact hC₁.not_ssubset_circuit_type_2 hC
     | inr hC => exact hC₁.not_ssubset_circuit_type_3 Assumptions hC
 
+end PropertiesCircuitTypePairs1
+
 
 section PropertiesCircuitTypePairs2
 
@@ -341,6 +354,8 @@ lemma Matroid.TwoSum.CircuitType2.not_ssubset_circuit {α : Type} {M₁ M₂ : M
   | inr hC => cases hC with
     | inl hC => exact hC₂.not_ssubset_circuit_type_2 hC
     | inr hC => exact hC₂.not_ssubset_circuit_type_3 Assumptions hC
+
+end PropertiesCircuitTypePairs2
 
 
 section PropertiesCircuitTypePairs3
@@ -394,6 +409,8 @@ lemma Matroid.TwoSum.CircuitType3.not_ssubset_circuit {α : Type} {M₁ M₂ : M
     | inl hC => exact hC₃.not_ssubset_circuit_type_2 Assumptions hC
     | inr hC => exact hC₃.not_ssubset_circuit_type_3 hC
 
+end PropertiesCircuitTypePairs3
+
 
 section PropertiesCircuitPred
 
@@ -435,6 +452,8 @@ lemma Matroid.TwoSum.CircuitPred.subset_ground {α : Type} (M₁ M₂ : Matroid 
     | inl hC => exact hC.subset_ground
     | inr hC => exact hC.subset_ground
 
+end PropertiesCircuitPred
+
 
 section TwoSumDefinition
 
@@ -467,5 +486,7 @@ lemma Matroid.TwoSum.circuit_iff {α : Type} {M₁ M₂ : Matroid α} (Assumptio
   unfold matroid
   rw [CircuitMatroid.circuit_iff]
   rfl
+
+end TwoSumDefinition
 
 -- todo: properties of 2-sum: Proposition 7.1.21, 22, 23, etc. from Oxley

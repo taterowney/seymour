@@ -52,6 +52,9 @@ lemma BinaryMatroid.DeltaSum.CircuitForm2.disjoint_circuit_pred {α : Type} [Dec
     have hX₂dep := (Matroid.UnionDisjointCircuits.nonempty_dep M₂.matroid X₂) hX₂udc hC'nempty
     exact (Matroid.Circuit.circuit_iff_def.mp hC).2 X₂ hX₂dep hC'C
 
+end CircuitFormsProperties
+
+
 section disjointSumProperties
 
 /-- Dependent set in disjoint sum is depenent in one of summand matroids -/
@@ -161,6 +164,8 @@ lemma Matroid.disjointSum_circuit_iff {α : Type} (M N : Matroid α) (h : Disjoi
           | inl hD => exact False.elim (Set.Nonempty.ne_empty (Matroid.Dep.nonempty hD) rfl)
           | inr hD => exact hCN.2 hD hDC
 
+end disjointSumProperties
+
 
 section Equivalence
 
@@ -215,3 +220,5 @@ lemma BinaryMatroid.DeltaSum.SpecialCase1Sum {α : Type} [DecidableEq α] {M₁ 
           specialize hCmin (hCX₁X₂.symm ▸ Set.subset_union_left)
           apply Set.ssubset_of_ssubset_of_subset (hCX₁X₂ ▸ ssubset_disjoint_union_nonempty hX₁X₂ hX₂empty) at hCmin
           exact False.elim ((HasSSubset.SSubset.ne hCmin) rfl)
+
+end Equivalence

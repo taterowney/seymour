@@ -143,6 +143,8 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {α : Type} [Decidab
         have hZ₁p := hp ▸ Set.disjoint_of_subset_left hDE (BinaryMatroid.DeltaSum.E.disjoint_inter M₁ M₂)
         exact False.elim (hZ₁p hpX₂ Set.Subset.rfl rfl)
 
+end CircuitFormsProperties
+
 
 section Equivalence
 
@@ -474,3 +476,5 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum {α : Type} [DecidableEq α] {M₁ 
                   exact False.elim (Set.not_nonempty_empty (hZ₂cf1.disjoint_M₁.inter_eq ▸ hCeqZ₂ ▸ hCinterM₁))
 
             exact ⟨hp ▸ hC₁eqX₁ ▸ hX₁circ, hp ▸ hC₂eqX₂ ▸ hX₂circ, hCE⟩
+
+end Equivalence

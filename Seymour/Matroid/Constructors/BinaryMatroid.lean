@@ -52,3 +52,5 @@ lemma BinaryMatroid.StandardRepr.A_eq {α : Type} [DecidableEq α] (R : BinaryMa
 @[simp]
 lemma BinaryMatroid.StandardRepr.indep_eq {α : Type} [DecidableEq α] (R : BinaryMatroid.StandardRepr α) :
   (BinaryMatroid.ofStandardRepr R).matroid.Indep = (BinaryMatroid.ofStandardRepr R).IndepCols := rfl
+
+end API
