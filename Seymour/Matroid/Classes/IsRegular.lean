@@ -53,8 +53,8 @@ lemma Matroid.IsRegular.iff_representable_over_Z3 {M : Matroid α} :
       (∀ X : Type, ∀ A : Matrix X M.E Z3, M.IsRepresentedBy A → A.IsTotallyUnimodular) := by
   sorry
 
-lemma Matroid.IsRegular.iff_representable_over_Z2_F {M : Matroid α} : -- ??
-    M.IsRegular ↔ M.IsRepresentableOver Z2 ∧ (∃ F : Type, ∀ hF : Field F, ringChar F > 2 ∧ M.IsRepresentableOver F) := by
+lemma Matroid.IsRegular.iff_representable_over_Z2_F {M : Matroid α} :
+    M.IsRegular ↔ M.IsRepresentableOver Z2 ∧ (∃ F : Type, ∃ hF : Field F, ringChar F > 2 ∧ M.IsRepresentableOver F) := by
   sorry
 
 end Characterizations

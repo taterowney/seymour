@@ -19,7 +19,7 @@ def Matroid.IsRepresentableOver (M : Matroid α) (F : Type) [Ring F] : Prop :=
 
 /-- Matroid `M` is representable if it is representable over some field -/
 def Matroid.IsRepresentable (M : Matroid α) : Prop :=
-  ∃ F : Type, ∀ _ : Field F, M.IsRepresentableOver F
+  ∃ F : Type, ∃ _ : Field F, M.IsRepresentableOver F
 
 end BasicDefinitions
 
