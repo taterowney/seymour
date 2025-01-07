@@ -3,7 +3,7 @@ import Seymour.Basic
 
 
 /-- Vector matroid `M[A]` of matrix `A`. -/
-structure VectorMatroid (α R : Type) [CommRing R] where
+structure VectorMatroid (α R : Type) [Ring R] where
   X : Type -- row index set
   E : Set α -- column index set
   A : Matrix X E R -- matrix defining a vector matroid
@@ -11,25 +11,25 @@ structure VectorMatroid (α R : Type) [CommRing R] where
   -- however, `Set α` is sufficient to get all vector matroids
 
 /-- Vector matroid corresponding to matrix `A`. -/
-def Matrix.VectorMatroid {α R X : Type} [CommRing R] {E : Set α} (A : Matrix X E R) : VectorMatroid α R :=
+def Matrix.VectorMatroid {α R X : Type} [Ring R] {E : Set α} (A : Matrix X E R) : VectorMatroid α R :=
   ⟨X, E, A⟩
 
 /-- todo: desc -/
-def Matrix.IndepCols {α X R : Type} [CommRing R] {E : Set α} (A : Matrix X E R) (S : Set α) : Prop :=
+def Matrix.IndepCols {α X R : Type} [Ring R] {E : Set α} (A : Matrix X E R) (S : Set α) : Prop :=
   ∃ hS : S ⊆ E, LinearIndependent R (A.submatrix id hS.elem).transpose
 
 /-- A set `S` is independent in `M[A]` iff `S` is a subset of linearly independent columns in `A`. -/
-def VectorMatroid.IndepCols {α R : Type} [CommRing R] (M : VectorMatroid α R) (S : Set α) : Prop :=
+def VectorMatroid.IndepCols {α R : Type} [Ring R] (M : VectorMatroid α R) (S : Set α) : Prop :=
   ∃ hS : S ⊆ M.E, LinearIndependent R (M.A.submatrix id hS.elem).transpose
 
 /-- Empty set is independent. -/
-theorem VectorMatroid.IndepCols_empty {α R : Type} [CommRing R] (M : VectorMatroid α R) :
+theorem VectorMatroid.IndepCols_empty {α R : Type} [Ring R] (M : VectorMatroid α R) :
     M.IndepCols ∅ := by
   use Set.empty_subset M.E
   exact linearIndependent_empty_type
 
 /-- A subset of a linearly independent set of columns is linearly independent. -/
-theorem VectorMatroid.IndepCols_subset {α R : Type} [CommRing R] (M : VectorMatroid α R)
+theorem VectorMatroid.IndepCols_subset {α R : Type} [Ring R] (M : VectorMatroid α R)
     (I J : Set α) (hMJ : M.IndepCols J) (hIJ : I ⊆ J) : M.IndepCols I := by
   obtain ⟨hJ, hM⟩ := hMJ
   use hIJ.trans hJ
@@ -40,18 +40,18 @@ theorem VectorMatroid.IndepCols_subset {α R : Type} [CommRing R] (M : VectorMat
   simpa [Subtype.map] using hf
 
 /-- A non-maximal linearly independent set of columns can be augmented with another linearly independent column. -/
-theorem VectorMatroid.IndepCols_aug {α R : Type} [CommRing R] (M : VectorMatroid α R) (I J : Set α)
+theorem VectorMatroid.IndepCols_aug {α R : Type} [Ring R] (M : VectorMatroid α R) (I J : Set α)
     (hMI : M.IndepCols I) (hMI' : ¬Maximal M.IndepCols I) (hMJ : Maximal M.IndepCols J) :
     ∃ x ∈ J \ I, M.IndepCols (x ᕃ I) := by
   sorry
 
 /-- Every set of columns contains a maximal independent subset of columns. -/
-theorem VectorMatroid.IndepCols_maximal {α R : Type} [CommRing R] (M : VectorMatroid α R) (S : Set α) :
+theorem VectorMatroid.IndepCols_maximal {α R : Type} [Ring R] (M : VectorMatroid α R) (S : Set α) :
     Matroid.ExistsMaximalSubsetProperty M.IndepCols S := by
   sorry
 
 /-- Vector matroid expressed as `IndepMatroid`. -/
-def VectorMatroid.IndepMatroid {α R : Type} [CommRing R] (M : VectorMatroid α R) : IndepMatroid α where
+def VectorMatroid.IndepMatroid {α R : Type} [Ring R] (M : VectorMatroid α R) : IndepMatroid α where
   E := M.E
   Indep := M.IndepCols
   indep_empty := M.IndepCols_empty
@@ -61,15 +61,15 @@ def VectorMatroid.IndepMatroid {α R : Type} [CommRing R] (M : VectorMatroid α 
   subset_ground _ := fun ⟨h, _⟩ => h
 
 /-- Vector matroid converted to `Matroid`. -/
-def VectorMatroid.matroid {α R : Type} [CommRing R] (M : VectorMatroid α R) : Matroid α :=
+def VectorMatroid.matroid {α R : Type} [Ring R] (M : VectorMatroid α R) : Matroid α :=
   M.IndepMatroid.matroid
 
 @[simp]
-lemma VectorMatroid.E_eq {α R : Type} [CommRing R]
+lemma VectorMatroid.E_eq {α R : Type} [Ring R]
     (M : VectorMatroid α R) : M.matroid.E = M.E := by rfl
 
 @[simp]
-lemma VectorMatroid.indep_eq {α R : Type} [CommRing R]
+lemma VectorMatroid.indep_eq {α R : Type} [Ring R]
   (M : VectorMatroid α R) : M.matroid.Indep = M.IndepCols := rfl
 
 

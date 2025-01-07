@@ -65,7 +65,7 @@ In the comments bellow, we will use the following shorthands:
 
 `I` is `Equiv.refl _`
 ` | ` denotes `Equiv.sumCongr`
-`|S|` denotes `Fintype.card S` for any `{S : Type*} [Fintype S`
+`|S|` denotes `Fintype.card S` for any `{S : Type} [Fintype S]`
 -/
 variable [LinearOrderedCommRing R] [Fintype Z] [DecidableEq Z]
   [Fintype X₁] [DecidableEq X₁] [Fintype Y₁] [DecidableEq Y₁]

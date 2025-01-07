@@ -37,7 +37,7 @@ lemma Matroid.IsRegular.iff_TU_representable {α : Type} {M : Matroid α} :
   sorry
 
 lemma Matroid.IsRegular.iff_representable_over_any_field {α : Type} {M : Matroid α} :
-    M.IsRegular ↔ ∀ F : Type, ∀ hF : Field F, M.IsRepresentableOver F := by
+    M.IsRegular ↔ ∀ F : Type, ∀ _ : Field F, M.IsRepresentableOver F := by
   rw [Matroid.IsRegular.iff_TU_representable, Matroid.IsTURepresentable.iff_representable_over_any_field]
 
 lemma Matroid.IsRegular.iff_representable_over_Z2_Z3 {α : Type} {M : Matroid α} :
@@ -49,7 +49,7 @@ lemma Matroid.IsRegular.iff_representable_over_Z3 {α : Type} {M : Matroid α} :
     (∀ X : Type, ∀ A : Matrix X M.E Z3, M.IsRepresentedBy A → A.IsTotallyUnimodular) := by
   sorry
 
-lemma Matroid.IsRegular.iff_representable_over_Z2_F {α : Type} {M : Matroid α} :
+lemma Matroid.IsRegular.iff_representable_over_Z2_F {α : Type} {M : Matroid α} : -- ??
     M.IsRegular ↔ M.IsRepresentableOver Z2 ∧ (∃ F : Type, ∀ hF : Field F, ringChar F > 2 ∧ M.IsRepresentableOver F) := by
   sorry
 

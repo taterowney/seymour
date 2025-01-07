@@ -1,16 +1,17 @@
 import Seymour.Matroid.Constructors.VectorMatroid
 
 
--- question: can we use `CommRing`s instead of `Field`s everywhere when talking about representability?
+-- question: Can we use `CommRing`s instead of `Field`s everywhere when talking about representability?
+-- answer: Originally there was a `Field` because we needed to invert a matrix; now we can use `Ring`s!
 
 section BasicDefinitions
 
 /-- Matroid `M` is represented by matrix `A` if vector matroid `M[A]` is exactly `M` -/
-def Matroid.IsRepresentedBy {α R X : Type} [CommRing R] (M : Matroid α) (A : Matrix X M.E R) : Prop :=
+def Matroid.IsRepresentedBy {α R X : Type} [Ring R] (M : Matroid α) (A : Matrix X M.E R) : Prop :=
   M = (⟨X, M.E, A⟩ : VectorMatroid α R).matroid
 
 /-- Matroid `M` can be represented over field `F` if it can be represented by some matrix with entries in `F` -/
-def Matroid.IsRepresentableOver {α : Type} (M : Matroid α) (F : Type) [Field F] : Prop :=
+def Matroid.IsRepresentableOver {α : Type} (M : Matroid α) (F : Type) [Ring F] : Prop :=
   ∃ M' : VectorMatroid α F, M'.matroid = M
 
 /-- Matroid `M` is representable if it is representable over some field -/
