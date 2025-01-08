@@ -3,16 +3,7 @@ import Seymour.ForMathlib.Basic
 import Seymour.ForMathlib.FunctionDecompose
 
 
-variable {X₁ X₂ Z : Type}
-
-lemma decomposeSum_card_eq [Fintype X₁] [DecidableEq X₁] [Fintype X₂] [DecidableEq X₂] [Fintype Z]
-    (f : Z → X₁ ⊕ X₂) :
-    Fintype.card { x₁ : Z × X₁ // f x₁.fst = Sum.inl x₁.snd } + Fintype.card { x₂ : Z × X₂ // f x₂.fst = Sum.inr x₂.snd } =
-    Fintype.card Z := by
-  rw [←Fintype.card_sum]
-  exact Fintype.card_congr f.decomposeSum.symm
-
-variable {R : Type}
+variable {X₁ X₂ Z R : Type}
 
 lemma Matrix.IsTotallyUnimodular.comp_rows [CommRing R] {A : Matrix X₁ X₂ R}
     (hA : A.IsTotallyUnimodular) (e : Z → X₁) :
@@ -28,10 +19,8 @@ lemma Matrix.IsTotallyUnimodular.comp_cols [CommRing R] {A : Matrix X₁ X₂ R}
   intro k f g
   exact hA k f (e ∘ g)
 
-variable {Y₁ Y₂ : Type}
-
 /-- `Matrix.fromBlocks_isTotallyUnimodular` preprocessing. -/
-private lemma Matrix.fromBlocks_submatrix [Zero R] (A₁ : Matrix X₁ Y₁ R) (A₂ : Matrix X₂ Y₂ R)
+private lemma Matrix.fromBlocks_submatrix {Y₁ Y₂ : Type} [Zero R] (A₁ : Matrix X₁ Y₁ R) (A₂ : Matrix X₂ Y₂ R)
     (f : Z → X₁ ⊕ X₂) (g : Z → Y₁ ⊕ Y₂) :
     (fromBlocks A₁ 0 0 A₂).submatrix f g =
     (fromBlocks
@@ -50,6 +39,30 @@ private lemma Matrix.fromBlocks_submatrix [Zero R] (A₁ : Matrix X₁ Y₁ R) (
     ←Matrix.submatrix_submatrix]
   aesop
 
+variable [Fintype Z]
+
+noncomputable instance {f : Z → X₁ ⊕ X₂} : Fintype { x₁ : Z × X₁ // f x₁.fst = Sum.inl x₁.snd } := by
+  apply Fintype.ofInjective (·.val.fst)
+  intro ⟨⟨u, u₁⟩, hu⟩ ⟨⟨v, v₁⟩, hv⟩ huv
+  dsimp only at hu hv huv
+  rw [Subtype.mk_eq_mk, Prod.mk.inj_iff]
+  refine ⟨huv, ?_⟩
+  rw [←Sum.inl.injEq, ←hu, ←hv, huv]
+
+noncomputable instance {f : Z → X₁ ⊕ X₂} : Fintype { x₂ : Z × X₂ // f x₂.fst = Sum.inr x₂.snd } := by
+  apply Fintype.ofInjective (·.val.fst)
+  intro ⟨⟨u, u₁⟩, hu⟩ ⟨⟨v, v₁⟩, hv⟩ huv
+  dsimp only at hu hv huv
+  rw [Subtype.mk_eq_mk, Prod.mk.inj_iff]
+  refine ⟨huv, ?_⟩
+  rw [←Sum.inr.injEq, ←hu, ←hv, huv]
+
+lemma decomposeSum_card_eq (f : Z → X₁ ⊕ X₂) :
+    Fintype.card { x₁ : Z × X₁ // f x₁.fst = Sum.inl x₁.snd } + Fintype.card { x₂ : Z × X₂ // f x₂.fst = Sum.inr x₂.snd } =
+    Fintype.card Z := by
+  rw [←Fintype.card_sum]
+  exact Fintype.card_congr f.decomposeSum.symm
+
 /-
 In the comments bellow, we will use the following shorthands:
 
@@ -67,9 +80,7 @@ In the comments bellow, we will use the following shorthands:
 ` | ` denotes `Equiv.sumCongr`
 `|S|` denotes `Fintype.card S` for any `{S : Type} [Fintype S]`
 -/
-variable [LinearOrderedCommRing R] [Fintype Z] [DecidableEq Z]
-  [Fintype X₁] [DecidableEq X₁] [Fintype Y₁] [DecidableEq Y₁]
-  [Fintype X₂] [DecidableEq X₂] [Fintype Y₂] [DecidableEq Y₂]
+variable [LinearOrderedCommRing R] [DecidableEq Z] [DecidableEq X₁] [DecidableEq X₂] {Y₁ Y₂ : Type}
 
 /-- `Matrix.fromBlocks_isTotallyUnimodular` square case. -/
 private lemma Matrix.fromBlocks_submatrix_det_in_set_range_singType_cast_of_isTotallyUnimodular_of_card_eq
@@ -245,6 +256,7 @@ private lemma Matrix.fromBlocks_submatrix_det_in_set_range_singType_cast_of_card
   exact Matrix.det_eq_zero_of_row_eq_zero (Sum.inr (Classical.choice hX')) (fun _ => rfl)
 
 omit Z
+variable [DecidableEq Y₁] [DecidableEq Y₂]
 
 /-- The block matrix that has two totally unimodular matrices along the diagonal and zeros elsewhere is totally unimodular. -/
 lemma Matrix.fromBlocks_isTotallyUnimodular {A₁ : Matrix X₁ Y₁ R} {A₂ : Matrix X₂ Y₂ R}
