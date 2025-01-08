@@ -29,13 +29,13 @@ def VectorMatroid.IndepCols (M : VectorMatroid α R) (S : Set α) : Prop :=
   M.A.IndepCols S
 
 /-- Empty set is independent. -/
-theorem VectorMatroid.IndepCols_empty (M : VectorMatroid α R) :
+theorem VectorMatroid.indepCols_empty (M : VectorMatroid α R) :
     M.IndepCols ∅ := by
   use Set.empty_subset M.E
   exact linearIndependent_empty_type
 
 /-- A subset of a linearly independent set of columns is linearly independent. -/
-theorem VectorMatroid.IndepCols_subset (M : VectorMatroid α R) (I J : Set α) (hMJ : M.IndepCols J) (hIJ : I ⊆ J) :
+theorem VectorMatroid.indepCols_subset (M : VectorMatroid α R) (I J : Set α) (hMJ : M.IndepCols J) (hIJ : I ⊆ J) :
     M.IndepCols I := by
   obtain ⟨hJ, hM⟩ := hMJ
   use hIJ.trans hJ
@@ -46,27 +46,28 @@ theorem VectorMatroid.IndepCols_subset (M : VectorMatroid α R) (I J : Set α) (
   simpa [Subtype.map] using hf
 
 /-- A non-maximal linearly independent set of columns can be augmented with another linearly independent column. -/
-theorem VectorMatroid.IndepCols_aug (M : VectorMatroid α R) (I J : Set α)
+theorem VectorMatroid.indepCols_aug (M : VectorMatroid α R) (I J : Set α)
     (hMI : M.IndepCols I) (hMI' : ¬Maximal M.IndepCols I) (hMJ : Maximal M.IndepCols J) :
     ∃ x ∈ J \ I, M.IndepCols (x ᕃ I) := by
-  sorry
+  sorry -- TODO important
 
 /-- Every set of columns contains a maximal independent subset of columns. -/
-theorem VectorMatroid.IndepCols_maximal (M : VectorMatroid α R) (S : Set α) :
+theorem VectorMatroid.indepCols_maximal (M : VectorMatroid α R) (S : Set α) :
     Matroid.ExistsMaximalSubsetProperty M.IndepCols S := by
-  sorry
+  sorry -- TODO important
 
 /-- Vector matroid expressed as `IndepMatroid`. -/
-def VectorMatroid.IndepMatroid (M : VectorMatroid α R) : IndepMatroid α where
+def VectorMatroid.toIndepMatroid (M : VectorMatroid α R) : IndepMatroid α where
   E := M.E
   Indep := M.IndepCols
-  indep_empty := M.IndepCols_empty
-  indep_subset := M.IndepCols_subset
-  indep_aug := M.IndepCols_aug
-  indep_maximal S _ := M.IndepCols_maximal S
+  indep_empty := M.indepCols_empty
+  indep_subset := M.indepCols_subset
+  indep_aug := M.indepCols_aug
+  indep_maximal S _ := M.indepCols_maximal S
   subset_ground _ := Exists.choose
 
 end Definition
+
 
 section API
 
@@ -74,7 +75,7 @@ variable {α R : Type} [Ring R]
 
 /-- Vector matroid converted to `Matroid`. -/
 def VectorMatroid.toMatroid (M : VectorMatroid α R) : Matroid α :=
-  M.IndepMatroid.matroid
+  M.toIndepMatroid.matroid
 
 @[simp]
 lemma VectorMatroid.toMatroid_E (M : VectorMatroid α R) : M.toMatroid.E = M.E :=
@@ -85,6 +86,7 @@ lemma VectorMatroid.toMatroid_indep (M : VectorMatroid α R) : M.toMatroid.Indep
   rfl
 
 end API
+
 
 section EquivalentTransformations
 
@@ -101,6 +103,7 @@ section EquivalentTransformations
 -- todo: if A is non-zero, it can be reduced to [I | D] by a sequence of operations of types 2.2.1-2.2.5
 
 end EquivalentTransformations
+
 
 section StandardRepr
 
@@ -133,57 +136,57 @@ def Matrix.glueCols {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidabl
 -- TODO generalize and move
 
 /-- Vector matroid constructed from standard representation. -/
-def StandardRepr.toVectorMatroid [DecidableEq α] (Repr : StandardRepr α R) : VectorMatroid α R :=
-  ⟨Repr.X, Repr.X ∪ Repr.Y, (Matrix.fromCols 1 Repr.B).glueCols⟩
+def StandardRepr.toVectorMatroid [DecidableEq α] (S : StandardRepr α R) : VectorMatroid α R :=
+  ⟨S.X, S.X ∪ S.Y, (Matrix.fromCols 1 S.B).glueCols⟩
 
 /-- Ground set of a vector matroid is union of row and column index sets of its standard matrix representation. -/
 @[simp]
-lemma StandardRepr.toVectorMatroid_E [DecidableEq α] (Repr : StandardRepr α R) :
-    Repr.toVectorMatroid.toMatroid.E = Repr.X ∪ Repr.Y :=
+lemma StandardRepr.toVectorMatroid_E [DecidableEq α] (S : StandardRepr α R) :
+    S.toVectorMatroid.toMatroid.E = S.X ∪ S.Y :=
   rfl
 
 /-- Full representation matrix of vector matroid is `[I | B]`. -/
 @[simp]
-lemma StandardRepr.toVectorMatroid_A [DecidableEq α] (Repr : StandardRepr α R) :
-    Repr.toVectorMatroid.A = (Matrix.fromCols 1 Repr.B).glueCols :=
+lemma StandardRepr.toVectorMatroid_A [DecidableEq α] (S : StandardRepr α R) :
+    S.toVectorMatroid.A = (Matrix.fromCols 1 S.B).glueCols :=
   rfl
 
 /-- Set is independent in vector matroid iff corresponding set of columns of `[I | B]` is linearly independent over `R`. -/
 @[simp]
-lemma StandardRepr.toVectorMatroid_indep [DecidableEq α] (Repr : StandardRepr α R) :
-    Repr.toVectorMatroid.toMatroid.Indep = Repr.toVectorMatroid.IndepCols :=
+lemma StandardRepr.toVectorMatroid_indep [DecidableEq α] (S : StandardRepr α R) :
+    S.toVectorMatroid.toMatroid.Indep = S.toVectorMatroid.IndepCols :=
   rfl
 
 /-- todo: desc -/
-lemma VectorMatroid.exists_standard_repr [DecidableEq α] (M : VectorMatroid α R) :
-    ∃ Repr : StandardRepr α R, M = Repr.toVectorMatroid :=
+lemma VectorMatroid.exists_standardRepr [DecidableEq α] (M : VectorMatroid α R) :
+    ∃ S : StandardRepr α R, M = S.toVectorMatroid := by
   sorry
 
 /-- todo: desc -/
-lemma VectorMatroid.standard_repr_base [DecidableEq α] {M : VectorMatroid α R} {Repr: StandardRepr α R}
-    (h : M = Repr.toVectorMatroid) :
-    M.toMatroid.Base Repr.X :=
+lemma StandardRepr.toVectorMatroid_toMatroid_base [DecidableEq α] (S : StandardRepr α R) :
+    S.toVectorMatroid.toMatroid.Base S.X := by
   sorry
 
-def StandardRepr.dual [DecidableEq α] (Repr : StandardRepr α R) : StandardRepr α R where
-  X := Repr.Y
-  Y := Repr.X
-  decmemX := Repr.decmemY
-  decmemY := Repr.decmemX
-  hXY := Repr.hXY.symm
-  B := -Repr.B.transpose
+def StandardRepr.dual [DecidableEq α] (S : StandardRepr α R) : StandardRepr α R where
+  X := S.Y
+  Y := S.X
+  decmemX := S.decmemY
+  decmemY := S.decmemX
+  hXY := S.hXY.symm
+  B := - S.B.transpose
+
+postfix:max "✶" => StandardRepr.dual
 
 /-- todo: desc -/
-lemma VectorMatroid.dual_standard_repr [DecidableEq α] {M : VectorMatroid α R} {Repr: StandardRepr α R}
-    (h : M = Repr.toVectorMatroid) :
-    M.toMatroid.dual = Repr.dual.toVectorMatroid.toMatroid :=
+lemma StandardRepr.toVectorMatroid_toMatroid_dual [DecidableEq α] (S : StandardRepr α R) :
+    S.toVectorMatroid.toMatroid✶ = S✶.toVectorMatroid.toMatroid :=
   sorry -- Theorem 2.2.8 in Oxley
 
 /-- todo: desc -/
-lemma VectorMatroid.dual_exists_standard_repr [DecidableEq α] (M : VectorMatroid α R) :
-    ∃ DualRepr : StandardRepr α R, M.toMatroid.dual = DualRepr.toVectorMatroid.toMatroid := by
-  have ⟨Repr, hRepr⟩ := M.exists_standard_repr
-  use Repr.dual
-  exact VectorMatroid.dual_standard_repr hRepr
+lemma VectorMatroid.dual_exists_standardRepr [DecidableEq α] (M : VectorMatroid α R) :
+    ∃ S' : StandardRepr α R, M.toMatroid✶ = S'.toVectorMatroid.toMatroid := by
+  have ⟨S, hS⟩ := M.exists_standardRepr
+  use S✶
+  rw [hS, StandardRepr.toVectorMatroid_toMatroid_dual]
 
 end StandardRepr

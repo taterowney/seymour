@@ -176,7 +176,7 @@ section Equivalence
 lemma disjoint_inter_disjoint {A B : Set α} (C : Set α) (hAB : A ⫗ B) : C ⫗ A ∩ B := by
   rw [hAB.inter_eq]
   exact Set.disjoint_empty C
--- TODO move?
+-- TODO move
 
 /-- If `M₁.E ∩ M₂.E = ∅`, then `M₁ Δ M₂ = M₁ ⊕ M₂` -/
 lemma BinaryMatroid.DeltaSum.SpecialCase1Sum [DecidableEq α] {M₁ M₂ : BinaryMatroid α}
