@@ -162,9 +162,13 @@ lemma VectorMatroid.exists_standardRepr [DecidableEq α] (M : VectorMatroid α R
     ∃ S : StandardRepr α R, M = S.toVectorMatroid := by
   sorry
 
+/-- Matroid constructed from standard representation. -/
+def StandardRepr.toMatroid [DecidableEq α] (S : StandardRepr α R) : Matroid α :=
+  S.toVectorMatroid.toMatroid
+
 /-- todo: desc -/
-lemma StandardRepr.toVectorMatroid_toMatroid_base [DecidableEq α] (S : StandardRepr α R) :
-    S.toVectorMatroid.toMatroid.Base S.X := by
+lemma StandardRepr.toMatroid_base [DecidableEq α] (S : StandardRepr α R) :
+    S.toMatroid.Base S.X := by
   sorry
 
 def StandardRepr.dual [DecidableEq α] (S : StandardRepr α R) : StandardRepr α R where
@@ -178,15 +182,14 @@ def StandardRepr.dual [DecidableEq α] (S : StandardRepr α R) : StandardRepr α
 postfix:max "✶" => StandardRepr.dual
 
 /-- todo: desc -/
-lemma StandardRepr.toVectorMatroid_toMatroid_dual [DecidableEq α] (S : StandardRepr α R) :
-    S.toVectorMatroid.toMatroid✶ = S✶.toVectorMatroid.toMatroid :=
+lemma StandardRepr.toMatroid_dual [DecidableEq α] (S : StandardRepr α R) :
+    S.toMatroid✶ = S✶.toMatroid :=
   sorry -- Theorem 2.2.8 in Oxley
 
 /-- todo: desc -/
 lemma VectorMatroid.dual_exists_standardRepr [DecidableEq α] (M : VectorMatroid α R) :
-    ∃ S' : StandardRepr α R, M.toMatroid✶ = S'.toVectorMatroid.toMatroid := by
+    ∃ S' : StandardRepr α R, M.toMatroid✶ = S'.toMatroid :=
   have ⟨S, hS⟩ := M.exists_standardRepr
-  use S✶
-  rw [hS, StandardRepr.toVectorMatroid_toMatroid_dual]
+  ⟨S✶, hS ▸ S.toMatroid_dual⟩
 
 end StandardRepr
