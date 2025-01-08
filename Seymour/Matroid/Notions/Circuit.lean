@@ -1,4 +1,5 @@
 import Mathlib.Data.Matroid.Basic
+import Seymour.Basic
 
 
 variable {α : Type}
@@ -67,8 +68,8 @@ lemma Matroid.Circuit.dep_iff_has_circuit {M : Matroid α} {D : Set α} :
 
 /-- todo: desc -/
 lemma Matroid.Circuit.indep_ext_dep_has_circuit_w_ext {M : Matroid α} {I : Set α} {a : α}
-    (hI : M.Indep I) (hIa : M.Dep (insert a I)) :
-    ∃ C, M.Circuit C ∧ C ⊆ insert a I ∧ a ∈ C := by
+    (hI : M.Indep I) (hIa : M.Dep (a ᕃ I)) :
+    ∃ C, M.Circuit C ∧ C ⊆ a ᕃ I ∧ a ∈ C := by
   obtain ⟨C, hC, hCIa⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hIa
   exact ⟨C, hC, hCIa, by
     by_contra haC

@@ -41,11 +41,11 @@ def twoSumGround (M₁ M₂ : Matroid α) : Set α :=
 
 /-- Type 1 of circuits in `M₁ ⊕₂ M₂`: circuits of `M₁` that are disjoint with `M₁.E ∩ M₂.E` -/
 def TwoSumCircuitType1 (M₁ M₂ : Matroid α) (C : Set α) : Prop :=
-  M₁.Circuit C ∧ Disjoint C (M₁.E ∩ M₂.E)
+  M₁.Circuit C ∧ C ⫗ M₁.E ∩ M₂.E
 
 /-- Type 2 of circuits in `M₁ ⊕₂ M₂`: circuits of `M₂` that are disjoint with `M₁.E ∩ M₂.E` -/
 def TwoSumCircuitType2 (M₁ M₂ : Matroid α) (C : Set α) : Prop :=
-  M₂.Circuit C ∧ Disjoint C (M₁.E ∩ M₂.E)
+  M₂.Circuit C ∧ C ⫗ M₁.E ∩ M₂.E
 
 /-- Type 3 of circuits in `M₁ ⊕₂ M₂`:
     sets `(C₁ ∪ C₂) \ (M₁.E ∩ M₂.E)` where `C₁` and `C₂` are circuits in `M₁` and `M₂`, respectively,
@@ -130,12 +130,12 @@ section PropertiesGroundSet
 
 /-- Ground set of 2-sum is disjoint with `M₁.E ∩ M₂.E` -/
 lemma Matroid.TwoSum.E.disjoint_inter (M₁ M₂ : Matroid α) :
-    Disjoint (twoSumGround M₁ M₂) (M₁.E ∩ M₂.E) :=
+    twoSumGround M₁ M₂ ⫗ M₁.E ∩ M₂.E :=
   Set.disjoint_sdiff_left
 
 /-- Ground sets minus their intersection are disjoint sets -/
 lemma Matroid.TwoSum.disjoint_grounds_diff_inter (M₁ M₂ : Matroid α) :
-    Disjoint (M₁.E \ (M₁.E ∩ M₂.E)) (M₂.E \ (M₁.E ∩ M₂.E)) := by
+    M₁.E \ (M₁.E ∩ M₂.E) ⫗ M₂.E \ (M₁.E ∩ M₂.E) := by
   rw [Set.diff_self_inter, Set.diff_inter_self_eq_diff]
   exact disjoint_sdiff_sdiff
 
@@ -151,7 +151,7 @@ lemma TwoSumCircuitType1.circuit_M₁ (hC : TwoSumCircuitType1 M₁ M₂ C) : M�
   hC.left
 
 /-- Circuit of type 1 is disjoint with `M₁.E ∩ M₂.E` -/
-lemma TwoSumCircuitType1.disjoint_inter (hC : TwoSumCircuitType1 M₁ M₂ C) : Disjoint C (M₁.E ∩ M₂.E) :=
+lemma TwoSumCircuitType1.disjoint_inter (hC : TwoSumCircuitType1 M₁ M₂ C) : C ⫗ M₁.E ∩ M₂.E :=
   hC.right
 
 /-- Circuit of type 1 lies in `M₁.E ∪ M₂.E` -/
@@ -167,7 +167,7 @@ lemma TwoSumCircuitType1.subset_M₁_diff_inter (hC : TwoSumCircuitType1 M₁ M�
   Set.subset_diff.mpr ⟨hC.circuit_M₁.subset_ground, hC.disjoint_inter⟩
 
 /-- Circuit of type 1 is disjoint with `M₂.E` -/
-lemma TwoSumCircuitType1.disjoint_M₂ (hC : TwoSumCircuitType1 M₁ M₂ C) : Disjoint C M₂.E := by
+lemma TwoSumCircuitType1.disjoint_M₂ (hC : TwoSumCircuitType1 M₁ M₂ C) : C ⫗ M₂.E := by
   have hMM := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
   have hCM₂ := Set.disjoint_of_subset_left hC.subset_M₁_diff_inter hMM
   have hCM₂ := Set.disjoint_union_right.mpr ⟨hCM₂, hC.disjoint_inter⟩
@@ -186,7 +186,7 @@ lemma TwoSumCircuitType2.circuit_M₂ (hC : TwoSumCircuitType2 M₁ M₂ C) : M�
   hC.left
 
 /-- Circuit of type 2 is disjoint with `M₁.E ∩ M₂.E` -/
-lemma TwoSumCircuitType2.disjoint_inter (hC : TwoSumCircuitType2 M₁ M₂ C) : Disjoint C (M₁.E ∩ M₂.E) :=
+lemma TwoSumCircuitType2.disjoint_inter (hC : TwoSumCircuitType2 M₁ M₂ C) : C ⫗ M₁.E ∩ M₂.E :=
   hC.right
 
 /-- Circuit of type 2 lies in `M₁.E ∪ M₂.E` -/
@@ -202,7 +202,7 @@ lemma TwoSumCircuitType2.subset_M₂_diff_inter (hC : TwoSumCircuitType2 M₁ M�
   Set.subset_diff.mpr ⟨hC.circuit_M₂.subset_ground, hC.disjoint_inter⟩
 
 /-- Circuit of type 2 is disjoint with `M₁.E` -/
-lemma TwoSumCircuitType2.disjoint_M₁ (hC : TwoSumCircuitType2 M₁ M₂ C) : Disjoint C M₁.E := by
+lemma TwoSumCircuitType2.disjoint_M₁ (hC : TwoSumCircuitType2 M₁ M₂ C) : C ⫗ M₁.E := by
   have hMM := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
   have hCM₁ := (Set.disjoint_of_subset_right hC.subset_M₂_diff_inter hMM).symm
   have hCM₁ := Set.disjoint_union_right.mpr ⟨hCM₁, hC.disjoint_inter⟩
@@ -232,15 +232,15 @@ lemma TwoSumCircuitType3.subset_union (hC : TwoSumCircuitType3 M₁ M₂ C) : C 
   sub_union_diff_sub_union hC.subset_ground
 
 /-- Circuit of type 3 is disjoint with `M₁.E ∩ M₂.E` -/
-lemma TwoSumCircuitType3.disjoint_inter (hC : TwoSumCircuitType3 M₁ M₂ C) : Disjoint C (M₁.E ∩ M₂.E) :=
+lemma TwoSumCircuitType3.disjoint_inter (hC : TwoSumCircuitType3 M₁ M₂ C) : C ⫗ M₁.E ∩ M₂.E :=
   Set.disjoint_of_subset_left hC.subset_ground (Matroid.TwoSum.E.disjoint_inter M₁ M₂)
 
 /-- Circuit of type 3 intersected with `M₁.E` is disjoint with `M₁.E ∩ M₂.E` -/
-lemma TwoSumCircuitType3.disjoint_inter_M₁_inter (hC : TwoSumCircuitType3 M₁ M₂ C) : Disjoint (C ∩ M₁.E) (M₁.E ∩ M₂.E) :=
+lemma TwoSumCircuitType3.disjoint_inter_M₁_inter (hC : TwoSumCircuitType3 M₁ M₂ C) : C ∩ M₁.E ⫗ M₁.E ∩ M₂.E :=
   hC.disjoint_inter.inter_left M₁.E
 
 /-- Circuit of type 3 intersected with `M₂.E` is disjoint with `M₁.E ∩ M₂.E` -/
-lemma TwoSumCircuitType3.disjoint_inter_M₂_inter (hC : TwoSumCircuitType3 M₁ M₂ C) : Disjoint (C ∩ M₂.E) (M₁.E ∩ M₂.E) :=
+lemma TwoSumCircuitType3.disjoint_inter_M₂_inter (hC : TwoSumCircuitType3 M₁ M₂ C) : C ∩ M₂.E ⫗ M₁.E ∩ M₂.E :=
   hC.disjoint_inter.inter_left M₂.E
 
 /-- Circuit of type 3 has nonempty intersection with `M₁.E` -/
@@ -276,7 +276,7 @@ lemma TwoSumCircuitType1.not_ssubset_circuit_type_1 {M₁ M₂ : Matroid α} {C 
 /-- Circuit of type 1 is disjoint with any circuit of type 2 -/
 lemma TwoSumCircuitType1.disjoint_circuit_type_2 {M₁ M₂ : Matroid α} {C₁ C₂ : Set α}
     (hC₁ : TwoSumCircuitType1 M₁ M₂ C₁) (hC₂ : TwoSumCircuitType2 M₁ M₂ C₂) :
-    Disjoint C₁ C₂ := by
+    C₁ ⫗ C₂ := by
   have hC₁M₁ := hC₁.subset_M₁_diff_inter
   have hC₂M₂ := hC₂.subset_M₂_diff_inter
   have hMM := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
@@ -318,7 +318,7 @@ variable {M₁ M₂ : Matroid α}
 /-- Circuits of type 2 are disjoint with circuits of type 1 -/
 lemma TwoSumCircuitType2.disjoint_circuitType1 {C₁ C₂ : Set α}
     (hC₂ : TwoSumCircuitType2 M₁ M₂ C₂) (hC₁ : TwoSumCircuitType1 M₁ M₂ C₁) :
-    Disjoint C₂ C₁ :=
+    C₂ ⫗ C₁ :=
   (hC₁.disjoint_circuit_type_2 hC₂).symm
 
 /-- Circuit of type 2 is not a strict subset of any circuit of type 1 -/

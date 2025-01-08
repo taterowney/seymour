@@ -37,7 +37,7 @@ lemma Matroid.Coloop.iff_in_no_circuit (M : Matroid α) {a : α} :
       · intro B hB
         by_contra haB
         push_neg at haB
-        have haBdep : M.Dep (insert a B) := Base.dep_of_insert hB (Set.singleton_inter_eq_empty.mp haB) haE
+        have haBdep : M.Dep (a ᕃ B) := Base.dep_of_insert hB (Set.singleton_inter_eq_empty.mp haB) haE
         obtain ⟨C', hC', hC'aB, haC'⟩ := Matroid.Circuit.indep_ext_dep_has_circuit_w_ext (Matroid.Base.indep hB) haBdep
         exact haC C' hC' haC'
       · exact Set.singleton_subset_iff.mpr haE

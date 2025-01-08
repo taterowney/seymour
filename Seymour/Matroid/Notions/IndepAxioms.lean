@@ -1,4 +1,5 @@
 import Mathlib.Data.Matroid.Basic
+import Seymour.Basic
 
 
 /-- Independence predicate, defines which sets are independent. -/
@@ -23,7 +24,7 @@ alias IndepPredicate.axiom_i2 := IndepPredicate.indep_subset
 
 /-- Axiom (I3): augmentation property. -/
 def IndepPredicate.indep_aug (P : IndepPredicate α) : Prop :=
-  ∀ I B, P I → ¬Maximal P I → Maximal P B → ∃ x ∈ B \ I, P (insert x I)
+  ∀ I B, P I → ¬Maximal P I → Maximal P B → ∃ x ∈ B \ I, P (x ᕃ I)
 alias IndepPredicate.axiom_i3 := IndepPredicate.indep_aug
 
 /-- Axiom (IM): set of all independent sets has the maximal subset property. -/

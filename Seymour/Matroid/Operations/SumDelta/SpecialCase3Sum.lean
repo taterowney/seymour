@@ -4,13 +4,15 @@ import Seymour.Matroid.Operations.SumDelta.Basic
 
 /-- Assumptions for Δ-sum  -/
 structure ThreeSumAssumptions {α : Type} [DecidableEq α] (M₁ M₂ : BinaryMatroid α) where
-  /-- `M₁` and `M₂` are finite -/
+  /-- `M₁` is finite -/
   hM₁_finite : M₁.E.Finite
+  /-- `M₂` is finite -/
   hM₂_finite : M₂.E.Finite
-  /-- `M₁` and `M₂` contain at least 7 elements -/
+  /-- `M₁` contains at least 7 elements -/
   hM₁_card : M₁.E.encard ≥ 7
+  /-- `M₂` contains at least 7 elements -/
   hM₂_card : M₂.E.encard ≥ 7
-  /-- `M₁` and `M₂` meet at a set `T` that is a triangle in both -/
+  -- `M₁` and `M₂` meet at a set `T` that is a triangle in both
   hT : (M₁.E ∩ M₂.E).encard = 3
   hTM₁ : M₁.toMatroid.Circuit (M₁.E ∩ M₂.E)
   hTM₂ : M₂.toMatroid.Circuit (M₁.E ∩ M₂.E)

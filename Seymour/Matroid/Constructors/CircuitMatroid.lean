@@ -105,7 +105,7 @@ lemma CircuitMatroid.Maximal_iff (M : CircuitMatroid α) (B : Set α) :
       exact hCdep hDindep
     have hDssubC := Set.ssubset_iff_subset_ne.mpr ⟨hDC, hDneqC⟩
     obtain ⟨x, hxC, hxnD⟩ := Set.exists_of_ssubset hDssubC
-    have hDextC : insert x D = C := sorry
+    have hDextC : x ᕃ D = C := sorry
     sorry -- todo: finish
   · intro ⟨_, hC⟩
     constructor

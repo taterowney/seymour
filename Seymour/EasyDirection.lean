@@ -9,7 +9,7 @@ This file states the "easy" (composition) direction of the Seymour decomposition
 
 variable {α : Type}
 
-theorem easySeymour.Sum1 {M₁ M₂ : Matroid α} (hM₁ : M₁.IsRegular) (hM₂ : M₂.IsRegular) (hMM : Disjoint M₁.E M₂.E) :
+theorem easySeymour.Sum1 {M₁ M₂ : Matroid α} (hM₁ : M₁.IsRegular) (hM₂ : M₂.IsRegular) (hMM : M₁.E ⫗ M₂.E) :
     (Matroid.disjointSum M₁ M₂ hMM).IsRegular := by
   sorry
 

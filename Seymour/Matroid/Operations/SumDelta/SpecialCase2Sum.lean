@@ -51,22 +51,22 @@ lemma BinaryMatroid.DeltaSum.CircuitForm2.sum2_circuit_pred {C : Set α}
 
     cases hX₁udc.dep_or_empty with
     | inl hX₁dep =>
-        have hX₁eq : X₁ = M₁.E ∩ M₂.E := by
-          have hSDsubM₂ := (symmDiff_eq_alt X₁ X₂ ▸ hCXX) ▸ (hCC'.trans hC.subset_ground)
-          have hX₁M₂ := M₂.toMatroid_E ▸ symmDiff_subset_ground_left hSDsubM₂ hX₂udc.subset_ground
-          have hX₁sub_inter := Set.subset_inter hX₁dep.subset_ground hX₁M₂
-          have hInterFinite := Set.finite_of_encard_eq_coe hMM.interSingleton
-          have hEncardInterLeX₁ := le_of_eq_of_le hMM.interSingleton (Set.one_le_encard_iff_nonempty.mpr hX₁dep.nonempty)
-          exact Set.Finite.eq_of_subset_of_encard_le hInterFinite hX₁sub_inter hEncardInterLeX₁
-        have ⟨p, hp⟩ := hMM.inter_singleton
-        have hX₁loop : M₁.toMatroid.Loop p := ⟨TwoSumAssumptions.inter_singleton_mem_M₁ hp, hp ▸ hX₁eq ▸ hX₁dep⟩
-        exfalso
-        exact hMM.inter_singleton_not_loop_M₁ hp hX₁loop
+      have hX₁eq : X₁ = M₁.E ∩ M₂.E := by
+        have hSDsubM₂ := (symmDiff_eq_alt X₁ X₂ ▸ hCXX) ▸ hCC'.trans hC.subset_ground
+        have hX₁M₂ := M₂.toMatroid_E ▸ symmDiff_subset_ground_left hSDsubM₂ hX₂udc.subset_ground
+        have hX₁sub_inter := Set.subset_inter hX₁dep.subset_ground hX₁M₂
+        have hInterFinite := Set.finite_of_encard_eq_coe hMM.interSingleton
+        have hEncardInterLeX₁ := le_of_eq_of_le hMM.interSingleton (Set.one_le_encard_iff_nonempty.mpr hX₁dep.nonempty)
+        exact Set.Finite.eq_of_subset_of_encard_le hInterFinite hX₁sub_inter hEncardInterLeX₁
+      have ⟨p, hp⟩ := hMM.inter_singleton
+      have hX₁loop : M₁.toMatroid.Loop p := ⟨TwoSumAssumptions.inter_singleton_mem_M₁ hp, hp ▸ hX₁eq ▸ hX₁dep⟩
+      exfalso
+      exact hMM.inter_singleton_not_loop_M₁ hp hX₁loop
     | inr hX₁empty =>
-        rw [hX₁empty, Set.empty_union, Set.empty_inter, Set.diff_empty] at hCXX
-        rw [hCXX] at hCC' hC'nempty ⊢
-        have hX₂dep := hX₂udc.nonempty_dep hC'nempty
-        exact (Matroid.Circuit.circuit_iff_def.mp hC).2 X₂ hX₂dep hCC'
+      rw [hX₁empty, Set.empty_union, Set.empty_inter, Set.diff_empty] at hCXX
+      rw [hCXX] at hCC' hC'nempty ⊢
+      have hX₂dep := hX₂udc.nonempty_dep hC'nempty
+      exact (Matroid.Circuit.circuit_iff_def.mp hC).2 X₂ hX₂dep hCC'
 
 /-- Under 2-sum assumptions, `{p}` in definition of circuits of form 3 is exactly `M₁.E ∩ M₂.E` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_singleton_eq {C : Set α} {p : α}
@@ -204,7 +204,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
               -- todo: clean up
               by_contra hnpX₁
               rw [Set.singleton_subset_iff] at hnpX₁
-              have hX₁p : Disjoint X₁ {p} := Set.disjoint_singleton_right.mpr hnpX₁
+              have hX₁p : X₁ ⫗ {p} := Set.disjoint_singleton_right.mpr hnpX₁
               have hpInter : p ∉ X₁ ∩ X₂ := fun h => hnpX₁ (Set.mem_of_mem_inter_left h)
               have hpInter2 : X₁ ∩ X₂ ≠ {p} := (ne_of_mem_of_not_mem' rfl hpInter).symm
               have hX₁X₂ : X₁ ∩ X₂ = ∅ := by
@@ -212,7 +212,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
                 cases Set.subset_singleton_iff_eq.mp hX₁X₂p with
                 | inl t => exact h t
                 | inr t => exact hpInter2 t
-              have hX₁inter : Disjoint X₁ (M₁.E ∩ M₂.E) := hp ▸ hX₁p
+              have hX₁inter : X₁ ⫗ M₁.E ∩ M₂.E := hp ▸ hX₁p
               have hX₁C : X₁ ⊆ C := (Set.diff_empty ▸ hX₁X₂ ▸ hCX₁X₂) ▸ Set.subset_union_left
               have ⟨Y₁, hY₁, hY₁X₁⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hX₁dep
               have hY₁inter := Set.disjoint_of_subset_left hY₁X₁ hX₁inter
@@ -220,7 +220,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
               specialize hCmin hY₁cf1.circuit_form (hY₁X₁.trans hX₁C)
               have hCeq : C = X₁ := Set.Subset.antisymm (hCmin.trans hY₁X₁) hX₁C
               have hCeq2 := Set.diff_empty ▸ hX₁X₂ ▸ hCX₁X₂
-              have hX₁X₂ : Disjoint X₁ X₂ := Set.disjoint_iff_inter_eq_empty.mpr hX₁X₂
+              have hX₁X₂ : X₁ ⫗ X₂ := Set.disjoint_iff_inter_eq_empty.mpr hX₁X₂
               rw [hCeq] at hCeq2
               have hX₂ := (Set.disjoint_of_subset_iff_left_eq_empty (Set.union_eq_left.mp hCeq2.symm)).mp hX₁X₂.symm
               exact Set.not_nonempty_empty (hX₂ ▸ hX₂empty)
@@ -229,7 +229,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
               -- todo: clean up
               by_contra hnpX₂
               rw [Set.singleton_subset_iff] at hnpX₂
-              have hX₂p : Disjoint X₂ {p} := Set.disjoint_singleton_right.mpr hnpX₂
+              have hX₂p : X₂ ⫗ {p} := Set.disjoint_singleton_right.mpr hnpX₂
               have hpInter : p ∉ X₁ ∩ X₂ := fun h => hnpX₂ (Set.mem_of_mem_inter_right h)
               have hpInter2 : X₁ ∩ X₂ ≠ {p} := (ne_of_mem_of_not_mem' rfl hpInter).symm
               have hX₁X₂ : X₁ ∩ X₂ = ∅ := by
@@ -237,7 +237,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
                 cases Set.subset_singleton_iff_eq.mp hX₁X₂p with
                 | inl t => exact h t
                 | inr t => exact hpInter2 t
-              have hX₂inter : Disjoint X₂ (M₁.E ∩ M₂.E) := hp ▸ hX₂p
+              have hX₂inter : X₂ ⫗ M₁.E ∩ M₂.E := hp ▸ hX₂p
               have hX₂C : X₂ ⊆ C := (Set.diff_empty ▸ hX₁X₂ ▸ hCX₁X₂) ▸ Set.subset_union_right
               have ⟨Y₂, hY₂, hY₂X₂⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hX₂dep
               have hY₂inter := Set.disjoint_of_subset_left hY₂X₂ hX₂inter
@@ -246,7 +246,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
               have hCeq : C = X₂ := Set.Subset.antisymm (hCmin.trans hY₂X₂) hX₂C
               have hCeq2 := Set.diff_empty ▸ hX₁X₂ ▸ hCX₁X₂
               rw [hCeq, Set.union_comm] at hCeq2
-              have hX₁X₂ : Disjoint X₁ X₂ := Set.disjoint_iff_inter_eq_empty.mpr hX₁X₂
+              have hX₁X₂ : X₁ ⫗ X₂ := Set.disjoint_iff_inter_eq_empty.mpr hX₁X₂
               have hX₁ := (Set.disjoint_of_subset_iff_left_eq_empty (Set.union_eq_left.mp hCeq2.symm)).mp hX₁X₂
               exact Set.not_nonempty_empty (hX₁ ▸ hX₁empty)
 
@@ -358,7 +358,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
               ⟩
               exact hpncircM₂ hpcircM₂
 
-            have hdisjX₁X₂dp : Disjoint (X₁ \ {p}) (X₂ \ {p}) := disjoint_of_singleton_inter_both_wo hpX₁X₂
+            have hdisjX₁X₂dp : X₁ \ {p} ⫗ X₂ \ {p} := disjoint_of_singleton_inter_both_wo hpX₁X₂
 
             have hCinterM₁ : (C ∩ M₁.E).Nonempty := by
               rw [hCX₁X₂, hpX₁X₂, Set.union_diff_distrib, Set.union_inter_distrib_right]
@@ -417,7 +417,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
                   exact hX₁Z₁.trans hZ₁Y₁
                 else
                   rw [Set.singleton_subset_iff] at hpZ₁
-                  have hZ₁p : Disjoint Z₁ {p} := Set.disjoint_singleton_right.mpr hpZ₁
+                  have hZ₁p : Z₁ ⫗ {p} := Set.disjoint_singleton_right.mpr hpZ₁
                   have hZ₁cf1 : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ Z₁ := ⟨hZ₁, hp ▸ hZ₁p⟩
                   have hZ₁C : Z₁ ⊆ C := by
                     have hZ₁X₁X₂ : Z₁ ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_left hZ₁X₁ X₂
@@ -466,7 +466,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
                   exact hX₂Z₂.trans hZ₂Y₂
                 else
                   rw [Set.singleton_subset_iff] at hpZ₂
-                  have hZ₂p : Disjoint Z₂ {p} := Set.disjoint_singleton_right.mpr hpZ₂
+                  have hZ₂p : Z₂ ⫗ {p} := Set.disjoint_singleton_right.mpr hpZ₂
                   have hZ₂cf1 : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ Z₂ := ⟨hZ₂, hp ▸ hZ₂p⟩
                   have hZ₂C : Z₂ ⊆ C := by
                     have hZ₂X₁X₂ : Z₂ ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_right hZ₂X₂ X₁

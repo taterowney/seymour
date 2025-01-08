@@ -18,7 +18,7 @@ structure Matroid.disjointCircuitFamily (M : Matroid α) where
   /-- All sets in family are circuits in `M` -/
   AllCircuits : ∀ x : ι, M.Circuit (F x)
   /-- All sets in family are disjoint -/
-  AllDisjoint : ∀ x y : ι, x ≠ y → Disjoint (F x) (F y)
+  AllDisjoint : ∀ x y : ι, x ≠ y → F x ⫗ F y
 
 /-- Shorthand for union of sets in `M.disjointCircuitFamily`. -/
 def Matroid.disjointCircuitFamily.union {M : Matroid α} (F : M.disjointCircuitFamily) : Set α :=
