@@ -76,8 +76,8 @@ lemma BinaryMatroid.DeltaSum.CircuitPred_udc_M₁ {M₁ M₂ : BinaryMatroid α}
     (hCpred : BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C) (hCudc : M₁.toMatroid.IsUnionDisjointCircuits C) :
     M₁.toMatroid.Circuit C :=
   have ⟨⟨hC, hCE, _⟩, hCmin⟩ := hCpred
-  ⟨hCudc.nonempty_dep hC, fun D hD hDC =>
-    have ⟨D', hD', hDD'⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hD
+  ⟨hCudc.nonempty_dep hC, fun _D hD hDC =>
+    have ⟨_D', hD', hDD'⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hD
     (hCmin
         (BinaryMatroid.DeltaSum.CircuitForm1.circuit_form ⟨hD', (Set.subset_diff.mp ((hDD'.trans hDC).trans hCE)).right⟩)
         (hDD'.trans hDC)
@@ -140,8 +140,8 @@ lemma BinaryMatroid.DeltaSum.CircuitPred_udc_M₂ {M₁ M₂ : BinaryMatroid α}
     (hCpred : BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C) (hCudc : M₂.toMatroid.IsUnionDisjointCircuits C) :
     M₂.toMatroid.Circuit C :=
   have ⟨⟨hCnempty, hCE, _⟩, hCmin⟩ := hCpred
-  ⟨hCudc.nonempty_dep hCnempty, fun D hD hDC =>
-    have ⟨D', hD', hDD'⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hD
+  ⟨hCudc.nonempty_dep hCnempty, fun _D hD hDC =>
+    have ⟨_D', hD', hDD'⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hD
     (hCmin
         (BinaryMatroid.DeltaSum.CircuitForm2.circuit_form ⟨hD', (Set.subset_diff.mp ((hDD'.trans hDC).trans hCE)).right⟩)
         (hDD'.trans hDC)

@@ -1,7 +1,7 @@
 import Mathlib.Data.Matroid.Map
 
-import Seymour.Matroid.Classes.IsRegular
-import Seymour.Matroid.Classes.IsGraphic
+import Seymour.Matroid.Classes.Representable.Regular
+import Seymour.Matroid.Classes.Graphic
 import Seymour.Matroid.Constructors.ConcreteInstances
 import Seymour.Matroid.Operations.SumDelta.Basic
 
@@ -20,7 +20,7 @@ inductive BinaryMatroid.IsGood {α : Type} [DecidableEq α] : BinaryMatroid α �
 -- leaf constructors
 | graphic {M : BinaryMatroid α} (hM : M.toMatroid.IsGraphic) : M.IsGood
 | cographic {M : BinaryMatroid α} (hM : M.toMatroid.IsCographic) : M.IsGood
-| isomR10 {M : BinaryMatroid α} {e : α ≃ Fin 10} (hM : M.toMatroid.mapEquiv e = MatroidR10.toBinaryMatroid.toMatroid) : M.IsGood
+| isomR10 {M : BinaryMatroid α} {e : α ≃ Fin 10} (hM : M.toMatroid.mapEquiv e = MatroidR10.toVectorMatroid.toMatroid) : M.IsGood
 -- fork constructors
 | is1sum {M M₁ M₂ : BinaryMatroid α} (hM : M.Is1sumOf M₁ M₂) : M.IsGood
 | is2sum {M M₁ M₂ : BinaryMatroid α} (hM : M.Is2sumOf M₁ M₂) : M.IsGood

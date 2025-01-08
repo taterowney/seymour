@@ -1,8 +1,8 @@
-import Seymour.Matroid.Constructors.BinaryMatroid
-import Seymour.Matroid.Classes.IsRegular
+import Seymour.Matroid.Classes.Representable.Binary
+import Seymour.Matroid.Classes.Representable.Regular
 
--- TODO: could be computable
-noncomputable def MatroidR10 : StandardBinRepr (Fin 10) where
+-- TODO: could be computable -- construct directly via `VectorMatroid Z2`?
+noncomputable def MatroidR10 : StandardRepr (Fin 10) Z2 where
   X := (·.val < 5)
   Y := (·.val ≥ 5)
   decmemX _ := Classical.propDecidable _

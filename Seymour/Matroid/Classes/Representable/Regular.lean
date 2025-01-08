@@ -1,7 +1,11 @@
 import Mathlib.Data.Matroid.Dual
-import Seymour.Basic
-import Seymour.Matroid.Classes.IsRepresentable
 
+import Seymour.Basic
+import Seymour.Matroid.Classes.Representable.Basic
+import Seymour.Matroid.Classes.Representable.Binary
+
+
+variable {α : Type}
 
 section Definitions
 
@@ -16,19 +20,15 @@ def Matrix.IsRegular {X Y : Type} (A : Matrix X Y Z2) : Prop :=
 def Matroid.IsRegular {α : Type} (M : Matroid α) : Prop :=
   ∃ X : Type, ∃ A : Matrix X M.E Z2, A.IsRegular ∧ M.IsRepresentedBy A
 
+/-- Matroid `M` is TU representable iff it can be represented by a TU matrix. -/
+def Matroid.IsTURepresentable (M : Matroid α) : Prop :=
+  ∃ X : Type, ∃ A : Matrix X M.E ℚ, A.IsTotallyUnimodular ∧ M.IsRepresentedBy A
+
 end Definitions
-
-
-variable {α : Type}
-
 
 section Characterizations
 
 -- todo: see theorem 6.6.3 in Oxley
-
-/-- Matroid `M` is TU representable iff it can be represented by a TU matrix. -/
-def Matroid.IsTURepresentable (M : Matroid α) : Prop :=
-  ∃ X : Type, ∃ A : Matrix X M.E ℚ, A.IsTotallyUnimodular ∧ M.IsRepresentedBy A
 
 /-- If matroid is represented by a totally unimodular matrix `A` over `ℚ`, then it is represented by `A` over any field `F`. -/
 lemma Matroid.IsTURepresentable.iff_representable_over_any_field {M : Matroid α} :
@@ -41,8 +41,8 @@ lemma Matroid.IsRegular.iff_TU_representable {M : Matroid α} :
   sorry
 
 lemma Matroid.IsRegular.iff_representable_over_any_field {M : Matroid α} :
-    M.IsRegular ↔ ∀ F : Type, ∀ _ : Field F, M.IsRepresentableOver F := by
-  rw [Matroid.IsRegular.iff_TU_representable, Matroid.IsTURepresentable.iff_representable_over_any_field]
+    M.IsRegular ↔ ∀ F : Type, ∀ _hF : Field F, M.IsRepresentableOver F := by
+  sorry
 
 lemma Matroid.IsRegular.iff_representable_over_Z2_Z3 {M : Matroid α} :
     M.IsRegular ↔ M.IsRepresentableOver Z2 ∧ M.IsRepresentableOver Z3 := by
@@ -63,7 +63,7 @@ end Characterizations
 section Corollaries
 
 lemma Matroid.IsRegular.Z2_representation_regular {X : Type} {M : Matroid α} {A : Matrix X M.E Z2}
-    (hMA : M.IsRepresentedBy A) :
+    (hM : M.IsRegular) (hMA : M.IsRepresentedBy A) :
     A.IsRegular := by
   sorry
 
@@ -77,5 +77,3 @@ def Matroid.IsRegular.iff_dual_IsRegular (M : Matroid α) :
 -- todo: binary matroid is regular iff its standard representation matrix has a TU signing?
 
 end Corollaries
-
--- question: implement regular matroid constructor from binary matroid + regularity prop?

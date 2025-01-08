@@ -1,0 +1,4 @@
+-- todo:
+-- let F: field, M: F-representable, p ∈ M, and {p} is not a separator.
+-- a) then M can be represented over F by [ A₁ | 0/0/.../1 ] where last column corresponds to p.
+-- b) then M can be represented over F by [ 1/0/.../0 | A₁ ] where first column corresponds to p.

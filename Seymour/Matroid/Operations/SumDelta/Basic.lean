@@ -1,4 +1,4 @@
-import Seymour.Matroid.Constructors.BinaryMatroid
+import Seymour.Matroid.Classes.Representable.Binary
 import Seymour.Matroid.Constructors.CircuitMatroid
 import Seymour.Matroid.Operations.SumDelta.DisjointCircuitFamily
 
