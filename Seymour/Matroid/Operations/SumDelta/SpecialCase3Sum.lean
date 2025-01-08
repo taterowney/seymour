@@ -3,7 +3,7 @@ import Seymour.Matroid.Operations.SumDelta.Basic
 
 
 /-- Assumptions for Δ-sum  -/
-structure BinaryMatroid.DeltaSum.ThreeSumAssumptions {α : Type} [DecidableEq α] (M₁ M₂ : BinaryMatroid α) where
+structure ThreeSumAssumptions {α : Type} [DecidableEq α] (M₁ M₂ : BinaryMatroid α) where
   /-- `M₁` and `M₂` are finite -/
   hM₁_finite : M₁.E.Finite
   hM₂_finite : M₂.E.Finite
