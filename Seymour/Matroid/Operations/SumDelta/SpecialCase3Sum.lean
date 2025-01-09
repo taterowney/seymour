@@ -22,7 +22,7 @@ structure ThreeSumAssumptions (M₁ M₂ : BinaryMatroid α) where
   hTM₁ : M₁.toMatroid.Circuit (M₁.E ∩ M₂.E)
   hTM₂ : M₂.toMatroid.Circuit (M₁.E ∩ M₂.E)
   /-- Neither `M₁` nor `M₂` has a cocircuit contained in `T` -/
-  hT_no_sub_cocircuit : ∀ T' ⊆ M₁.E ∩ M₂.E, ¬(M₁.toMatroid.dual.Circuit T') ∧ ¬(M₂.toMatroid.dual.Circuit T')
+  hT_no_sub_cocircuit : ∀ T' ⊆ M₁.E ∩ M₂.E, ¬(M₁.toMatroid✶.Circuit T') ∧ ¬(M₂.toMatroid✶.Circuit T')
 
 /-- todo: desc -/
 def ThreeSumAssumptions.build3sum {M₁ M₂ : BinaryMatroid α} (assumptions : ThreeSumAssumptions M₁ M₂) : Matroid α :=

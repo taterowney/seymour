@@ -61,7 +61,7 @@ lemma Matroid.IsRegular.Z2_repr_HasTuSigning {X : Type} {M : Matroid α} {A : Ma
 
 /-- todo: desc -/
 def Matroid.isRegular_iff_dual_isRegular (M : Matroid α) :
-    M.IsRegular ↔ M.dual.IsRegular := by
+    M.IsRegular ↔ M✶.IsRegular := by
   sorry -- prop 2.2.22 in Oxley
 
 -- todo: binary matroid is regular iff its standard representation matrix has a TU signing

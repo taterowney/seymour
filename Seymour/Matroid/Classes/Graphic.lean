@@ -38,7 +38,7 @@ section IsCographic
 
 /-- todo: desc -/
 def Matroid.IsCographic {α : Type} (M : Matroid α) : Prop :=
-  M.dual.IsGraphic
+  M✶.IsGraphic
 
 /-- todo: desc -/
 lemma Matroid.IsCographic.is_regular {α : Type} {M : Matroid α} (hM : M.IsCographic) : M.IsRegular :=

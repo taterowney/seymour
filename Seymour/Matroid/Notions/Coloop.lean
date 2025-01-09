@@ -6,7 +6,7 @@ variable {α : Type}
 
 /-- Coloop is a loop in the dual matroid. -/
 def Matroid.Coloop (M : Matroid α) (a : α) : Prop :=
-  M.dual.Loop a
+  M✶.Loop a
 
 /-- An element is a coloop iff it belongs to no circuit. -/
 lemma Matroid.Coloop.iff_in_no_circuit (M : Matroid α) {a : α} :
