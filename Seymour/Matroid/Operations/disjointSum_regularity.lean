@@ -11,10 +11,11 @@ variable {M₁ M₂ : Matroid α}
 section Composition
 
 /-- todo: desc-/
-lemma Matroid.disjointSum.ofRepresented_repr {R X₁ X₂ : Type} [Ring R] {A₁ : Matrix X₁ M₁.E R} {A₂ : Matrix X₂ M₂.E R}
+lemma Matroid.disjointSum.ofRepresented_repr {R : Type} [Ring R] {X₁ X₂ : Set α} {A₁ : Matrix X₁ M₁.E R} {A₂ : Matrix X₂ M₂.E R}
+    [∀ a, Decidable (a ∈ X₁)] [∀ a, Decidable (a ∈ X₂)] [∀ a, Decidable (a ∈ M₁.E)] [∀ a, Decidable (a ∈ M₂.E)]
     (hM₁M₂ : M₁.E ⫗ M₂.E) (hA₁ : M₁.IsRepresentedBy A₁) (hA₂ : M₂.IsRepresentedBy A₂) :
-    True :=
-    -- todo: fix this: (M₁.disjointSum M₂ hM₁M₂).IsRepresentedBy (Matrix.setUnion_fromBlocks A₁ 0 0 A₂) :=
+    (M₁.disjointSum M₂ hM₁M₂).IsRepresentedBy
+      ((Matrix.setUnion_fromBlocks A₁ 0 0 A₂).setUnion_castCols (Matroid.disjointSum_ground_eq.symm)) :=
   sorry
 
 /-- todo: desc-/
