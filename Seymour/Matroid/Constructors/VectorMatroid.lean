@@ -2,20 +2,19 @@ import Mathlib.Data.Matroid.IndepAxioms
 import Mathlib.Data.Matroid.Dual
 
 import Seymour.Basic
+import Seymour.ForMathlib.MatrixManip
 
 
 section Definition
 
 /-- Vector matroid `M[A]` of matrix `A`. -/
 structure VectorMatroid (α R : Type) [Ring R] where
-  /-- row index set -/
+  /-- row index collection (it suffices to use `Set α` to produce any vector matroid) -/
   X : Type
   /-- column index set -/
   E : Set α
   /-- matrix defining a vector matroid -/
   A : Matrix X E R
--- note: in principle, rows can be indexed by any type, not necessarily `Set α`
--- however, `Set α` is sufficient to get all vector matroids
 
 variable {α R : Type} [Ring R]
 
@@ -95,15 +94,15 @@ section EquivalentTransformations
 
 -- todo: section 2.2/6.3 from Oxley: Different matroid representations
 -- the following operations on `A` do not change `M[A]`:
--- 2.2.1 Interchange two rows.
+-- 2.2.1 Interchange two rows.  <-- can be generalized for free to reindexing of rows
 -- 2.2.2 Multiply a row by non-zero.
--- 2.2.3 Replace a row by the sum of that row and anotheRepr.
+-- 2.2.3 Replace a row by the sum of that row and another.
 -- 2.2.4 Adjoin or remove a zero row.
--- 2.2.5 Interchange two columns (the labels moving with the columns).
+-- 2.2.5 Interchange two columns (the labels moving with the columns).  <-- trivial in lean: indices are labeled and unordered
 -- 2.2.6 Multiply a column by a non-zero member of F.
 -- 2.2.7 Replace each matrix entry by its image under some automorphism of F.
 
--- todo: if A is non-zero, it can be reduced to [I | D] by a sequence of operations of types 2.2.1-2.2.5
+-- todo: if A is non-zero, it can be reduced to [I | B] by a sequence of operations of types 2.2.1-2.2.5
 
 end EquivalentTransformations
 
@@ -131,16 +130,9 @@ variable {α R : Type} [Ring R]
 attribute [instance] StandardRepr.decmemX
 attribute [instance] StandardRepr.decmemY
 
-
-/-- Maps a matrix with columns indexed by a sum of two sets to a matrix with columns indexed by union of these sets. -/
-def Matrix.glueCols {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidable (a ∈ Y)] (M : Matrix X (X ⊕ Y) R) :
-    Matrix X (X ∪ Y).Elem R :=
-  Matrix.of (fun i j => M i j.toSum)
--- TODO generalize and move
-
 /-- Vector matroid constructed from standard representation. -/
 def StandardRepr.toVectorMatroid [DecidableEq α] (S : StandardRepr α R) : VectorMatroid α R :=
-  ⟨S.X, S.X ∪ S.Y, (Matrix.fromCols 1 S.B).glueCols⟩
+  ⟨S.X, S.X ∪ S.Y, Matrix.setUnion_fromCols 1 S.B⟩
 
 /-- Ground set of a vector matroid is union of row and column index sets of its standard matrix representation. -/
 @[simp]
@@ -151,7 +143,7 @@ lemma StandardRepr.toVectorMatroid_E [DecidableEq α] (S : StandardRepr α R) :
 /-- Full representation matrix of vector matroid is `[I | B]`. -/
 @[simp]
 lemma StandardRepr.toVectorMatroid_A [DecidableEq α] (S : StandardRepr α R) :
-    S.toVectorMatroid.A = (Matrix.fromCols 1 S.B).glueCols :=
+    S.toVectorMatroid.A = Matrix.setUnion_fromCols 1 S.B :=
   rfl
 
 /-- Set is independent in vector matroid iff corresponding set of columns of `[I | B]` is linearly independent over `R`. -/
@@ -163,6 +155,12 @@ lemma StandardRepr.toVectorMatroid_indep [DecidableEq α] (S : StandardRepr α R
 /-- todo: desc -/
 lemma VectorMatroid.exists_standardRepr [DecidableEq α] (M : VectorMatroid α R) :
     ∃ S : StandardRepr α R, M = S.toVectorMatroid := by
+  sorry
+
+/-- todo: desc -/
+lemma VectorMatroid.exists_standardRepr_base [DecidableEq α] {B : Set α}
+    (M : VectorMatroid α R) (hB : M.toMatroid.Base B) (hBE : B ⊆ M.E) :
+    ∃ S : StandardRepr α R, M.X = B ∧ M = S.toVectorMatroid := by
   sorry
 
 /-- Matroid constructed from standard representation. -/

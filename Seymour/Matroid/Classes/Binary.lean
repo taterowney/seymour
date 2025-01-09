@@ -1,6 +1,6 @@
 import Seymour.Basic
 import Seymour.Matroid.Constructors.VectorMatroid
-import Seymour.Matroid.Classes.Representable.Basic
+import Seymour.Matroid.Classes.Representable
 
 
 variable {α : Type}

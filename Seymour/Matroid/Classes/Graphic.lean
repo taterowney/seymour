@@ -2,7 +2,7 @@ import Mathlib.Data.Matroid.Basic
 import Mathlib.Data.Matroid.Dual
 
 import Seymour.Matroid.Constructors.VectorMatroid
-import Seymour.Matroid.Classes.Representable.Regular
+import Seymour.Matroid.Classes.Regular
 
 
 section IsGraphic
@@ -27,7 +27,7 @@ lemma Matroid.isGraphic_repr_is_TU {α X : Type} (M : Matroid α) (A : Matrix X 
 
 /-- todo: desc -/
 lemma Matroid.IsGraphic.isRegular {α : Type} {M : Matroid α} (hM : M.IsGraphic) : M.IsRegular := by
-  rw [Matroid.isRegular_iff_hasTotallyUnimodularRepr]
+  rw [Matroid.IsRegular_iff_HasTURepr]
   obtain ⟨X, A, hMA, hA⟩ := hM
   exact ⟨X, A, M.isGraphic_repr_is_TU A ⟨hMA, hA⟩, hMA⟩
 
@@ -42,6 +42,6 @@ def Matroid.IsCographic {α : Type} (M : Matroid α) : Prop :=
 
 /-- todo: desc -/
 lemma Matroid.IsCographic.is_regular {α : Type} {M : Matroid α} (hM : M.IsCographic) : M.IsRegular :=
-  M.isRegular_iff_dual_isRegular.mpr hM.isRegular
+  sorry -- M.isRegular_iff_dual_isRegular.mpr hM.isRegular -- TODO fix merge conflict
 
 end IsCographic
