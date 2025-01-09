@@ -19,7 +19,7 @@ lemma Matroid.Coloop.iff_in_no_circuit (M : Matroid α) {a : α} :
       have hCmaIndep : M.Indep (C \ {a}) := Matroid.Circuit.indep_diff_singleton hC haC
       apply Matroid.Indep.exists_base_superset at hCmaIndep
       obtain ⟨B, hB, hCmaB⟩ := hCmaIndep
-      have haB := (Matroid.dual_dep_iff_forall.mp hanIndep).1
+      have haB := (Matroid.dual_dep_iff_forall.mp hanIndep).left
       specialize haB B hB
       have hBdep : M.Dep B  := by
         rw [Matroid.Circuit.dep_iff_has_circuit]
@@ -35,8 +35,7 @@ lemma Matroid.Coloop.iff_in_no_circuit (M : Matroid α) {a : α} :
     · rw [Matroid.dual_dep_iff_forall]
       constructor
       · intro B hB
-        by_contra haB
-        push_neg at haB
+        by_contra! haB
         have haBdep : M.Dep (a ᕃ B) := Base.dep_of_insert hB (Set.singleton_inter_eq_empty.mp haB) haE
         obtain ⟨C', hC', hC'aB, haC'⟩ := Matroid.Circuit.indep_ext_dep_has_circuit_w_ext (Matroid.Base.indep hB) haBdep
         exact haC C' hC' haC'

@@ -98,7 +98,7 @@ lemma CircuitPredicate.circuit_not_ssubset_iff (P : CircuitPredicate α) :
   · intro hP C C' hC hC' hCC'
     apply hP C C' hC at hC'
     rw [ssubset_iff_subset_ne] at hCC'
-    exact hCC'.2.symm (Set.Subset.antisymm (hC' hCC'.1) hCC'.1)
+    exact hCC'.right.symm (Set.Subset.antisymm (hC' hCC'.left) hCC'.left)
 
 /-- Axiom (C3) implies strong circuit elimination. -/
 lemma CircuitPredicate.C3_strong_circuit_elim (P : CircuitPredicate α) :
@@ -274,7 +274,7 @@ lemma CircuitPredicate.ToIndepPredicate.indep_empty {P : CircuitPredicate α}
 lemma CircuitPredicate.ToIndepPredicate.indep_subset (P : CircuitPredicate α) (E : Set α) :
     (P.ToIndepPredicate E).indep_subset := by
   unfold IndepPredicate.indep_subset
-  exact fun I J hJ hIJ => ⟨hIJ.trans hJ.1, fun C hCI hPC => hJ.2 C (hCI.trans hIJ) hPC⟩
+  exact fun I J hJ hIJ => ⟨hIJ.trans hJ.left, fun C hCI hPC => hJ.right C (hCI.trans hIJ) hPC⟩
 
 /-- Independence predicate constructed from circuit predicate satisfies (I3): independent sets have augmentation property. -/
 lemma CircuitPredicate.ToIndepPredicate.indep_aug {P : CircuitPredicate α} {E : Set α}
@@ -379,7 +379,7 @@ lemma CircuitPredicate.ToIndepPredicate.indep_maximal (P : CircuitPredicate α) 
 /-- Independence predicate constructed from circuit predicate satisfies (IE): independent sets are subsets of ground set. -/
 lemma CircuitPredicate.ToIndepPredicate.subset_ground (P : CircuitPredicate α) (E : Set α) :
     (P.ToIndepPredicate E).subset_ground E :=
-  fun _ hI => hI.1
+  fun _ hI => hI.left
 
 /-- Independence predicate constructed from circuit predicate satisfies augmentation property
     if weak circuit elimination axiom holds in finite case. -/
@@ -388,8 +388,7 @@ lemma CircuitPredicate.ToIndepPredicate.finite_weak_circuit_elim_indep_aug {P : 
     (hE : E.Finite) (hI : P.ToIndepPredicate E I) (hJ : P.ToIndepPredicate E J) (hIJ : I.ncard < J.ncard) :
     ∃ e ∈ J, e ∉ I ∧ P.ToIndepPredicate E (e ᕃ I) := by
   unfold ToIndepPredicate at hI hJ
-  by_contra heJ
-  push_neg at heJ
+  by_contra! heJ
 
   have hKmin : ∃ K, P.ToIndepPredicate E K ∧ K ⊆ I ∪ J ∧ I.ncard < K.ncard ∧
       (∀ K', (P.ToIndepPredicate E K' ∧ K' ⊆ I ∪ J ∧ I.ncard < K'.ncard) → (I \ K).ncard ≤ (I \ K').ncard) := by

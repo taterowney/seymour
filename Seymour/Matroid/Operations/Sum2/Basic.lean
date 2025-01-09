@@ -225,7 +225,8 @@ def TwoSumCircuitType3.to_circuit_M₂ (hC : TwoSumCircuitType3 M₁ M₂ C) : M
   hC.right.left
 
 /-- Circuit of type 3 is subset of ground set of `M₁ ⊕₂ M₂` -/
-def TwoSumCircuitType3.subset_ground (hC : TwoSumCircuitType3 M₁ M₂ C) : C ⊆ twoSumGround M₁ M₂ := hC.2.2
+def TwoSumCircuitType3.subset_ground (hC : TwoSumCircuitType3 M₁ M₂ C) : C ⊆ twoSumGround M₁ M₂ :=
+  hC.right.right
 
 /-- Circuit of type 3 lies in `M₁.E ∪ M₂.E` -/
 lemma TwoSumCircuitType3.subset_union (hC : TwoSumCircuitType3 M₁ M₂ C) : C ⊆ M₁.E ∪ M₂.E :=
@@ -293,7 +294,7 @@ lemma TwoSumCircuitType1.not_ssubset_circuit_type_3 {M₁ M₂ : Matroid α} {C�
     (assumptions : TwoSumAssumptions M₁ M₂) (hC₁ : TwoSumCircuitType1 M₁ M₂ C₁) (hC₃ : TwoSumCircuitType3 M₁ M₂ C₃) :
     ¬(C₁ ⊂ C₃) := by
   by_contra hC₁C₃
-  have hC₁C₃ := Set.subset_inter hC₁C₃.1 hC₁.circuit_M₁.subset_ground
+  have hC₁C₃ := Set.subset_inter hC₁C₃.left hC₁.circuit_M₁.subset_ground
   apply Set.union_subset_union_left (M₁.E ∩ M₂.E) at hC₁C₃
   have hC₁ssubunioninter := ssubset_union_disjoint_nonempty hC₁.disjoint_inter assumptions.inter_nonempty
   exact hC₁.circuit_M₁.not_ssubset_circuit hC₃.to_circuit_M₁ (Set.ssubset_of_ssubset_of_subset hC₁ssubunioninter hC₁C₃)
@@ -338,7 +339,7 @@ lemma TwoSumAssumptions.circuitType2_not_ssubset_circuitType3 {C₂ C₃ : Set �
     (assumptions : TwoSumAssumptions M₁ M₂) (hC₂ : TwoSumCircuitType2 M₁ M₂ C₂) (hC₃ : TwoSumCircuitType3 M₁ M₂ C₃) :
     ¬(C₂ ⊂ C₃) := by
   by_contra hC₂C₃
-  have hC₂C₃ := Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.subset_inter hC₂C₃.1 hC₂.circuit_M₂.subset_ground)
+  have hC₂C₃ := Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.subset_inter hC₂C₃.left hC₂.circuit_M₂.subset_ground)
   have hC₂ssubunioninter := ssubset_union_disjoint_nonempty hC₂.disjoint_inter assumptions.inter_nonempty
   exact hC₂.circuit_M₂.not_ssubset_circuit hC₃.to_circuit_M₂ (Set.ssubset_of_ssubset_of_subset hC₂ssubunioninter hC₂C₃)
 

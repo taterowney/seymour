@@ -224,7 +224,7 @@ lemma union_ssubset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjo
     rw [Set.ssubset_iff_subset_ne] at hAB ⊢
     constructor
     · have hXX : X ⊆ X := Set.Subset.rfl
-      have hAXXBXX := Set.diff_subset_diff hAB.1 hXX
+      have hAXXBXX := Set.diff_subset_diff hAB.left hXX
       rwa [Set.union_diff_cancel_right, Set.union_diff_cancel_right] at hAXXBXX
       · rwa [Set.disjoint_iff] at hBX
       · rwa [Set.disjoint_iff] at hAX
@@ -235,11 +235,11 @@ lemma union_ssubset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjo
     rw [Set.ssubset_iff_of_subset hAB'] at hAB
     obtain ⟨x, hx⟩ := hAB
     rw [Set.ssubset_iff_of_subset (Set.union_subset_union_left X hAB')]
-    refine ⟨x, Set.mem_union_left X hx.1, fun hx' => ?_⟩
+    refine ⟨x, Set.mem_union_left X hx.left, fun hx' => ?_⟩
     rw [Set.mem_union] at hx'
     cases hx' with
-    | inl hA => exact hx.2 hA
-    | inr hX => exact Disjoint.ni_of_in hBX hx.1 hX
+    | inl hA => exact hx.right hA
+    | inr hX => exact Disjoint.ni_of_in hBX hx.left hX
 
 /-- todo: desc -/
 lemma union_subset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjoint B X) :

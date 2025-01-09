@@ -68,10 +68,10 @@ lemma Matroid.indep_aug_alt (M : Matroid α) :
       use x
       exact ⟨
         Set.mem_diff_of_mem hxI' (Set.not_mem_of_mem_diff hx),
-        Matroid.Indep.subset hBmax.1.1 (Set.insert_subset (Set.mem_of_mem_diff hx) hIB),
+        Matroid.Indep.subset hBmax.left.left (Set.insert_subset (Set.mem_of_mem_diff hx) hIB),
       ⟩
     else
-      have hB : Maximal M.Indep B := ⟨hBmax.1.1, fun C hC hBC => hBmax.2 ⟨hC, Matroid.Indep.subset_ground hC⟩ hBC⟩
+      have hB : Maximal M.Indep B := ⟨hBmax.left.left, fun C hC hBC => hBmax.right ⟨hC, Matroid.Indep.subset_ground hC⟩ hBC⟩
       unfold Matroid.IndepPredicate at hI'max
       rw [←Matroid.base_iff_maximal_indep] at hI'max hB
       obtain ⟨y, hy, hybase⟩ := M.base_exchange B I' hB hI'max x (Set.mem_diff_of_mem (Set.mem_of_mem_diff hx) hxI')
@@ -83,7 +83,7 @@ lemma Matroid.indep_aug_alt (M : Matroid α) :
       ⟩
   else
     have hIeqB : I = B := Set.union_empty I ▸ (Set.not_nonempty_iff_eq_empty.mp hBdiffI) ▸ Set.union_diff_cancel hIB
-    have hBmax : Maximal M.Indep B := ⟨hBmax.1.1, fun _ hC hBC => hBmax.2 ⟨hC, Matroid.Indep.subset_ground hC⟩ hBC⟩
+    have hBmax : Maximal M.Indep B := ⟨hBmax.left.left, fun _ hC hBC => hBmax.right ⟨hC, Matroid.Indep.subset_ground hC⟩ hBC⟩
     exact False.elim (hInmax (hIeqB ▸ hBmax))
 
 /-- Independence predicate of matroid satisfies (IM): set of all independent sets has the maximal subset property. -/
