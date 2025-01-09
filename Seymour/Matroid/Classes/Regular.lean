@@ -60,7 +60,7 @@ lemma Matroid.IsRegular.Z2_repr_HasTuSigning {X : Type} {M : Matroid α} {A : Ma
   sorry
 
 /-- todo: desc -/
-def Matroid.IsRegular.iff_dual_IsRegular (M : Matroid α) :
+def Matroid.isRegular_iff_dual_isRegular (M : Matroid α) :
     M.IsRegular ↔ M.dual.IsRegular := by
   sorry -- prop 2.2.22 in Oxley
 
