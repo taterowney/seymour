@@ -1,4 +1,4 @@
-import Seymour.Matroid.Classes.Representable.Regular
+import Seymour.Matroid.Classes.Regular
 import Seymour.Matroid.Operations.SumDelta.SpecialCase1Sum
 import Seymour.Matroid.Operations.SumDelta.SpecialCase2Sum
 import Seymour.Matroid.Operations.SumDelta.SpecialCase3Sum

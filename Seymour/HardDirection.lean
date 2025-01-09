@@ -1,6 +1,6 @@
 import Mathlib.Data.Matroid.Map
 
-import Seymour.Matroid.Classes.Representable.Regular
+import Seymour.Matroid.Classes.Regular
 import Seymour.Matroid.Classes.Graphic
 import Seymour.Matroid.Constructors.ConcreteInstances
 import Seymour.Matroid.Operations.SumDelta.Basic

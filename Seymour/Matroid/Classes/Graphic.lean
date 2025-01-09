@@ -2,7 +2,7 @@ import Mathlib.Data.Matroid.Basic
 import Mathlib.Data.Matroid.Dual
 
 import Seymour.Matroid.Constructors.VectorMatroid
-import Seymour.Matroid.Classes.Representable.Regular
+import Seymour.Matroid.Classes.Regular
 
 
 section IsGraphic
@@ -27,7 +27,7 @@ lemma Matroid.IsGraphic.repr_is_TU {α X : Type} (M : Matroid α) (A : Matrix X 
 
 /-- todo: desc -/
 lemma Matroid.IsGraphic.is_regular {α : Type} {M : Matroid α} (h : M.IsGraphic) : M.IsRegular := by
-  rw [Matroid.IsRegular.iff_TU_representable]
+  rw [Matroid.IsRegular_iff_HasTURepr]
   have ⟨X, A, hMA, hA⟩ := h
   use X, A
   constructor

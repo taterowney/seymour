@@ -1,4 +1,4 @@
-import Seymour.Matroid.Operations.Sum2
+import Seymour.Matroid.Operations.Sum2.Basic
 import Seymour.Matroid.Operations.SumDelta.Basic
 import Seymour.Matroid.Operations.SumDelta.CircuitForms
 
