@@ -72,8 +72,8 @@ lemma singleton_union_ssubset_union_iff {a : α} {A B : Set α} (haA : a ∉ A) 
 
 /-- todo: desc -/
 lemma ssub_parts_ssub {A B E₁ E₂ : Set α}
-    (hA : A ⊆ E₁ ∪ E₂) (hB : B ⊆ E₁ ∪ E₂) : (A ∩ E₁ ⊂ B ∩ E₁) ∧ (A ∩ E₂ ⊂ B ∩ E₂) → A ⊂ B := by
-  intro ⟨hAB₁, hAB₂⟩
+    (hA : A ⊆ E₁ ∪ E₂) (hB : B ⊆ E₁ ∪ E₂) (hAB₁ : A ∩ E₁ ⊂ B ∩ E₁) (hAB₂ : A ∩ E₂ ⊂ B ∩ E₂) :
+    A ⊂ B := by
   constructor
   · obtain ⟨hE₁, _⟩ := hAB₁
     obtain ⟨hE₂, _⟩ := hAB₂
@@ -104,16 +104,21 @@ lemma elem_notin_set_minus_singleton (a : α) (X : Set α) : a ∉ X \ {a} := Se
 lemma sub_union_diff_sub_union {A B C : Set α} (hA : A ⊆ B \ C) : A ⊆ B :=
   fun _ hA' => Set.diff_subset (hA hA')
 
+lemma singleton_inter_in_left {X Y : Set α} {a : α} (ha : X ∩ Y = {a}) : a ∈ X :=
+  Set.mem_of_mem_inter_left (ha.symm.subset rfl)
+
+lemma singleton_inter_in_right {X Y : Set α} {a : α} (ha : X ∩ Y = {a}) : a ∈ Y :=
+  Set.mem_of_mem_inter_right (ha.symm.subset rfl)
+
 /-- todo: desc -/
 lemma singleton_inter_subset_left {X Y : Set α} {a : α} (ha : X ∩ Y = {a}) : {a} ⊆ X := by
-  have haXY : a ∈ X ∩ Y := by rw [ha]; rfl
-  have haX : a ∈ X := Set.mem_of_mem_inter_left haXY
-  rwa [←Set.singleton_subset_iff] at haX
+  rw [Set.singleton_subset_iff]
+  exact singleton_inter_in_left ha
 
 /-- todo: desc -/
 lemma singleton_inter_subset_right {X Y : Set α} {a : α} (ha : X ∩ Y = {a}) : {a} ⊆ Y := by
-  rw [Set.inter_comm] at ha
-  exact singleton_inter_subset_left ha
+  rw [Set.singleton_subset_iff]
+  exact singleton_inter_in_right ha
 
 /-- Being a subset is preserved under subtracting sets. -/
 lemma diff_subset_parent {X₁ X₂ E : Set α} (hX₁E : X₁ ⊆ E) :
@@ -137,8 +142,7 @@ lemma inter_subset_union {X₁ X₂ : Set α} :
   exact inter_subset_parent_left Set.subset_union_left
 
 /-- todo: desc -/
-lemma subset_diff_empty_eq {A B : Set α}
-    (hAB : A ⊆ B) (hBA : B \ A = ∅) : A = B :=
+lemma subset_diff_empty_eq {A B : Set α} (hAB : A ⊆ B) (hBA : B \ A = ∅) : A = B :=
   Set.union_empty A ▸ hBA ▸ Set.union_diff_cancel hAB
 
 end Other
@@ -263,6 +267,11 @@ lemma ssubset_disjoint_nonempty_union {X₁ X₂ : Set α} (hXX : Disjoint X₁ 
   rw [disjoint_comm] at hXX
   rw [Set.union_comm]
   exact ssubset_disjoint_union_nonempty hXX hX₁
+
+/-- If two sets are disjoint, then any set is disjoint with their intersection -/
+lemma disjoint_inter_disjoint {A B : Set α} (C : Set α) (hAB : Disjoint A B) : Disjoint C (A ∩ B) := by
+  rw [hAB.inter_eq]
+  exact Set.disjoint_empty C
 
 end Disjoint
 

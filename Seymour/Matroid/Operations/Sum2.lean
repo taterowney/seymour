@@ -92,16 +92,6 @@ lemma TwoSumAssumptions.inter_singleton (assumptions : TwoSumAssumptions M₁ M�
 
 variable {p : α}
 
-/-- Singleton element in intersection of ground sets in a member of `M₁.E` -/
-lemma TwoSumAssumptions.inter_singleton_mem_M₁ (hp : M₁.E ∩ M₂.E = {p}) :
-    p ∈ M₁.E :=
-  Set.mem_of_mem_inter_left (hp.symm.subset rfl)
--- TODO these two lemmas should not have their name prefixed by TwoSumAssumptions, nor should they take Matroid arguments
-/-- Singleton element in intersection of ground sets in a member of `M₂.E` -/
-lemma TwoSumAssumptions.inter_singleton_mem_M₂ (hp : M₁.E ∩ M₂.E = {p}) :
-    p ∈ M₂.E :=
-  Set.mem_of_mem_inter_right (hp.symm.subset rfl)
-
 /-- Singleton element in intersection of ground sets in not a loop in `M₁` -/
 lemma TwoSumAssumptions.inter_singleton_not_loop_M₁ (assumptions : TwoSumAssumptions M₁ M₂)
     (hp : M₁.E ∩ M₂.E = {p}) :

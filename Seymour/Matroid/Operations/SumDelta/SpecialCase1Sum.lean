@@ -172,17 +172,10 @@ end disjointSumProperties
 
 section Equivalence
 
-/-- If two sets are disjoint, then any set is disjoint with their intersection -/
-lemma disjoint_inter_disjoint {A B : Set α} (C : Set α) (hAB : A ⫗ B) : C ⫗ A ∩ B := by
-  rw [hAB.inter_eq]
-  exact Set.disjoint_empty C
--- TODO move
-
 /-- If `M₁.E ∩ M₂.E = ∅`, then `M₁ Δ M₂ = M₁ ⊕ M₂` -/
 lemma BinaryMatroid.DeltaSum.SpecialCase1Sum [DecidableEq α] {M₁ M₂ : BinaryMatroid α}
     (hE : M₁.E ⫗ M₂.E) : Matroid.disjointSum M₁.toMatroid M₂.toMatroid hE = BinaryMatroid.DeltaSum.matroid M₁ M₂ := by
-  rw [Matroid.eq_iff_eq_all_circuits]
-  constructor
+  apply Matroid.ext_circuit
   · rw [Matroid.disjointSum_ground_eq,
         VectorMatroid.toMatroid_E, VectorMatroid.toMatroid_E,
         BinaryMatroid.DeltaSum.E_eq, hE.inter_eq, Set.diff_empty]

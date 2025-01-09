@@ -5,14 +5,14 @@ import Seymour.ForMathlib.MatrixTU
 This file provides notation used in the project and conversions between set-theoretical and type-theoretical definitions.
 -/
 
-/-- The finite field on two elements; write `Z2` for "value" type but `Fin 2` for "indexing" type. -/
+/-- The finite field on 2 elements; write `Z2` for "value" type but `Fin 2` for "indexing" type. -/
 abbrev Z2 : Type := ZMod 2
 
-/-- The finite field on three elements; write `Z3` for "value" type but `Fin 3` for "indexing" type. -/
+/-- The finite field on 3 elements; write `Z3` for "value" type but `Fin 3` for "indexing" type. -/
 abbrev Z3 : Type := ZMod 3
 
 /-- Roughly speaking `a ᕃ A` is `A ∪ {a}`. -/
-infixr:66 " ᕃ " => Insert.insert -- TODO (low priority) use `syntax` and write a custom delaborator
+infixr:66 " ᕃ " => Insert.insert
 
 /-- Writing `X ⫗ Y` is slightly more general than writing `X ∩ Y = ∅`. -/
 infix:61 " ⫗ " => Disjoint
