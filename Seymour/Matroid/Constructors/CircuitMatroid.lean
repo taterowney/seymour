@@ -94,7 +94,6 @@ lemma CircuitMatroid.Maximal_iff (M : CircuitMatroid α) (B : Set α) :
   · intro hC
     constructor
     · exact hC.subset_ground
-    unfold Matroid.Circuit Matroid.Dep at hC
     obtain ⟨⟨hCdep, hCE⟩, hCmin⟩ := hC
     have hMax := M.circuit_maximal C hCE
     specialize hMax ∅ (CircuitPredicate.ToIndepPredicate.indep_empty M.not_circuit_empty M.E) (Set.empty_subset C)

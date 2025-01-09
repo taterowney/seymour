@@ -8,11 +8,14 @@ section Definition
 
 /-- Vector matroid `M[A]` of matrix `A`. -/
 structure VectorMatroid (α R : Type) [Ring R] where
-  X : Type -- row index set
-  E : Set α -- column index set
-  A : Matrix X E R -- matrix defining a vector matroid
-  -- note: in principle, rows can be indexed by any type, not necessarily `Set α`
-  -- however, `Set α` is sufficient to get all vector matroids
+  /-- row index set -/
+  X : Type
+  /-- column index set -/
+  E : Set α
+  /-- matrix defining a vector matroid -/
+  A : Matrix X E R
+-- note: in principle, rows can be indexed by any type, not necessarily `Set α`
+-- however, `Set α` is sufficient to get all vector matroids
 
 variable {α R : Type} [Ring R]
 
