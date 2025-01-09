@@ -18,9 +18,11 @@ infixr:66 " ᕃ " => Insert.insert
 infix:61 " ⫗ " => Disjoint
 
 
+section utils
+
 variable {α : Type}
 
-lemma nmem_insert {z x : α} {I : Set α} (hx : z ≠ x) (hI : z ∉ I) : z ∉ x ᕃ I := by
+lemma nmem_insert {z x : α} {I : Set α} (hx : z ≠ x) (hI : z ∉ I) : z ∉ x ᕃ I := by -- TODO move
   simp_all [Set.insert]
 
 /-- Given `X ⊆ Y` cast an element of `X` as an element of `Y`. -/
@@ -91,3 +93,44 @@ lemma Matrix.IsTotallyUnimodular.toMatrixUnionUnion [CommRing β] {C : Matrix (T
   rw [Matrix.isTotallyUnimodular_iff] at hC ⊢
   intros
   apply hC
+
+end utils
+
+
+section TU_tautologies
+
+lemma Matrix.overZ2_isTotallyUnimodular {X Y : Type} (A : Matrix X Y Z2) : A.IsTotallyUnimodular := by
+  intro k f g hf hg
+  if h0 : (A.submatrix f g).det = 0 then
+    use 0
+    rewrite [h0]
+    rfl
+  else
+    use 1
+    have h1 : (A.submatrix f g).det = 1 := by sorry
+    rewrite [h1]
+    rfl
+
+lemma Matrix.overZ3_isTotallyUnimodular {X Y : Type} (A : Matrix X Y Z3) : A.IsTotallyUnimodular := by
+  intro k f g hf hg
+  if h0 : (A.submatrix f g).det = 0 then
+    use 0
+    rewrite [h0]
+    rfl
+  else if h1 : (A.submatrix f g).det = 1 then
+    use 1
+    rewrite [h1]
+    rfl
+  else
+    have h2 : (A.submatrix f g).det = 2 := by sorry
+    use -1
+    rewrite [h2]
+    rfl
+
+example : ¬ (!![2] : Matrix _ _ (ZMod 4)).IsTotallyUnimodular := by
+  unfold Matrix.IsTotallyUnimodular
+  push_neg
+  use 1, id, id, Function.injective_id, Function.injective_id
+  decide
+
+end TU_tautologies
