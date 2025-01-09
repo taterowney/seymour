@@ -20,16 +20,16 @@ def Matroid.IsGraphic {α : Type} (M : Matroid α) : Prop :=
   ∃ X : Type, ∃ A : Matrix X M.E ℚ, M.IsRepresentedBy A ∧ A.IsGraphic
 
 /-- todo: desc -/
-lemma Matroid.isGraphic_repr_is_TU {α X : Type} (M : Matroid α) (A : Matrix X M.E ℚ) :
-    M.IsRepresentedBy A ∧ A.IsGraphic → A.IsTotallyUnimodular := by
-  intro ⟨hMA, hA⟩
+lemma Matroid.IsRepresentedBy.isTotallyUnimodular_of_isGraphic {α X : Type} {M : Matroid α} {A : Matrix X M.E ℚ}
+    (hMA : M.IsRepresentedBy A) (hA : A.IsGraphic) :
+    A.IsTotallyUnimodular := by
   sorry
 
 /-- todo: desc -/
 lemma Matroid.IsGraphic.isRegular {α : Type} {M : Matroid α} (hM : M.IsGraphic) : M.IsRegular := by
-  rw [Matroid.IsRegular_iff_HasTURepr]
+  rw [Matroid.isRegular_iff_hasTuRepr]
   obtain ⟨X, A, hMA, hA⟩ := hM
-  exact ⟨X, A, M.isGraphic_repr_is_TU A ⟨hMA, hA⟩, hMA⟩
+  exact ⟨X, A, hMA.isTotallyUnimodular_of_isGraphic hA, hMA⟩
 
 end IsGraphic
 

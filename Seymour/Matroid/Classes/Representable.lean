@@ -13,10 +13,10 @@ def Matroid.IsRepresentableOver (M : Matroid α) (R : Type) [Ring R] : Prop :=
 
 /-- Matroid `M` is representable if it is representable over some field -/
 def Matroid.IsRepresentable (M : Matroid α) : Prop :=
-  ∃ R : Type, ∃ _hR : Ring R, M.IsRepresentableOver R
+  ∃ R : Type, ∃ _R : Ring R, M.IsRepresentableOver R
 
 /-- If a matroid is representable over a field, then its dual is also representable over that field -/
-lemma Matroid.IsRepresentable_dual_IsRepresentable {R : Type} [Ring R] {M : Matroid α} :
-    M.IsRepresentableOver R → M.dual.IsRepresentableOver R := by
+lemma Matroid.isRepresentable_iff_dual_isRepresentable {R : Type} [Ring R] {M : Matroid α} :
+    M.IsRepresentableOver R → M✶.IsRepresentableOver R := by
   sorry
   -- todo: want to apply `VectorMatroid.dual_exists_standard_repr`, but this requires `[DecidableEq α]`
