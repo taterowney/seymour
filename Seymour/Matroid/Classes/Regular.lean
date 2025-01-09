@@ -11,7 +11,7 @@ section TUSigning
 
 /-- Matrix `S` is a TU signing of `U` if `S` is TU and its entries are the same as in `U` up to signs. -/
 def Matrix.IsTUSigningOf {X Y : Type} (S : Matrix X Y ℚ) (U : Matrix X Y Z2) : Prop :=
-  S.IsTotallyUnimodular ∧ ∀ i j, |S i j| = U i j
+  S.IsTotallyUnimodular ∧ ∀ i j, |S i j| = (U i j).val
 
 /-- Matrix `A` has a TU signing if there is a TU matrix whose entries are the same as in `A` up to signs. -/
 def Matrix.HasTUSigning {X Y : Type} (A : Matrix X Y Z2) : Prop :=
