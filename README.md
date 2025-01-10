@@ -25,10 +25,21 @@ The goal of this project is to formally verify Seymour's decomposition theorem f
 
 ## Code style
 
-If you contribute to the project, do not worry about code style too much.
-We will accept your PR regardless of style; Martin will eventually adjust it.
-None of the style rules is enforced by a linter.
+If you contribute to the project, do not worry about code style too much;
+none of the style rules is enforced by a linter;
+we will accept your PR regardless of style;
+Martin will eventually adjust it.
 The guideline below is written primarily to assist you in reading the code.
+
+### Global variables
+
+- Implicit and typeclass arguments may be put after `variable` but explicit arguments may not be. Example and a non-example:
+  
+  `variable {R : Type} [R : Ring] (a : R)`
+
+  While `{R : Type} [R : Ring]` in encouraged, the explicit argument `(a : R)` is not allowed.
+  As a result, when you call a function or lemma, you can be sure that all required arguments are visible at the lines of given function or lemma.
+- We use global variables sparingly — usually for arguments that are used by the entire file or section.
 
 ### Lines
 
@@ -42,20 +53,43 @@ The guideline below is written primarily to assist you in reading the code.
 ### Indentation
 
 - We use the same indentation as Mathlib.
-  - Subitem is indented by 2 spaces.
-  - Continuation of the same item after a linebreak is 4 spaces.
+  - Subitem: 2 spaces
+  - Continuation of the same item after a linebreak: 4 spaces
 - Orphaning parentheses is allowed.
 - Deviations from the style are welcome if they hint some metaïnformation.
 
+### Spaces
+
+- There is always a space before a bracket (of any kind) opens and after it closes. Example:
+  
+  `foo {R : Type} [R : Ring] (a b : R) : ⟨a, b⟩ ∈ S`
+- Space after a brace opens and before a brace closes is written only in the set builder and in `Subtype` declaration. Examples:
+  
+  `{ x : X | ∃ y, Bar x y }`
+
+  `{ x₁ : α × β₁ // f x₁.fst = Sum.inl x₁.snd }`
+
+- With a comma, a space is written only after it, not before.
+- With a colon, a space is written from both sides.
+
 ### Naming
 
+#### Constants
+
 - Use `camelCase` and `PascalCase` and `snake_case` the same way Mathlib uses them.
+  - Constants that live in `Sort` (i.e., new `Type` and `Prop` declarations) are written in `PascalCase`
+  - All other constants that live in `Type` (e.g. functions that return real numbers) are written in `camelCase`
+  - Constants that live in `Prop` (i.e., theorems and lemmas) are written in `snake_case` whose constituents are other constants converted to `camelCase` and other standard tokens like `left` or `ext` or `cancel`
+- We like to write `.` in the name of a constant if it facilitates the use of dot notation when calling it. Usually it means that the part of the name that comes before the last `.` is identical to the type of the first explicit argument.
+
+#### Variables
+
 - Data variables (both in arguments and local variables) are always denoted by a single letter, possibly with other stuff after it like lower index or apostrophe.
 - Prop variables (both in arguments and local variables) are always denoted by multiple letters, possibly with other stuff after them like lower index or apostrophe.
-  - prefix `h` means "the statement is anything about the following variables"
-  - absence of `h` means that the statement is spelled out, not only the variables that appear in it
-  - writing names like `h₁` or `h'` or `this'` is strongly discouraged
+  - Prefix `h` means "the statement is anything about the following variables"
+  - Not starting with `h` means that the actual statement is spelled out, not only the variables that appear in it
 - Never name anything `this` or standalone `h` (neither for data nor for propositions), but leaving automatically named stuff with `this` or `h` is encouraged if the term is not explicitly reffered to later.
+  - Writing names like `h₁` or `h'` or `this'` is strongly discouraged regarless of the purpose
 - Examples:
 
   `intro a b a_lt_b hab`
@@ -89,23 +123,7 @@ The guideline below is written primarily to assist you in reading the code.
   - `h1` carries any information involving the number `1`
   - `h1'` carries another information involving the number `1`
 
-### Global variables
+### Other
 
-- Only implicit and typeclass arguments may be put into `variable`, never explicit arguments. Example and a non-example:
-  
-  `variable {R : Type} [R : Ring] (a : R)`
-
-  While `{R : Type} [R : Ring]` in encouraged, the last one `(a : R)` is not allowed.
-  This way, when you call a function or lemma, you can be sure that all required arguments are visible at the lines of given function or lemma.
-- We use global variables sparingly — only for arguments that are used by the entire file or section.
-
-### Spaces with brackets
-
-- There is always a space before a bracket (of any kind) opens and after it closes. Example:
-  
-  `foo {R : Type} [R : Ring] (a b : R) : ⟨a, b⟩ ∈ S`
-- Space after a brace opens and before a brace closes is written only in the set builder and in `Subtype` declaration. Examples:
-  
-  `{ x : X | Foo x }`
-
-  `{ x₁ : α × β₁ // f x₁.fst = Sum.inl x₁.snd }`
+- We prefer not to write parentheses after quantifiers.
+- We do not write a space after `¬` but we write redundant parentheses around the negated expression unless it is a single token.
