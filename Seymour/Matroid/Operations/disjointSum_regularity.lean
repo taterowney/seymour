@@ -4,20 +4,17 @@ import Seymour.ForMathlib.MatrixManip
 import Seymour.Matroid.Classes.Regular
 
 
-variable {α : Type}
-variable [∀ T : Set α, ∀ a, Decidable (a ∈ T)]
-variable {M₁ M₂ : Matroid α}
+variable {α : Type} {M₁ M₂ : Matroid α}
 
 section Composition
 
 /-- todo: desc-/
-lemma Matroid.disjointSum.ofRepresented_repr {R : Type} [Ring R] {X₁ X₂ : Set α} {A₁ : Matrix X₁ M₁.E R} {A₂ : Matrix X₂ M₂.E R}
-    [∀ a, Decidable (a ∈ X₁)] [∀ a, Decidable (a ∈ X₂)] [∀ a, Decidable (a ∈ M₁.E)] [∀ a, Decidable (a ∈ M₂.E)]
+lemma Matroid.disjointSum.ofRepresented_repr {R : Type} {X₁ X₂ : Type} {A₁ : Matrix X₁ M₁.E R} {A₂ : Matrix X₂ M₂.E R}
+    [Ring R] [∀ a, Decidable (a ∈ M₁.E)] [∀ a, Decidable (a ∈ M₂.E)]
     (hM₁M₂ : M₁.E ⫗ M₂.E) (hA₁ : M₁.IsRepresentedBy A₁) (hA₂ : M₂.IsRepresentedBy A₂) :
     (M₁.disjointSum M₂ hM₁M₂).IsRepresentedBy
-      ((Matrix.setUnion_fromBlocks A₁ 0 0 A₂).setUnion_castCols (Matroid.disjointSum_ground_eq.symm)) :=
+      ((Matrix.setUnion_fromBlocks' A₁ 0 0 A₂).setUnion_castCols Matroid.disjointSum_ground_eq.symm) :=
   sorry
--- Could we make it work with `{X₁ X₂ : Type}` instead?
 
 /-- todo: desc-/
 lemma Matroid.disjointSum.IsRegular_of_IsRegular (hM₁M₂ : M₁.E ⫗ M₂.E)

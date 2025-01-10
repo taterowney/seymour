@@ -1,14 +1,12 @@
 import Seymour.Basic
 
 
-variable {α : Type}
-variable {R : Type*}
-variable {X Y X₁ X₂ Y₁ Y₂ : Set α}
+variable {α X Y R : Type} {X₀ X₁ X₂ Y₀ Y₁ Y₂ : Set α}
 
 
 /-- todo: desc -/
-def Matrix.setUnion_castCols (A : Matrix X (Y₁ ∪ Y₂).Elem R) (h : Y₁ ∪ Y₂ = Y) : Matrix X Y R :=
-  Matrix.of fun i j => A i ⟨j.val, h ▸ j.coe_prop⟩
+def Matrix.setUnion_castCols (A : Matrix X (Y₁ ∪ Y₂).Elem R) (hY : Y₁ ∪ Y₂ = Y₀) : Matrix X Y₀ R :=
+  Matrix.of fun i j => A i ⟨j.val, hY ▸ j.coe_prop⟩
 
 /-- Concatenate matrices B₁[X × Y₁] and B₂[X × Y₂] with the same rows (X)
   to get a matrix indexed by [X × (Y₁ ∪ Y₂).Elem] -/
@@ -26,8 +24,8 @@ def Matrix.setUnion_toCols₂ (A : Matrix X (Y₁ ∪ Y₂).Elem R) : Matrix X Y
 
 
 /-- todo: desc -/
-def Matrix.setUnion_castRows (A : Matrix (X₁ ∪ X₂).Elem Y R) (h : X₁ ∪ X₂ = X) : Matrix X Y R :=
-  Matrix.of fun i j => A ⟨i.val, h ▸ i.coe_prop⟩ j
+def Matrix.setUnion_castRows (A : Matrix (X₁ ∪ X₂).Elem Y R) (hX : X₁ ∪ X₂ = X₀) : Matrix X₀ Y R :=
+  Matrix.of fun i j => A ⟨i.val, hX ▸ i.coe_prop⟩ j
 
 /-- Concatenate matrices A₁[X₁ × Y] and A₂[X₂ × Y] with the same columns (Y)
   to get a matrix indexed by [(X₁ ∪ X₂).Elem × Y] -/
@@ -52,5 +50,12 @@ def Matrix.setUnion_fromBlocks
     (A : Matrix X₁ Y₁ R) (B : Matrix X₁ Y₂ R) (C : Matrix X₂ Y₁ R) (D : Matrix X₂ Y₂ R) :
     Matrix (X₁ ∪ X₂).Elem (Y₁ ∪ Y₂).Elem R :=
   Matrix.setUnion_fromRows (Matrix.setUnion_fromCols A B) (Matrix.setUnion_fromCols C D)
+
+/-- todo: desc -/
+def Matrix.setUnion_fromBlocks' {T₁ T₂ : Type}
+    [∀ a, Decidable (a ∈ Y₁)] [∀ a, Decidable (a ∈ Y₂)]
+    (A : Matrix T₁ Y₁ R) (B : Matrix T₁ Y₂ R) (C : Matrix T₂ Y₁ R) (D : Matrix T₂ Y₂ R) :
+    Matrix (T₁ ⊕ T₂) (Y₁ ∪ Y₂).Elem R :=
+  Matrix.fromRows (Matrix.setUnion_fromCols A B) (Matrix.setUnion_fromCols C D)
 
 -- todo: simp lemmas? toBlocks?
