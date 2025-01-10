@@ -14,7 +14,7 @@ structure VectorMatroid (α R : Type) [Ring R] where
   /-- column index set -/
   E : Set α
   /-- matrix defining a vector matroid -/
-  A : Matrix X E R
+  A : Matrix X E R -- here `Set.Elem` is called
 
 variable {α R : Type} [Ring R]
 
