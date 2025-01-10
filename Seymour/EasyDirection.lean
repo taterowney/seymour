@@ -2,7 +2,8 @@ import Seymour.Matroid.Classes.Regular
 import Seymour.Matroid.Operations.SumDelta.SpecialCase1Sum
 import Seymour.Matroid.Operations.SumDelta.SpecialCase2Sum
 import Seymour.Matroid.Operations.SumDelta.SpecialCase3Sum
-import Seymour.Matroid.Operations.disjointSum_regularity
+import Seymour.Matroid.Operations.Sum1regularity
+import Seymour.Matroid.Operations.Sum2.Regularity
 
 /-!
 This file states the "easy" (composition) direction of the Seymour decomposition theorem.
@@ -25,10 +26,9 @@ theorem easySeymour.Sum1 {M₁ M₂ : Matroid α} (hM₁ : M₁.IsRegular) (hM�
 theorem easySeymour.Sum2 {M₁ M₂ : Matroid α} (hM₁ : M₁.IsRegular) (hM₂ : M₂.IsRegular)
     (assumptions : TwoSumAssumptions M₁ M₂) :
     assumptions.build2sum.IsRegular := by
-  intro F hF
-  obtain ⟨⟨X₁, E₁, A₁⟩, rfl⟩ := hM₁ F hF
-  obtain ⟨⟨X₂, E₂, A₂⟩, rfl⟩ := hM₂ F hF
-  sorry
+  apply Matroid2sum_isRegular_isRegular
+  convert hM₁
+  convert hM₂
 
 theorem easySeymour.Sum3 [DecidableEq α] {M₁ M₂ : BinaryMatroid α}
     (hM₁ : M₁.toMatroid.IsRegular) (hM₂ : M₂.toMatroid.IsRegular)

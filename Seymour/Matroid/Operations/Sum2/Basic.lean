@@ -468,8 +468,4 @@ lemma TwoSumAssumptions.build2sum_circuit {M₁ M₂ : Matroid α} (assumptions 
     assumptions.build2sum.Circuit C ↔ C ⊆ twoSumGround M₁ M₂ ∧ TwoSumCircuitPred M₁ M₂ C := by
   apply CircuitMatroid.circuit_iff
 
-/-- 2-sum of two matroids -/
-def Matroid.twoSum (M₁ M₂ : Matroid α) (assumptions : TwoSumAssumptions M₁ M₂) : Matroid α :=
-  assumptions.build2sum
-
 end TwoSumDefinition

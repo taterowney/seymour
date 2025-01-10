@@ -9,22 +9,13 @@ variable {α : Type} {M₁ M₂ : Matroid α}
 section Composition
 
 /-- todo: desc-/
-lemma Matroid.disjointSum.ofRepresented_repr {R : Type} {X₁ X₂ : Type} {A₁ : Matrix X₁ M₁.E R} {A₂ : Matrix X₂ M₂.E R}
+lemma Matroid.disjointSum.ofRepresented_repr {R X₁ X₂ : Type} {A₁ : Matrix X₁ M₁.E R} {A₂ : Matrix X₂ M₂.E R}
     [Ring R] [∀ a, Decidable (a ∈ M₁.E)] [∀ a, Decidable (a ∈ M₂.E)]
     (hM₁M₂ : M₁.E ⫗ M₂.E) (hA₁ : M₁.IsRepresentedBy A₁) (hA₂ : M₂.IsRepresentedBy A₂) :
     (M₁.disjointSum M₂ hM₁M₂).IsRepresentedBy
-      ((Matrix.setUnion_fromBlocks' A₁ 0 0 A₂).setUnion_castCols Matroid.disjointSum_ground_eq.symm) :=
+      ((Matrix.setUnion_fromBlocks' A₁ 0 0 A₂).setUnion_castCols Matroid.disjointSum_ground_eq.symm) := by
+  -- TODO bump Mathlib
   sorry
-
-/-- todo: desc-/
-lemma Matroid.disjointSum.IsRegular_of_IsRegular (hM₁M₂ : M₁.E ⫗ M₂.E)
-    (hM₁ : M₁.IsRegular) (hM₂ : M₂.IsRegular) : (M₁.disjointSum M₂ hM₁M₂).IsRegular := by
-  sorry
-  -- todo: implement following this outline:
-  -- * fix any field F
-  -- * take matrix representations A₁ and A₂ of M₁ and M₂ over F
-  -- * M₁ ⊕₁ M₂ can be represented by block-diagonal matrix with A₁ and A₂ and on the diagonal
-  -- * thus M₁ ⊕₁ M₂ is representable over any field, so it is regular
 
 end Composition
 

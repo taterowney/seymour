@@ -7,7 +7,7 @@ variable {α : Type}
 
 section Representations
 
-/-- todo: desc -/ -- representation for summands in 2-sum --- see Proposition 7.1.24 in Oxley
+/-- representation for summands in 2-sum, see Proposition 7.1.24 in Oxley -/
 structure TwoSumSummandRepr (M : Matroid α) {p : α} (hp : p ∈ M.E) (R : Type) [Ring R] where
   /-- row index collection -/
   X : Set α
@@ -97,7 +97,7 @@ lemma TwoSumSummandRepr.exists {R : Type} [Ring R] {M : Matroid α} {p : α}
 lemma TwoSumSummandRepr.twoSum_repr {R : Type} [Ring R] {M₁ M₂ : Matroid α} {p : α} {hp₁ : p ∈ M₁.E} {hp₂ : p ∈ M₂.E}
     [∀ a, ∀ A : Set α, Decidable (a ∈ A)] -- todo: avoid?
     (assumptions : TwoSumAssumptions M₁ M₂) (S₁ : TwoSumSummandRepr M₁ hp₁ R) (S₂ : TwoSumSummandRepr M₂ hp₂ R) :
-    (M₁.twoSum M₂ assumptions).IsRepresentedBy (S₁.compose S₂ assumptions) :=
+    assumptions.build2sum.IsRepresentedBy (S₁.compose S₂ assumptions) :=
   sorry
 
 end Representations
@@ -106,27 +106,30 @@ end Representations
 section Regularity
 
 /-- todo: desc -/
-lemma Matroid.TwoSum.IsRegular_of_IsRegular {M₁ M₂ : Matroid α}
+lemma Matroid2sum_isRegular_isRegular {M₁ M₂ : Matroid α}
     (assumptions : TwoSumAssumptions M₁ M₂) (hM₁ : M₁.IsRegular) (hM₂ : M₂.IsRegular) :
-    (M₁.twoSum M₂ assumptions).IsRegular :=
+    assumptions.build2sum.IsRegular := by
+  intro F hF
+  obtain ⟨⟨X₁, E₁, A₁⟩, rfl⟩ := hM₁ F hF
+  obtain ⟨⟨X₂, E₂, A₂⟩, rfl⟩ := hM₂ F hF
   sorry
 
 /-- todo: desc -/
-lemma Matroid.TwoSum.of_IsRegular₁ {M₁ M₂ : Matroid α}
-    (assumptions : TwoSumAssumptions M₁ M₂) (h : (M₁.twoSum M₂ assumptions).IsRegular) :
+lemma Matroid2sum_isRegular_left {M₁ M₂ : Matroid α}
+    (assumptions : TwoSumAssumptions M₁ M₂) (hM : assumptions.build2sum.IsRegular) :
     M₁.IsRegular :=
   sorry
 
 /-- todo: desc -/
-lemma Matroid.TwoSum.of_IsRegular₂ {M₁ M₂ : Matroid α}
-    (assumptions : TwoSumAssumptions M₁ M₂) (h : (M₁.twoSum M₂ assumptions).IsRegular) :
+lemma Matroid2sum_isRegular_right {M₁ M₂ : Matroid α}
+    (assumptions : TwoSumAssumptions M₁ M₂) (hM : assumptions.build2sum.IsRegular) :
     M₂.IsRegular :=
   sorry
 
 /-- todo: desc -/
-lemma Matroid.TwoSum.of_IsRegular_both {M₁ M₂ : Matroid α}
-    (assumptions : TwoSumAssumptions M₁ M₂) (h : (M₁.twoSum M₂ assumptions).IsRegular) :
+lemma Matroid2sum_IsRegular_both {M₁ M₂ : Matroid α}
+    (assumptions : TwoSumAssumptions M₁ M₂) (hM : assumptions.build2sum.IsRegular) :
     M₁.IsRegular ∧ M₂.IsRegular :=
-  ⟨Matroid.TwoSum.of_IsRegular₁ assumptions h, Matroid.TwoSum.of_IsRegular₂ assumptions h⟩
+  ⟨Matroid2sum_isRegular_left assumptions hM, Matroid2sum_isRegular_right assumptions hM⟩
 
 end Regularity
