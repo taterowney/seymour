@@ -17,6 +17,7 @@ lemma Matroid.disjointSum.ofRepresented_repr {R : Type} [Ring R] {X₁ X₂ : Se
     (M₁.disjointSum M₂ hM₁M₂).IsRepresentedBy
       ((Matrix.setUnion_fromBlocks A₁ 0 0 A₂).setUnion_castCols (Matroid.disjointSum_ground_eq.symm)) :=
   sorry
+-- Could we make it work with `{X₁ X₂ : Type}` instead?
 
 /-- todo: desc-/
 lemma Matroid.disjointSum.IsRegular_of_IsRegular (hM₁M₂ : M₁.E ⫗ M₂.E)

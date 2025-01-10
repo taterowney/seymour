@@ -57,6 +57,8 @@ lemma toUnion_toSum {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidabl
   rw [Set.disjoint_right] at hXY
   cases i <;> simp [Subtype.toSum, Sum.toUnion, HasSubset.Subset.elem, hXY]
 
+-- TODO do we need API for `Matrix (X₁ ⊕ X₂) (E₁ ∪ E₂).Elem β` instead? Working with the new `VectorMatroid` is hell.
+
 variable {T₁ T₂ S₁ S₂ : Set α} {β : Type}
   [∀ a, Decidable (a ∈ T₁)]
   [∀ a, Decidable (a ∈ T₂)]

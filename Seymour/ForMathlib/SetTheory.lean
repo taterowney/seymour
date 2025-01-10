@@ -11,6 +11,8 @@ We do not use out custom notation here because this file is higher than `Basic.l
 
 variable {α : Type}
 
+-- possible refactoring by `setauto` here:
+-- https://github.com/LennyTaelman/setauto/blob/8eb8eabfea9f6f1627a9eb73a55b07c3a62d5cb8/Setauto/Setauto.lean#L175
 
 section Other
 
