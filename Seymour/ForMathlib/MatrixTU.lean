@@ -281,3 +281,7 @@ lemma Matrix.fromBlocks_isTotallyUnimodular {A₁ : Matrix X₁ Y₁ R} {A₂ : 
       have := decomposeSum_card_eq f
       have := decomposeSum_card_eq g
       omega
+
+-- Alternative proof is here (the auxiliary definition is different but the main ideas are identical):
+-- https://github.com/madvorak/matrix-tu-experimental/blob/082206a6cf744d3bc80513494781a05451da5717/MatrixTuExperimental.lean#L262
+-- It will be probably upstreamed to Mathlib someday.

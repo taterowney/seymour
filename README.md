@@ -34,19 +34,22 @@ The guideline below is written primarily to assist you in reading the code.
 ### Global variables
 
 - Implicit and typeclass arguments may be put after `variable` but explicit arguments may not be. Example and a non-example:
-  
+
   `variable {R : Type} [R : Ring] (a : R)`
 
-  While `{R : Type} [R : Ring]` in encouraged, the explicit argument `(a : R)` is not allowed.
-  As a result, when you call a function or lemma, you can be sure that all required arguments are visible at the lines of given function or lemma.
+  While `{R : Type} [R : Ring]` in encouraged, the explicit argument `(a : R)` is not allowed to be a global variable.
+  As a result, when you call a function or a lemma, you can be sure that all required arguments are visible at the lines of given function or lemma,
+  which is very important.
 - We use global variables sparingly — usually for arguments that are used by the entire file or section.
 
 ### Lines
 
-- Lines should not be longer than 128 characters (see the vertical ruler in VS Code).
+- Lines should not be longer than 128 characters (see the vertical ruler in VS Code) unless the line contains a long URL.
 - Starting a proof on a new line is recommended even in cases where the entire proof fits into the same line with the statement.
 - Make 2 empty lines between imports and the content of the file.
+- Make 1 empty line between the start of a section and a declaration.
 - Make 1 empty line between declarations of any kind.
+- Make 1 empty line between a declaration and the end of a section.
 - Make 2 empty lines between the end of a section and what follows.
 - Each file ends with a linebreak.
 
@@ -55,17 +58,16 @@ The guideline below is written primarily to assist you in reading the code.
 - We use the same indentation as Mathlib.
   - Subitem: 2 spaces
   - Continuation of the same item after a linebreak: 4 spaces
-- Orphaning parentheses is allowed.
 - Deviations from the style are welcome if they hint some metaïnformation.
 
 ### Spaces
 
 - There is always a space before a bracket (of any kind) opens and after it closes. Example:
-  
+
   `foo {R : Type} [R : Ring] (a b : R) : ⟨a, b⟩ ∈ S`
-- Space after a brace opens and before a brace closes is written only in the set builder and in `Subtype` declaration. Examples:
-  
-  `{ x : X | ∃ y, Bar x y }`
+- Space after a brace opens and before a brace closes is written only in the `Set` builder and in `Subtype` declarations. Examples:
+
+  `{ x : X | ∃ y : Y, Bar x y }`
 
   `{ x₁ : α × β₁ // f x₁.fst = Sum.inl x₁.snd }`
 
@@ -79,8 +81,9 @@ The guideline below is written primarily to assist you in reading the code.
 - Use `camelCase` and `PascalCase` and `snake_case` the same way Mathlib uses them.
   - Constants that live in `Sort` (i.e., new `Type` and `Prop` declarations) are written in `PascalCase`
   - All other constants that live in `Type` (e.g. functions that return real numbers) are written in `camelCase`
-  - Constants that live in `Prop` (i.e., theorems and lemmas) are written in `snake_case` whose constituents are other constants converted to `camelCase` and other standard tokens like `left` or `ext` or `cancel`
+  - Constants that live in `Prop` (i.e., theorems and lemmas) are written in `snake_case` whose constituents are other constants converted to `camelCase` and other standard tokens like `ext` or `cancel`
 - We like to write `.` in the name of a constant if it facilitates the use of dot notation when calling it. Usually it means that the part of the name that comes before the last `.` is identical to the type of the first explicit argument.
+  - In such a case, the parts before the last `.` are not converted to `camelCase`
 
 #### Variables
 
@@ -88,8 +91,8 @@ The guideline below is written primarily to assist you in reading the code.
 - Prop variables (both in arguments and local variables) are always denoted by multiple letters, possibly with other stuff after them like lower index or apostrophe.
   - Prefix `h` means "the statement is anything about the following variables"
   - Not starting with `h` means that the actual statement is spelled out, not only the variables that appear in it
-- Never name anything `this` or standalone `h` (neither for data nor for propositions), but leaving automatically named stuff with `this` or `h` is encouraged if the term is not explicitly reffered to later.
-  - Writing names like `h₁` or `h'` or `this'` is strongly discouraged regarless of the purpose
+- Never name anything `this` or standalone `h` (these names are acceptable neither for data nor for propositions), but leaving automatically named stuff with `this` or `h` is encouraged if the term is not explicitly referred to later.
+  - Writing names like `h₁` or `h'` or `this'` or `this_` is strongly discouraged regardless of the purpose
 - Examples:
 
   `intro a b a_lt_b hab`
@@ -127,3 +130,5 @@ The guideline below is written primarily to assist you in reading the code.
 
 - We prefer not to write parentheses after quantifiers.
 - We do not write a space after `¬` but we write redundant parentheses around the negated expression unless it is a single token.
+- Orphaning parentheses is allowed.
+- We do not write `.1` and `.2` to access fields; write their names instead.
