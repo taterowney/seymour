@@ -12,40 +12,39 @@ abbrev CircuitPredicate (α : Type) := Set α → Prop
 variable {α : Type}
 
 
-section ValidXFamily
+section ValidFamily
 
 /-- Family of circuits satisfying assumptions of circuit axiom (C3) from Bruhn et al. -/
-structure ValidXFamily (P : CircuitPredicate α) (C X : Set α) where
+structure ValidFamily (P : CircuitPredicate α) (C X : Set α) where
   F : X.Elem → Set α
   hPF : ∀ x : X.Elem, P (F x)
   hF : ∀ x ∈ X, ∀ y : X, x ∈ F y ↔ x = y
 
-/-- Shorthand for union of sets in `ValidXFamily` -/
-@[simp]
-def ValidXFamily.union {P : CircuitPredicate α} {C X : Set α} (F : ValidXFamily P C X) : Set α :=
+/-- Shorthand for union of sets in `ValidFamily` -/
+abbrev ValidFamily.union {P : CircuitPredicate α} {C X : Set α} (F : ValidFamily P C X) : Set α :=
   Set.iUnion F.F
 
 -- question: unused API?
-lemma ValidXFamily.mem_of_elem {P : CircuitPredicate α} {C X : Set α} (F : ValidXFamily P C X) (x : X.Elem) :
+lemma ValidFamily.mem_of_elem {P : CircuitPredicate α} {C X : Set α} (F : ValidFamily P C X) (x : X.Elem) :
     x.val ∈ F.F x := by
   rw [F.hF]
   exact x.property
 
 -- question: unused API?
-lemma ValidXFamily.outside {P : CircuitPredicate α} {C X : Set α} {F : ValidXFamily P C X} {z : α} (hzCF : z ∈ C \ F.union) :
+lemma ValidFamily.outside {P : CircuitPredicate α} {C X : Set α} {F : ValidFamily P C X} {z : α} (hzCF : z ∈ C \ F.union) :
     z ∉ X := by
   intro hz
   have := F.hF z hz ⟨z, hz⟩
-  simp_all [ValidXFamily.union]
+  simp_all
 
-end ValidXFamily
+end ValidFamily
 
 
 section CircuitAxioms
 
 /-- Circuit predicate `P` defines independence predicate: independent sets are all non-circuits. -/
-def CircuitPredicate.ToIndepPredicate (P : CircuitPredicate α) (E : Set α) : IndepPredicate α :=
-  fun I => I ⊆ E ∧ ∀ C, C ⊆ I → ¬(P C)
+def CircuitPredicate.toIndepPredicate (P : CircuitPredicate α) (E : Set α) : IndepPredicate α :=
+  fun I : Set α => I ⊆ E ∧ ∀ C, C ⊆ I → ¬(P C)
 
 /-- Axiom (C1): empty set is not a circuit. -/
 def CircuitPredicate.not_circuit_empty (P : CircuitPredicate α) : Prop :=
@@ -54,32 +53,32 @@ alias CircuitPredicate.axiom_c1 := CircuitPredicate.not_circuit_empty
 
 /-- Axiom (C2): no circuit is a subset of another circuit. -/
 def CircuitPredicate.circuit_not_ssubset (P : CircuitPredicate α) : Prop :=
-  ∀ C C', P C → P C' → ¬(C' ⊂ C)  -- todo: swap to ¬C ⊂ C'
+  ∀ C C' : Set α, P C → P C' → ¬(C' ⊂ C)  -- todo: swap to ¬C ⊂ C'
 alias CircuitPredicate.axiom_c2 := CircuitPredicate.circuit_not_ssubset
 
 /-- Axiom (C3) from Bruhn et al. -/
 def CircuitPredicate.axiom_c3 (P : CircuitPredicate α) : Prop :=
-  ∀ X C, ∀ F : ValidXFamily P C X, ∀ z ∈ C \ F.union, ∃ C', P C' ∧ z ∈ C' ∧ C' ⊆ (C ∪ F.union) \ X
+  ∀ X C : Set α, ∀ F : ValidFamily P C X, ∀ z ∈ C \ F.union, ∃ C', P C' ∧ z ∈ C' ∧ C' ⊆ (C ∪ F.union) \ X
 
 /-- Axiom (CM) from Bruhn et al.: set of all independent sets has the maximal subset property. -/
 def CircuitPredicate.circuit_maximal (P : CircuitPredicate α) (E : Set α) : Prop :=
-  ∀ X, X ⊆ E → Matroid.ExistsMaximalSubsetProperty (CircuitPredicate.ToIndepPredicate P E) X
+  ∀ X : Set α, X ⊆ E → Matroid.ExistsMaximalSubsetProperty (CircuitPredicate.toIndepPredicate P E) X
 alias CircuitPredicate.axiom_cm := CircuitPredicate.circuit_maximal
 
 /-- Every circuit is a subset of the ground set. -/
 def CircuitPredicate.subset_ground (P : CircuitPredicate α) (E : Set α) : Prop :=
-  ∀ C, P C → C ⊆ E
+  ∀ C : Set α, P C → C ⊆ E
 alias CircuitPredicate.axiom_ce := CircuitPredicate.subset_ground
 
 /-- Strong circuit elimination axiom: if `C₁` and `C₂` are circuits with `e ∈ C₁ ∩ C₂` and `f ∈ C₁ \ C₂`,
-    then there is circuit `C₃` such that `f ∈ C₃ ⊆ C₁ ∪ C₂ \ {e}. -/
+    then there is circuit `C₃` such that `f ∈ C₃ ⊆ C₁ ∪ C₂ \ {e}`. -/
 def CircuitPredicate.strong_circuit_elim (P : CircuitPredicate α) : Prop :=
-  ∀ C₁ C₂, ∀ e f, P C₁ ∧ P C₂ ∧ e ∈ C₁ ∩ C₂ ∧ f ∈ C₁ \ C₂ → ∃ C₃, P C₃ ∧ f ∈ C₃ ∧ C₃ ⊆ (C₁ ∪ C₂) \ {e}
+  ∀ C₁ C₂ : Set α, ∀ e f, P C₁ ∧ P C₂ ∧ e ∈ C₁ ∩ C₂ ∧ f ∈ C₁ \ C₂ → ∃ C₃, P C₃ ∧ f ∈ C₃ ∧ C₃ ⊆ (C₁ ∪ C₂) \ {e}
 
 /-- Weak circuit elimination axiom: if `C₁` and `C₂` are distinct circuits and `e ∈ C₁ ∩ C₂`,
     then there is circuit `C₃` such that `C₃ ⊆ C₁ ∪ C₂ \ {e}`. -/
 def CircuitPredicate.weak_circuit_elim (P : CircuitPredicate α) : Prop :=
-  ∀ C₁ C₂, C₁ ≠ C₂ → P C₁ → P C₂ → ∀ e ∈ C₁ ∩ C₂, ∃ C₃, P C₃ ∧ C₃ ⊆ (C₁ ∪ C₂) \ {e}
+  ∀ C₁ C₂ : Set α, C₁ ≠ C₂ → P C₁ → P C₂ → ∀ e ∈ C₁ ∩ C₂, ∃ C₃, P C₃ ∧ C₃ ⊆ (C₁ ∪ C₂) \ {e}
 
 end CircuitAxioms
 
@@ -88,7 +87,7 @@ section CircuitAxiomRelations
 
 /-- Alternative formulation of axiom (C2). -/
 lemma CircuitPredicate.circuit_not_ssubset_iff (P : CircuitPredicate α) :
-    P.circuit_not_ssubset ↔ ∀ C C', P C → P C' → C' ⊆ C → C ⊆ C' := by
+    P.circuit_not_ssubset ↔ ∀ C C' : Set α, P C → P C' → C' ⊆ C → C ⊆ C' := by
   constructor
   · intro hP C C' hC hC' hCC'
     apply hP C C' hC at hC'
@@ -105,7 +104,7 @@ lemma CircuitPredicate.C3_strong_circuit_elim (P : CircuitPredicate α) :
     P.axiom_c3 → P.strong_circuit_elim := by
   intro hPC3 C₁ C₂ x z hxz
   obtain ⟨_hC₁, hC₂, hx, hz⟩ := hxz
-  let F : ValidXFamily P C₁ {x} :=
+  let F : ValidFamily P C₁ {x} :=
   ⟨
     (fun _ => C₂),
     (fun _ => hC₂),
@@ -114,7 +113,7 @@ lemma CircuitPredicate.C3_strong_circuit_elim (P : CircuitPredicate α) :
       exact Set.mem_of_mem_inter_right hx)
   ⟩
   specialize hPC3 {x} C₁ F
-  simp only [ValidXFamily.union, Set.iUnion_coe_set, Set.mem_singleton_iff, Set.iUnion_iUnion_eq_left] at hPC3
+  simp only [ValidFamily.union, Set.iUnion_coe_set, Set.mem_singleton_iff, Set.iUnion_iUnion_eq_left] at hPC3
   specialize hPC3 z hz
   exact hPC3
 
@@ -144,16 +143,16 @@ lemma CircuitPredicate.strong_circuit_elim_weak_circuit_elim (P : CircuitPredica
 
 /-- todo: desc -/
 def CircuitPredicate.support (P : CircuitPredicate α) : Set α :=
-  {C : Set α | P C}.sUnion
+  { C : Set α | P C }.sUnion
 
 /-- todo: desc -/
 lemma CircuitPredicate.support_eq (P : CircuitPredicate α) :
-    Minimal (fun S => ∀ C, P C → C ⊆ S) P.support := by
+    Minimal (fun S : Set α => ∀ C : Set α, P C → C ⊆ S) P.support := by
   sorry
 
 /-- Condition for circuit predicate to have finite support. -/
 lemma CircuitPredicate.finite_support_iff (P : CircuitPredicate α) :
-    P.support.Finite ↔ ∃ S, S.Finite ∧ ∀ C, P C → C ⊆ S := by
+    P.support.Finite ↔ ∃ S : Set α, S.Finite ∧ ∀ C, P C → C ⊆ S := by
   sorry
 
 /-- If `P` is finitely supported and `P` satisfies weak circuit elimination, then `P` satisfies (C3). -/
@@ -168,16 +167,16 @@ section PredicateRelations
 
 /-- Independence predicate defines following circuit predicate: circuits are minimal dependent sets. -/
 def IndepPredicate.ToCircuitPredicate (P : IndepPredicate α) (E : Set α) : CircuitPredicate α :=
-  fun C => Minimal (fun D => ¬P D ∧ D ⊆ E) C
+  fun C : Set α => Minimal (fun D : Set α => ¬(P D) ∧ D ⊆ E) C
 
 /-- Converting circuit predicate to independence predicate and then to circuit predicate
     yields original independence predicate.-/
 lemma CircuitPredicate.ToIndep_ToCircuit (P : CircuitPredicate α) (E C : Set α) :
-    (P.ToIndepPredicate E).ToCircuitPredicate E C → C ⊆ E ∧ P C := by
+    (P.toIndepPredicate E).ToCircuitPredicate E C → C ⊆ E ∧ P C := by
   intro ⟨⟨hCdep, hCE⟩, hCmin⟩
   constructor
   · exact hCE
-  · unfold ToIndepPredicate at hCdep hCmin
+  · unfold CircuitPredicate.toIndepPredicate at hCdep hCmin
     push_neg at hCdep
     obtain ⟨D, hDC, hD⟩ := hCdep hCE
     have hDok : (fun K => ¬(K ⊆ E ∧ ∀ C ⊆ K, ¬P C) ∧ K ⊆ E) D := ⟨
@@ -192,14 +191,14 @@ lemma CircuitPredicate.ToIndep_ToCircuit (P : CircuitPredicate α) (E C : Set α
 
 /-- todo: desc-/
 lemma CircuitPredicate.ToIndep_ToCircuit_iff {P : CircuitPredicate α} (hP : P.circuit_not_ssubset) (E C : Set α) :
-    (P.ToIndepPredicate E).ToCircuitPredicate E C ↔ C ⊆ E ∧ P C := by
+    (P.toIndepPredicate E).ToCircuitPredicate E C ↔ C ⊆ E ∧ P C := by
   constructor
   · exact CircuitPredicate.ToIndep_ToCircuit P E C
   · intro ⟨hCE, hC⟩
     constructor
     · exact ⟨fun ⟨_, hCsub⟩ => (hCsub C Set.Subset.rfl) hC, hCE⟩
     · intro D ⟨hDnindep, hDE⟩ hDC
-      unfold ToIndepPredicate at hDnindep
+      unfold CircuitPredicate.toIndepPredicate at hDnindep
       push_neg at hDnindep
       obtain ⟨D', ⟨hD'D, hD'⟩⟩ := hDnindep hDE
       rw [CircuitPredicate.circuit_not_ssubset_iff] at hP
@@ -208,7 +207,7 @@ lemma CircuitPredicate.ToIndep_ToCircuit_iff {P : CircuitPredicate α} (hP : P.c
 /-- Converting independence predicate to circuit predicate and then to independence predicate
     yields original independence predicate.-/
 lemma IndepPredicate.ToCircuit_ToIndep_iff (P : IndepPredicate α) (E I : Set α) :
-    (P.ToCircuitPredicate E).ToIndepPredicate E I ↔ P I ∧ I ⊆ E := by
+    (P.ToCircuitPredicate E).toIndepPredicate E I ↔ P I ∧ I ⊆ E := by
   constructor
   · intro ⟨hIE, hI⟩
     constructor
@@ -222,7 +221,7 @@ lemma IndepPredicate.ToCircuit_ToIndep_iff (P : IndepPredicate α) (E I : Set α
 /-- Converting independence predicate of matroid to circuit predicate and then to independence predicate
     yields original independence predicate. -/
 lemma IndepPredicate.Matroid_ToCircuit_ToIndep_iff (M : Matroid α) (I : Set α) :
-    (M.IndepPredicate.ToCircuitPredicate M.E).ToIndepPredicate M.E I ↔ I ⊆ M.E ∧ M.Indep I := by
+    (M.IndepPredicate.ToCircuitPredicate M.E).toIndepPredicate M.E I ↔ I ⊆ M.E ∧ M.Indep I := by
   constructor
   · intro ⟨hIE, hI⟩
     constructor
@@ -265,28 +264,28 @@ end PredicateRelations
 section CircuitToIndepAxioms
 
 /-- Independence predicate constructed from circuit predicate satisfies (I1): empty set is independent. -/
-lemma CircuitPredicate.ToIndepPredicate.indep_empty {P : CircuitPredicate α}
+lemma CircuitPredicate.toIndepPredicate.indep_empty {P : CircuitPredicate α}
     (hP : P.not_circuit_empty) (E : Set α) :
-    (P.ToIndepPredicate E).indep_empty :=
+    (P.toIndepPredicate E).indep_empty :=
   ⟨E.empty_subset, fun _ hCempty hC => hP (Set.subset_eq_empty hCempty rfl ▸ hC)⟩
 
 /-- Independence predicate constructed from circuit predicate satisfies (I2): subsets of independent sets are independent. -/
-lemma CircuitPredicate.ToIndepPredicate.indep_subset (P : CircuitPredicate α) (E : Set α) :
-    (P.ToIndepPredicate E).indep_subset := by
+lemma CircuitPredicate.toIndepPredicate.indep_subset (P : CircuitPredicate α) (E : Set α) :
+    (P.toIndepPredicate E).indep_subset := by
   unfold IndepPredicate.indep_subset
   exact fun I J hJ hIJ => ⟨hIJ.trans hJ.left, fun C hCI hPC => hJ.right C (hCI.trans hIJ) hPC⟩
 
 /-- Independence predicate constructed from circuit predicate satisfies (I3): independent sets have augmentation property. -/
-lemma CircuitPredicate.ToIndepPredicate.indep_aug {P : CircuitPredicate α} {E : Set α}
+lemma CircuitPredicate.toIndepPredicate.indep_aug {P : CircuitPredicate α} {E : Set α}
     (hPCM : P.circuit_maximal E) (hPC3 : P.axiom_c3) :
-    (P.ToIndepPredicate E).indep_aug := by
+    (P.toIndepPredicate E).indep_aug := by
   -- Proof adapted from Bruhn et al., Theorem 4.2 (ii), backward direction
   intro I B hI hInmax hBmax
   sorry -- todo : fix
 
-    -- (hI : P.ToIndepPredicate E I)
-    -- (hPI : ¬Maximal (P.ToIndepPredicate E) I)
-    -- (hPI' : Maximal (P.ToIndepPredicate E) I')
+    -- (hI : P.toIndepPredicate E I)
+    -- (hPI : ¬Maximal (P.toIndepPredicate E) I)
+    -- (hPI' : Maximal (P.toIndepPredicate E) I')
 
   -- have hB := hI
   -- apply hPCM at hB
@@ -313,12 +312,12 @@ lemma CircuitPredicate.ToIndepPredicate.indep_aug {P : CircuitPredicate α} {E :
   -- else
   --   have J' := z ᕃ I'
   --   have hJ'ground : J' ⊆ E := Set.insert_subset (hBground hzB) hPI'.1.1
-  --   have hJ' : ¬P.ToIndepPredicate E J'
+  --   have hJ' : ¬P.toIndepPredicate E J'
   --   · intro hJ'indep
   --     obtain ⟨hI'indep, hI'max⟩ := hPI'
   --     exact hzI' (hI'max hJ'indep (Set.subset_insert z I') (Or.inl rfl))
 
-  --   unfold CircuitPredicate.ToIndepPredicate at hJ'
+  --   unfold CircuitPredicate.toIndepPredicate at hJ'
   --   push_neg at hJ'
   --   specialize hJ' hJ'ground
   --   obtain ⟨C, ⟨hCcirc, hCJ'⟩⟩ := hJ'
@@ -335,7 +334,7 @@ lemma CircuitPredicate.ToIndepPredicate.indep_aug {P : CircuitPredicate α} {E :
   --   have hXII' : X ⊆ I' \ I := Set.subset_diff.mpr ⟨hXI', hIXdisj.symm⟩
 
   --   by_contra hx
-  --   unfold CircuitPredicate.ToIndepPredicate at hx
+  --   unfold CircuitPredicate.toIndepPredicate at hx
   --   push_neg at hx
 
   --   have hIxground : ∀ x ∈ E, x ᕃ I ⊆ E := fun x a => Set.insert_subset a (fun _ hxI => hBground (hIB hxI))
@@ -351,7 +350,7 @@ lemma CircuitPredicate.ToIndepPredicate.indep_aug {P : CircuitPredicate α} {E :
   --     exact nmem_insert hzx hzI
 
   --   -- for every `x ∈ X`, take corresponding `C` from `hx` and put it into `F`
-  --   have F : ValidXFamily P C X := sorry -- todo: construction
+  --   have F : ValidFamily P C X := sorry -- todo: construction
   --   have hzxF : ∀ x, F.F x ⊆ (x : α) ᕃ I := sorry -- holds by constructoin
   --   have hzF : z ∈ C \ F.union := sorry -- holds by construction
   --   apply hPC3 at hzF
@@ -372,26 +371,26 @@ lemma CircuitPredicate.ToIndepPredicate.indep_aug {P : CircuitPredicate α} {E :
   -- rfl
 
 /-- Independence predicate constructed from circuit predicate satisfies (IM): independent sets have maximal property. -/
-lemma CircuitPredicate.ToIndepPredicate.indep_maximal (P : CircuitPredicate α) (E : Set α) :
-    (P.ToIndepPredicate E).indep_maximal E :=
+lemma CircuitPredicate.toIndepPredicate.indep_maximal (P : CircuitPredicate α) (E : Set α) :
+    (P.toIndepPredicate E).indep_maximal E :=
   sorry
 
 /-- Independence predicate constructed from circuit predicate satisfies (IE): independent sets are subsets of ground set. -/
-lemma CircuitPredicate.ToIndepPredicate.subset_ground (P : CircuitPredicate α) (E : Set α) :
-    (P.ToIndepPredicate E).subset_ground E :=
+lemma CircuitPredicate.toIndepPredicate.subset_ground (P : CircuitPredicate α) (E : Set α) :
+    (P.toIndepPredicate E).subset_ground E :=
   fun _ hI => hI.left
 
 /-- Independence predicate constructed from circuit predicate satisfies augmentation property
     if weak circuit elimination axiom holds in finite case. -/
-lemma CircuitPredicate.ToIndepPredicate.finite_weak_circuit_elim_indep_aug {P : CircuitPredicate α} {E I J : Set α}
+lemma CircuitPredicate.toIndepPredicate.finite_weak_circuit_elim_indep_aug {P : CircuitPredicate α} {E I J : Set α}
     -- todo: add hP: necessary assumptions on circuit predicate
-    (hE : E.Finite) (hI : P.ToIndepPredicate E I) (hJ : P.ToIndepPredicate E J) (hIJ : I.ncard < J.ncard) :
-    ∃ e ∈ J, e ∉ I ∧ P.ToIndepPredicate E (e ᕃ I) := by
-  unfold ToIndepPredicate at hI hJ
+    (hE : E.Finite) (hI : P.toIndepPredicate E I) (hJ : P.toIndepPredicate E J) (hIJ : I.ncard < J.ncard) :
+    ∃ e ∈ J, e ∉ I ∧ P.toIndepPredicate E (e ᕃ I) := by
+  unfold CircuitPredicate.toIndepPredicate at hI hJ
   by_contra! heJ
 
-  have hKmin : ∃ K, P.ToIndepPredicate E K ∧ K ⊆ I ∪ J ∧ I.ncard < K.ncard ∧
-      (∀ K', (P.ToIndepPredicate E K' ∧ K' ⊆ I ∪ J ∧ I.ncard < K'.ncard) → (I \ K).ncard ≤ (I \ K').ncard) := by
+  have hKmin : ∃ K, P.toIndepPredicate E K ∧ K ⊆ I ∪ J ∧ I.ncard < K.ncard ∧
+      (∀ K' : Set α, (P.toIndepPredicate E K' ∧ K' ⊆ I ∪ J ∧ I.ncard < K'.ncard) → (I \ K).ncard ≤ (I \ K').ncard) := by
     sorry
   obtain ⟨K, hK⟩ := hKmin
   have hImKnonempty : (I \ K).Nonempty := sorry

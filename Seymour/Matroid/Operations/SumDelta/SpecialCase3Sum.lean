@@ -26,7 +26,7 @@ structure ThreeSumAssumptions (M₁ M₂ : BinaryMatroid α) where
 
 /-- todo: desc -/
 def ThreeSumAssumptions.build3sum {M₁ M₂ : BinaryMatroid α} (assumptions : ThreeSumAssumptions M₁ M₂) : Matroid α :=
-  BinaryMatroid.DeltaSum.matroid M₁ M₂
+  BinaryMatroid.DeltaSum.toMatroid M₁ M₂
 
 /-- 3-sum of two matroids -/
 def BinaryMatroid.threeSum (M₁ M₂ : BinaryMatroid α) (assumptions : ThreeSumAssumptions M₁ M₂) : Matroid α :=

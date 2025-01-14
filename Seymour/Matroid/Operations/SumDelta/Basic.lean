@@ -121,12 +121,13 @@ def BinaryMatroid.DeltaSum.CircuitMatroid (M₁ M₂ : BinaryMatroid α) : Circu
   subset_ground := BinaryMatroid.DeltaSum.CircuitPred.subset_ground
 
 /-- Matroid corresponding to Δ-sum -/
-def BinaryMatroid.DeltaSum.matroid (M₁ M₂ : BinaryMatroid α) : Matroid α :=
-  (BinaryMatroid.DeltaSum.CircuitMatroid M₁ M₂).matroid
+def BinaryMatroid.DeltaSum.toMatroid (M₁ M₂ : BinaryMatroid α) : Matroid α :=
+  (BinaryMatroid.DeltaSum.CircuitMatroid M₁ M₂).toMatroid
 
 @[simp]
 lemma BinaryMatroid.DeltaSum.E_eq (M₁ M₂ : BinaryMatroid α) :
-  (BinaryMatroid.DeltaSum.matroid M₁ M₂).E = (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E) := rfl
+    (BinaryMatroid.DeltaSum.toMatroid M₁ M₂).E = (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E) :=
+  rfl
 
 @[simp]
 lemma BinaryMatroid.DeltaSum.CircuitPred_iff (M₁ M₂ : BinaryMatroid α) :
@@ -134,9 +135,9 @@ lemma BinaryMatroid.DeltaSum.CircuitPred_iff (M₁ M₂ : BinaryMatroid α) :
 
 @[simp]
 lemma BinaryMatroid.DeltaSum.circuit_iff (M₁ M₂ : BinaryMatroid α) {C : Set α} :
-    (BinaryMatroid.DeltaSum.matroid M₁ M₂).Circuit C ↔ BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C := by
-  unfold matroid
-  rw [CircuitMatroid.circuit_iff]
+    (BinaryMatroid.DeltaSum.toMatroid M₁ M₂).Circuit C ↔ BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C := by
+  unfold BinaryMatroid.DeltaSum.toMatroid
+  rw [CircuitMatroid.toMatroid_circuit_iff]
   exact ⟨And.right, fun hC => ⟨hC.subset_ground, hC⟩⟩
 
 end API

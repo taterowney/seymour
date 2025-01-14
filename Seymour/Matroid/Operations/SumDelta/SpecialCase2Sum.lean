@@ -152,7 +152,7 @@ section Equivalence
 /-- If `M₁` and `M₂` satisfy the 2-sum assumptions, then `M₁ Δ M₂ = M₁ ⊕₂ M₂` -/
 lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
     (assumptions : TwoSumAssumptions M₁.toMatroid M₂.toMatroid) :
-    assumptions.build2sum = BinaryMatroid.DeltaSum.matroid M₁ M₂ := by
+    assumptions.build2sum = BinaryMatroid.DeltaSum.toMatroid M₁ M₂ := by
   apply Matroid.ext_circuit (by rfl)
   intro C hCE
   rw [assumptions.build2sum_circuit, BinaryMatroid.DeltaSum.circuit_iff]

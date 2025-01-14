@@ -33,7 +33,7 @@ theorem easySeymour.Sum2 {M₁ M₂ : Matroid α} (hM₁ : M₁.IsRegular) (hM�
 theorem easySeymour.Sum3 [DecidableEq α] {M₁ M₂ : BinaryMatroid α}
     (hM₁ : M₁.toMatroid.IsRegular) (hM₂ : M₂.toMatroid.IsRegular)
     (assumptions : ThreeSumAssumptions M₁ M₂) :
-    (BinaryMatroid.DeltaSum.matroid M₁ M₂).IsRegular := by
+    (BinaryMatroid.DeltaSum.toMatroid M₁ M₂).IsRegular := by
   intro F hF
   obtain ⟨⟨X₁, E₁, A₁⟩, hA₁⟩ := hM₁ F hF
   obtain ⟨⟨X₂, E₂, A₂⟩, hA₂⟩ := hM₂ F hF

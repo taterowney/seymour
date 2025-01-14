@@ -456,7 +456,7 @@ lemma TwoSumAssumptions.build2sumCircuitMatroid_circuitPred {M₁ M₂ : Matroid
 
 /-- todo: desc -/
 def TwoSumAssumptions.build2sum {M₁ M₂ : Matroid α} (assumptions : TwoSumAssumptions M₁ M₂) : Matroid α :=
-  assumptions.build2sumCircuitMatroid.matroid
+  assumptions.build2sumCircuitMatroid.toMatroid
 
 @[simp]
 lemma TwoSumAssumptions.build2sum_E {M₁ M₂ : Matroid α} (assumptions : TwoSumAssumptions M₁ M₂) :
@@ -466,6 +466,6 @@ lemma TwoSumAssumptions.build2sum_E {M₁ M₂ : Matroid α} (assumptions : TwoS
 @[simp]
 lemma TwoSumAssumptions.build2sum_circuit {M₁ M₂ : Matroid α} (assumptions : TwoSumAssumptions M₁ M₂) (C : Set α) :
     assumptions.build2sum.Circuit C ↔ C ⊆ twoSumGround M₁ M₂ ∧ TwoSumCircuitPred M₁ M₂ C := by
-  apply CircuitMatroid.circuit_iff
+  apply CircuitMatroid.toMatroid_circuit_iff
 
 end TwoSumDefinition

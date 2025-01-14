@@ -174,7 +174,7 @@ section Equivalence
 
 /-- If `M₁.E ∩ M₂.E = ∅`, then `M₁ Δ M₂ = M₁ ⊕ M₂` -/
 lemma BinaryMatroid.DeltaSum.SpecialCase1Sum [DecidableEq α] {M₁ M₂ : BinaryMatroid α}
-    (hE : M₁.E ⫗ M₂.E) : Matroid.disjointSum M₁.toMatroid M₂.toMatroid hE = BinaryMatroid.DeltaSum.matroid M₁ M₂ := by
+    (hE : M₁.E ⫗ M₂.E) : Matroid.disjointSum M₁.toMatroid M₂.toMatroid hE = BinaryMatroid.DeltaSum.toMatroid M₁ M₂ := by
   apply Matroid.ext_circuit
   · rw [Matroid.disjointSum_ground_eq,
         VectorMatroid.toMatroid_E, VectorMatroid.toMatroid_E,

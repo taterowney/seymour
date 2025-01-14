@@ -29,32 +29,32 @@ variable {α : Type}
 /-- Corresponding independence predicate of circuit matroid. -/
 def CircuitMatroid.IndepPred (M : CircuitMatroid α) :
     IndepPredicate α :=
-  M.CircuitPred.ToIndepPredicate M.E
+  M.CircuitPred.toIndepPredicate M.E
 
 /-- Corresponding independence predicate of circuit matroid satisfies (I1): empty set is independent. -/
 lemma CircuitMatroid.indep_empty (M : CircuitMatroid α) :
     M.IndepPred.indep_empty :=
-  CircuitPredicate.ToIndepPredicate.indep_empty M.not_circuit_empty M.E
+  CircuitPredicate.toIndepPredicate.indep_empty M.not_circuit_empty M.E
 
 /-- Corresponding independence predicate of circuit matroid satisfies (I2): subsets of independent sets are independent. -/
 lemma CircuitMatroid.indep_subset (M : CircuitMatroid α) :
     M.IndepPred.indep_subset :=
-  CircuitPredicate.ToIndepPredicate.indep_subset M.CircuitPred M.E
+  CircuitPredicate.toIndepPredicate.indep_subset M.CircuitPred M.E
 
 /-- Corresponding independence predicate of circuit matroid satisfies (I3): independent sets have augmentation property. -/
 lemma CircuitMatroid.indep_aug (M : CircuitMatroid α) :
     M.IndepPred.indep_aug :=
-  CircuitPredicate.ToIndepPredicate.indep_aug M.circuit_maximal M.circuit_c3
+  CircuitPredicate.toIndepPredicate.indep_aug M.circuit_maximal M.circuit_c3
 
 /-- Corresponding independence predicate of circuit matroid satisfies (IM): independent sets have maximal property. -/
 lemma CircuitMatroid.indep_maximal (M : CircuitMatroid α) :
     M.IndepPred.indep_maximal M.E :=
-  CircuitPredicate.ToIndepPredicate.indep_maximal M.CircuitPred M.E
+  CircuitPredicate.toIndepPredicate.indep_maximal M.CircuitPred M.E
 
 /-- Corresponding independence predicate of circuit matroid satisfies (IE): independent sets are subsets of ground set. -/
 lemma CircuitMatroid.indep_subset_ground (M : CircuitMatroid α) :
     M.IndepPred.subset_ground M.E :=
-  CircuitPredicate.ToIndepPredicate.subset_ground M.CircuitPred M.E
+  CircuitPredicate.toIndepPredicate.subset_ground M.CircuitPred M.E
 
 /-- `IndepMatroid` corresponding to circuit matroid. -/
 def CircuitMatroid.toIndepMatroid (M : CircuitMatroid α) : IndepMatroid α where
@@ -67,40 +67,35 @@ def CircuitMatroid.toIndepMatroid (M : CircuitMatroid α) : IndepMatroid α wher
   subset_ground := M.indep_subset_ground
 
 /-- Circuit matroid converted to `Matroid`. -/
-def CircuitMatroid.matroid (M : CircuitMatroid α) : Matroid α := M.toIndepMatroid.matroid
+def CircuitMatroid.toMatroid (M : CircuitMatroid α) : Matroid α := M.toIndepMatroid.matroid
 
 /-- Registered conversion from `CircuitMatroid` to `Matroid`. -/
 instance : Coe (CircuitMatroid α) (Matroid α) where
-  coe := CircuitMatroid.matroid
+  coe := CircuitMatroid.toMatroid
 
--- question: unused API?
-lemma CircuitMatroid.Maximal_iff (M : CircuitMatroid α) (B : Set α) :
+lemma CircuitMatroid.maximal_iff (M : CircuitMatroid α) (B : Set α) :
     Maximal (fun K : Set α => M.IndepPred K ∧ K ⊆ M.E) B ↔ Maximal M.IndepPred B :=
   ⟨fun hB => ⟨hB.left.left, fun _ hA hBA => hB.right ⟨hA, hA.left⟩ hBA⟩,
    fun hB => ⟨⟨hB.left, hB.left.left⟩, fun _ hA => hB.right hA.left⟩⟩
 
-@[simp] lemma CircuitMatroid.E_eq (M : CircuitMatroid α) :
-  M.matroid.E = M.E := rfl
+@[simp] lemma CircuitMatroid.toMatroid_E (M : CircuitMatroid α) : M.toMatroid.E = M.E :=
+  rfl
 
-@[simp] lemma CircuitMatroid.indep_eq (M : CircuitMatroid α) :
-  M.matroid.Indep = M.IndepPred := rfl
+@[simp] lemma CircuitMatroid.toMatroid_indep (M : CircuitMatroid α) : M.toMatroid.Indep = M.IndepPred :=
+  rfl
 
-@[simp] lemma CircuitMatroid.indep_iff (M : CircuitMatroid α) {I : Set α} :
-  M.matroid.Indep I ↔ M.IndepPred I := rfl.to_iff
-
-@[simp] lemma CircuitMatroid.circuit_iff (M : CircuitMatroid α) {C : Set α} :
-    M.matroid.Circuit C ↔ (C ⊆ M.E ∧ M.CircuitPred C) := by
+@[simp] lemma CircuitMatroid.toMatroid_circuit_iff (M : CircuitMatroid α) {C : Set α} :
+    M.toMatroid.Circuit C ↔ (C ⊆ M.E ∧ M.CircuitPred C) := by
   constructor
   · intro hC
     constructor
     · exact hC.subset_ground
     obtain ⟨⟨hCdep, hCE⟩, hCmin⟩ := hC
-    have hMax := M.circuit_maximal C hCE
-    specialize hMax ∅ (CircuitPredicate.ToIndepPredicate.indep_empty M.not_circuit_empty M.E) (Set.empty_subset C)
-    obtain ⟨D, ⟨_, ⟨⟨hDindep, hDC⟩, hDmax⟩⟩⟩ := hMax
+    obtain ⟨D, ⟨_, ⟨⟨hDindep, hDC⟩, hDmax⟩⟩⟩ :=
+      M.circuit_maximal C hCE ∅ (CircuitPredicate.toIndepPredicate.indep_empty M.not_circuit_empty M.E) (Set.empty_subset C)
     have hDneqC : D ≠ C := by
-      by_contra hDeqC
-      rw [CircuitMatroid.indep_iff, ←hDeqC] at hCdep
+      intro hDeqC
+      rw [←hDeqC] at hCdep
       exact hCdep hDindep
     have hDssubC := Set.ssubset_iff_subset_ne.mpr ⟨hDC, hDneqC⟩
     obtain ⟨x, hxC, hxnD⟩ := Set.exists_of_ssubset hDssubC
@@ -109,34 +104,27 @@ lemma CircuitMatroid.Maximal_iff (M : CircuitMatroid α) (B : Set α) :
   · intro ⟨_, hC⟩
     constructor
     · unfold Matroid.Dep
-      rw [indep_iff]
+      rw [CircuitMatroid.toMatroid_indep]
       constructor
-      · unfold IndepPred CircuitPredicate.ToIndepPredicate
+      · unfold IndepPred CircuitPredicate.toIndepPredicate
         push_neg
         intro _
         use C
       · exact M.subset_ground C hC
     · intro D ⟨hDdep, hDE⟩ hDC
-      rw [CircuitMatroid.indep_iff] at hDdep
-      unfold IndepPred CircuitPredicate.ToIndepPredicate at hDdep
+      rw [CircuitMatroid.toMatroid_indep] at hDdep
+      unfold IndepPred CircuitPredicate.toIndepPredicate at hDdep
       push_neg at hDdep
       obtain ⟨C', hC'D, hC'⟩ := hDdep hDE
-      have hCC' := hC'D.trans hDC
       have hC'nssubC := M.circuit_not_ssubset C C' hC hC'
-      have hC'eqC := eq_of_subset_of_not_ssubset hCC' hC'nssubC
-      exact hC'eqC ▸ hC'D
+      exact eq_of_subset_of_not_ssubset (hC'D.trans hDC) hC'nssubC ▸ hC'D
 
 /-- todo: desc -/
-lemma CircuitMatroid.CircuitPred_eq_iff (M₁ M₂: CircuitMatroid α) :
-    M₁.CircuitPred = M₂.CircuitPred ↔ ∀ C, M₁.CircuitPred C = M₂.CircuitPred C :=
-  funext_iff
-
-/-- todo: desc -/
-lemma CircuitMatroid.eq_sufficient (M₁ M₂: CircuitMatroid α) :
-    M₁.CircuitPred = M₂.CircuitPred → M₁.matroid = M₂.matroid :=
+lemma CircuitMatroid.toMatroid_eq_toMatroid {M₁ M₂ : CircuitMatroid α} (hMM : M₁.CircuitPred = M₂.CircuitPred) :
+    M₁.toMatroid = M₂.toMatroid :=
   sorry
 
 /-- todo: desc -/
-lemma CircuitMatroid.eq_iff (M₁ M₂: CircuitMatroid α) :
-    M₁.E = M₂.E ∧ (∀ C ⊆ M₁.E, M₁.CircuitPred = M₂.CircuitPred) ↔ M₁.matroid = M₂.matroid :=
+lemma CircuitMatroid.toMatroid_eq_toMatroid_iff (M₁ M₂ : CircuitMatroid α) :
+    M₁.toMatroid = M₂.toMatroid ↔ M₁.E = M₂.E ∧ ∀ C ⊆ M₁.E, M₁.CircuitPred = M₂.CircuitPred :=
   sorry
