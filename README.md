@@ -91,8 +91,6 @@ The guideline below is written primarily to assist you in reading the code.
 - Prop variables (both in arguments and local variables) are always denoted by multiple letters, possibly with other stuff after them like lower index or apostrophe.
   - Prefix `h` means "the statement is anything about the following variables"
   - Not starting with `h` means that the actual statement is spelled out, not only the variables that appear in it
-- Never name anything `this` or standalone `h` (these names are acceptable neither for data nor for propositions), but leaving automatically named stuff with `this` or `h` is encouraged if the term is not explicitly referred to later.
-  - Writing names like `h₁` or `h'` or `this'` or `this_` is strongly discouraged regardless of the purpose
 - Examples:
 
   `intro a b a_lt_b hab`
@@ -100,6 +98,13 @@ The guideline below is written primarily to assist you in reading the code.
   - `b` carries data (e.g. an integer)
   - `a_lt_b` carries a proof of `a < b`
   - `hab` carries any information about `a` and `b`
+
+  `intro x y x_eq_y h1 h1'`
+  - `x` carries data (e.g. an integer)
+  - `y` carries data (e.g. an integer)
+  - `x_eq_y` carries a proof of `x = y`
+  - `h1` carries any information involving the number `1`
+  - `h1'` carries another information involving the number `1`
 
   `intro M hM hM'`
   - `M` carries data (e.g. a matroid)
@@ -118,13 +123,8 @@ The guideline below is written primarily to assist you in reading the code.
   - `hM₁` carries any information about `M₁`
   - `hM₂` carries any information about `M₂`
   - `hMM` carries any information about both `M₁` and `M₂` (indices after `hMM` are not needed)
-
-  `intro x y x_eq_y h1 h1'`
-  - `x` carries data (e.g. an integer)
-  - `y` carries data (e.g. an integer)
-  - `x_eq_y` carries a proof of `x = y`
-  - `h1` carries any information involving the number `1`
-  - `h1'` carries another information involving the number `1`
+- Never name anything `this` or standalone `h` (these names are acceptable neither for data nor for propositions), but leaving automatically named stuff with `this` or `h` is encouraged if the term is not explicitly referred to later.
+  - Writing names like `h₁` or `h'` or `this'` or `this_` is strongly discouraged regardless of the purpose
 
 ### Other
 
