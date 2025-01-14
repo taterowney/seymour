@@ -14,8 +14,9 @@ lemma Matroid.disjointSum.ofRepresented_repr {R X₁ X₂ : Type} {A₁ : Matrix
     (hM₁M₂ : M₁.E ⫗ M₂.E) (hA₁ : M₁.IsRepresentedBy A₁) (hA₂ : M₂.IsRepresentedBy A₂) :
     (M₁.disjointSum M₂ hM₁M₂).IsRepresentedBy
       ((Matrix.setUnion_fromBlocks' A₁ 0 0 A₂).setUnion_castCols Matroid.disjointSum_ground_eq.symm) := by
-  -- TODO bump Mathlib
-  sorry
+  ext
+  · sorry
+  · sorry
 
 end Composition
 

@@ -11,23 +11,10 @@ We do not use out custom notation here because this file is higher than `Basic.l
 
 variable {α : Type}
 
--- possible refactoring by `setauto` here:
--- https://github.com/LennyTaelman/setauto/blob/8eb8eabfea9f6f1627a9eb73a55b07c3a62d5cb8/Setauto/Setauto.lean#L175
-
 section Other
 
 lemma setminus_inter_union_eq_union {X Y : Set α} : X \ (X ∩ Y) ∪ Y = X ∪ Y := by
-  ext a
-  constructor
-  · intro ha
-    cases ha with
-    | inl ha' =>
-      left
-      exact Set.mem_of_mem_diff ha'
-    | inr haY =>
-      right
-      exact haY
-  · simp
+  tauto_set
 
 lemma nonempty_inter_not_ssubset_empty_inter {A B E : Set α} (hA : (A ∩ E).Nonempty) (hB : B ∩ E = ∅) :
     ¬(A ⊂ B) := by
@@ -143,15 +130,7 @@ lemma Disjoint.ni_of_in {X Y : Set α} {a : α} (hXY : Disjoint X Y) (ha : a ∈
 
 lemma disjoint_of_singleton_inter_left_wo {X Y : Set α} {a : α} (hXY : X ∩ Y = {a}) :
     Disjoint (X \ {a}) Y := by
-  rw [Set.disjoint_iff_forall_ne]
-  intro u huXa v hvY huv
-  have hua : u ≠ a
-  · aesop
-  have huX : u ∈ X
-  · aesop
-  have huXY := Set.mem_inter huX (huv ▸ hvY)
-  rw [hXY, Set.mem_singleton_iff] at huXY
-  exact hua huXY
+  tauto_set
 
 lemma disjoint_of_singleton_inter_right_wo {X Y : Set α} {a : α} (hXY : X ∩ Y = {a}) :
     Disjoint X (Y \ {a}) := by
@@ -165,8 +144,8 @@ lemma disjoint_of_singleton_inter_both_wo {X Y : Set α} {a : α} (hXY : X ∩ Y
 
 lemma disjoint_of_singleton_inter_subset_left {X Y Z : Set α} {a : α} (hXY : X ∩ Y = {a}) (hZ : Z ⊆ X) (haZ : a ∉ Z) :
     Disjoint Z Y := by
-  have hYeq : (Y \ {a}) ∪ {a} = Y := (Set.diff_union_of_subset (singleton_inter_subset_right hXY))
-  rw [←hYeq, Set.disjoint_union_right]
+  have hY : (Y \ {a}) ∪ {a} = Y := (Set.diff_union_of_subset (singleton_inter_subset_right hXY))
+  rw [←hY, Set.disjoint_union_right]
   constructor
   · exact Set.disjoint_of_subset_left hZ (disjoint_of_singleton_inter_right_wo hXY)
   · exact Set.disjoint_singleton_right.mpr haZ
@@ -255,9 +234,7 @@ section symmDiff
 
 /-- Symmetric difference of two sets is their union minus their intersection. -/
 lemma symmDiff_eq_alt (X Y : Set α) : symmDiff X Y = (X ∪ Y) \ (X ∩ Y) := by
-  rw [Set.symmDiff_def, Set.union_diff_distrib,
-      Set.diff_inter, Set.diff_self, Set.empty_union,
-      Set.diff_inter, Set.diff_self, Set.union_empty]
+  tauto_set
 
 /-- Symmetric difference of two sets is disjoint with their intersection. -/
 lemma symmDiff_disjoint_inter (X Y : Set α) : Disjoint (symmDiff X Y) (X ∩ Y) := by

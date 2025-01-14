@@ -79,8 +79,9 @@ lemma Matroid.Circuit.indep_ext_dep_has_circuit_w_ext {M : Matroid α} {I : Set 
 /-- If two matroids have the same ground sets and sets of circuits, then they are equal. -/
 theorem Matroid.ext_circuit {M₁ M₂ : Matroid α} (hE : M₁.E = M₂.E) (hC : ∀ C ⊆ M₁.E, M₁.Circuit C ↔ M₂.Circuit C) :
     M₁ = M₂ := by
-  -- TODO bump Mathlib
-  sorry
+  ext
+  · sorry
+  · sorry
 
 /-- Two matroids are equal iff they have the same ground sets and sets of circuits. -/
 theorem Matroid.ext_iff_circuit {M₁ M₂ : Matroid α} :

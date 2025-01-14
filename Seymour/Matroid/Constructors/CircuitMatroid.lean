@@ -121,9 +121,10 @@ lemma CircuitMatroid.maximal_iff (M : CircuitMatroid α) (B : Set α) :
 
 /-- todo: desc -/
 lemma CircuitMatroid.toMatroid_eq_toMatroid {M₁ M₂ : CircuitMatroid α} (hMM : M₁.CircuitPred = M₂.CircuitPred) :
-    M₁.toMatroid = M₂.toMatroid :=
-  -- TODO bump Mathlib
-  sorry
+    M₁.toMatroid = M₂.toMatroid := by
+  ext
+  · sorry
+  · sorry
 
 /-- todo: desc -/
 lemma CircuitMatroid.toMatroid_eq_toMatroid_iff (M₁ M₂ : CircuitMatroid α) :
