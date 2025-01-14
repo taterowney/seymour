@@ -121,15 +121,15 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {C : Set α} {p : α
       | inl hX₂dep =>
         have hX₂C₂ := (Matroid.Circuit.circuit_iff_def.mp hCM₂p).right X₂ hX₂dep hX₂C₂
         have hX₁X₂p : X₁ ∩ X₂ = {p} := by
-          apply Set.Subset.antisymm hX₁X₂
+          apply hX₁X₂.antisymm
           exact Set.subset_inter (Set.union_subset_iff.mp hX₁C₁).right (Set.union_subset_iff.mp hX₂C₂).right
-        have hCD := Set.union_subset_union hX₁C₁ hX₂C₂
-        have hCD : (C ∩ M₁.E ∪ {p} ∪ (C ∩ M₂.E ∪ {p})) \ {p} ⊆ (X₁ ∪ X₂) \ {p} := Set.diff_subset_diff_left hCD
-        rw [Set.union_diff_distrib, Set.union_diff_right, Set.union_diff_right,
+        have hCD : (C ∩ M₁.E ∪ {p} ∪ (C ∩ M₂.E ∪ {p})) \ {p} ⊆ (X₁ ∪ X₂) \ {p} :=
+          Set.diff_subset_diff_left (Set.union_subset_union hX₁C₁ hX₂C₂)
+        rwa [Set.union_diff_distrib, Set.union_diff_right, Set.union_diff_right,
             Disjoint.sdiff_eq_left (hp ▸ hC.disjoint_inter_M₁_inter),
             Disjoint.sdiff_eq_left (hp ▸ hC.disjoint_inter_M₂_inter),
-            sub_parts_eq hC.subset_union, ←hX₁X₂p, ←hDX₁X₂] at hCD
-        exact hCD
+            hC.subset_union.parts_eq, ←hX₁X₂p, ←hDX₁X₂
+        ] at hCD
       | inr hX₂empty =>
         rw [hX₂empty, Set.union_empty, Set.inter_empty, Set.diff_empty] at hDX₁X₂
         rw [hDX₁X₂] at hDnempty

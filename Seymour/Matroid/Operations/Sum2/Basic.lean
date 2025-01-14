@@ -374,9 +374,7 @@ lemma TwoSumCircuitType3.not_ssubset_circuitType3 {C C' : Set α}
     (M₁_circ_nssub (Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.inter_subset_inter_left M₁.E hCC')))
   have M₂_circ_sub := (union_subset_union_iff hC'.disjoint_inter_M₂_inter hC.disjoint_inter_M₂_inter).mp
     (M₂_circ_nssub (Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.inter_subset_inter_left M₂.E hCC')))
-  have hC'C := Set.union_subset_union M₁_circ_sub M₂_circ_sub
-  rw [sub_parts_eq hC.subset_union, sub_parts_eq hC'.subset_union] at hC'C
-  exact hnCC' hC'C
+  exact hnCC' (hC.subset_union.parts_eq ▸ hC'.subset_union.parts_eq ▸ Set.union_subset_union M₁_circ_sub M₂_circ_sub)
 
 /-- Circuit of type 3 is not a strict subset of any other circuit -/
 lemma TwoSumAssumptions.circuitType3_not_ssubset_circuit {C₃ C : Set α}
