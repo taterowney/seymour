@@ -4,8 +4,8 @@ import Mathlib.Data.Matroid.Dual
 import Seymour.ForMathlib.SetTheory
 import Seymour.Matroid.Notions.Circuit
 import Seymour.Matroid.Notions.CircuitAxioms
-import Seymour.Matroid.Constructors.CircuitMatroid
 import Seymour.Matroid.Notions.Connectivity
+import Seymour.Matroid.Constructors.CircuitMatroid
 
 /-!
 This file defines 2-sum of two (general) matroids `M₁` and `M₂`, denoted as `M₁ ⊕₂ M₂`.
@@ -119,12 +119,12 @@ end PropertiesAssumptions
 section PropertiesGroundSet
 
 /-- Ground set of 2-sum is disjoint with `M₁.E ∩ M₂.E` -/
-lemma Matroid.TwoSum.E.disjoint_inter (M₁ M₂ : Matroid α) :
+lemma twoSumGround_disjoint_inter (M₁ M₂ : Matroid α) :
     twoSumGround M₁ M₂ ⫗ M₁.E ∩ M₂.E :=
   Set.disjoint_sdiff_left
 
 /-- Ground sets minus their intersection are disjoint sets -/
-lemma Matroid.TwoSum.disjoint_grounds_diff_inter (M₁ M₂ : Matroid α) :
+lemma twoSum_disjoint_grounds_diff_inter (M₁ M₂ : Matroid α) :
     M₁.E \ (M₁.E ∩ M₂.E) ⫗ M₂.E \ (M₁.E ∩ M₂.E) := by
   rw [Set.diff_self_inter, Set.diff_inter_self_eq_diff]
   exact disjoint_sdiff_sdiff
@@ -158,7 +158,7 @@ lemma TwoSumCircuitType1.subset_M₁_diff_inter (hC : TwoSumCircuitType1 M₁ M�
 
 /-- Circuit of type 1 is disjoint with `M₂.E` -/
 lemma TwoSumCircuitType1.disjoint_M₂ (hC : TwoSumCircuitType1 M₁ M₂ C) : C ⫗ M₂.E := by
-  have hMM := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
+  have hMM := twoSum_disjoint_grounds_diff_inter M₁ M₂
   have hCM₂ := Set.disjoint_of_subset_left hC.subset_M₁_diff_inter hMM
   have hCM₂ := Set.disjoint_union_right.mpr ⟨hCM₂, hC.disjoint_inter⟩
   rw [Set.diff_union_of_subset Set.inter_subset_right] at hCM₂
@@ -193,7 +193,7 @@ lemma TwoSumCircuitType2.subset_M₂_diff_inter (hC : TwoSumCircuitType2 M₁ M�
 
 /-- Circuit of type 2 is disjoint with `M₁.E` -/
 lemma TwoSumCircuitType2.disjoint_M₁ (hC : TwoSumCircuitType2 M₁ M₂ C) : C ⫗ M₁.E := by
-  have hMM := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
+  have hMM := twoSum_disjoint_grounds_diff_inter M₁ M₂
   have hCM₁ := (Set.disjoint_of_subset_right hC.subset_M₂_diff_inter hMM).symm
   have hCM₁ := Set.disjoint_union_right.mpr ⟨hCM₁, hC.disjoint_inter⟩
   rw [Set.diff_union_of_subset Set.inter_subset_left] at hCM₁
@@ -224,7 +224,7 @@ lemma TwoSumCircuitType3.subset_union (hC : TwoSumCircuitType3 M₁ M₂ C) : C 
 
 /-- Circuit of type 3 is disjoint with `M₁.E ∩ M₂.E` -/
 lemma TwoSumCircuitType3.disjoint_inter (hC : TwoSumCircuitType3 M₁ M₂ C) : C ⫗ M₁.E ∩ M₂.E :=
-  Set.disjoint_of_subset_left hC.subset_ground (Matroid.TwoSum.E.disjoint_inter M₁ M₂)
+  Set.disjoint_of_subset_left hC.subset_ground (twoSumGround_disjoint_inter M₁ M₂)
 
 /-- Circuit of type 3 intersected with `M₁.E` is disjoint with `M₁.E ∩ M₂.E` -/
 lemma TwoSumCircuitType3.disjoint_inter_M₁_inter (hC : TwoSumCircuitType3 M₁ M₂ C) : C ∩ M₁.E ⫗ M₁.E ∩ M₂.E :=
@@ -237,12 +237,12 @@ lemma TwoSumCircuitType3.disjoint_inter_M₂_inter (hC : TwoSumCircuitType3 M₁
 /-- Circuit of type 3 has nonempty intersection with `M₁.E` -/
 lemma TwoSumCircuitType3.inter_M₁_nonempty (hC : TwoSumCircuitType3 M₁ M₂ C) (assumptions : TwoSumAssumptions M₁ M₂) :
     (C ∩ M₁.E).Nonempty := by
-  by_contra! hCM₁empty
-  have hCM₁ := hC.to_circuit_M₁
+  by_contra! hCM₁
+  have hM₁ := hC.to_circuit_M₁
   have ⟨p, hp⟩ := assumptions.inter_singleton
-  rw [hCM₁empty, Set.empty_union, hp, ←Matroid.Loop.iff_circuit M₁] at hCM₁
+  rw [hCM₁, Set.empty_union, hp, ←Matroid.Loop.iff_circuit M₁] at hM₁
   have hpM₁ := assumptions.inter_singleton_not_loop_M₁ hp
-  exact hpM₁ hCM₁
+  exact hpM₁ hM₁
 
 /-- Circuit of type 3 has nonempty intersection with `M₂.E` -/
 lemma TwoSumCircuitType3.inter_M₂_nonempty (hC : TwoSumCircuitType3 M₁ M₂ C) (assumptions : TwoSumAssumptions M₁ M₂) :
@@ -270,7 +270,7 @@ lemma TwoSumCircuitType1.disjoint_circuit_type_2 {M₁ M₂ : Matroid α} {C₁ 
     C₁ ⫗ C₂ := by
   have hC₁M₁ := hC₁.subset_M₁_diff_inter
   have hC₂M₂ := hC₂.subset_M₂_diff_inter
-  have hMM := Matroid.TwoSum.disjoint_grounds_diff_inter M₁ M₂
+  have hMM := twoSum_disjoint_grounds_diff_inter M₁ M₂
   exact Set.disjoint_of_subset hC₁M₁ hC₂M₂ hMM
 
 /-- Circuit of type 1 is not a strict subset of any circuit of type 2 -/
@@ -282,12 +282,11 @@ lemma TwoSumCircuitType1.not_ssubset_circuit_type_2 {M₁ M₂ : Matroid α} {C�
 /-- Circuit of type 1 is not a strict subset of any circuit of type 3 -/
 lemma TwoSumCircuitType1.not_ssubset_circuit_type_3 {M₁ M₂ : Matroid α} {C₁ C₃ : Set α}
     (assumptions : TwoSumAssumptions M₁ M₂) (hC₁ : TwoSumCircuitType1 M₁ M₂ C₁) (hC₃ : TwoSumCircuitType3 M₁ M₂ C₃) :
-    ¬(C₁ ⊂ C₃) := by
-  by_contra hC₁C₃
-  have hC₁C₃ := Set.subset_inter hC₁C₃.left hC₁.circuit_M₁.subset_ground
-  apply Set.union_subset_union_left (M₁.E ∩ M₂.E) at hC₁C₃
-  have hC₁ssubunioninter := ssubset_union_disjoint_nonempty hC₁.disjoint_inter assumptions.inter_nonempty
-  exact hC₁.circuit_M₁.not_ssubset_circuit hC₃.to_circuit_M₁ (Set.ssubset_of_ssubset_of_subset hC₁ssubunioninter hC₁C₃)
+    ¬(C₁ ⊂ C₃) :=
+  fun hCC =>
+    hC₁.circuit_M₁.not_ssubset_circuit hC₃.to_circuit_M₁
+      (Set.ssubset_of_ssubset_of_subset (ssubset_union_disjoint_nonempty hC₁.disjoint_inter assumptions.inter_nonempty)
+        (Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.subset_inter hCC.left hC₁.circuit_M₁.subset_ground)))
 
 /-- Circuit of type 1 is not a strict subset of any other circuit -/
 lemma TwoSumCircuitType1.not_ssubset_circuit {M₁ M₂ : Matroid α} {C₁ C : Set α}
@@ -327,11 +326,11 @@ lemma TwoSumCircuitType2.not_ssubset_circuitType2 {C C' : Set α}
 /-- Circuit of type 2 is not a strict subset of any circuit of type 3 -/
 lemma TwoSumAssumptions.circuitType2_not_ssubset_circuitType3 {C₂ C₃ : Set α}
     (assumptions : TwoSumAssumptions M₁ M₂) (hC₂ : TwoSumCircuitType2 M₁ M₂ C₂) (hC₃ : TwoSumCircuitType3 M₁ M₂ C₃) :
-    ¬(C₂ ⊂ C₃) := by
-  by_contra hC₂C₃
-  have hC₂C₃ := Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.subset_inter hC₂C₃.left hC₂.circuit_M₂.subset_ground)
-  have hC₂ssubunioninter := ssubset_union_disjoint_nonempty hC₂.disjoint_inter assumptions.inter_nonempty
-  exact hC₂.circuit_M₂.not_ssubset_circuit hC₃.to_circuit_M₂ (Set.ssubset_of_ssubset_of_subset hC₂ssubunioninter hC₂C₃)
+    ¬(C₂ ⊂ C₃) :=
+  fun hCC =>
+    hC₂.circuit_M₂.not_ssubset_circuit hC₃.to_circuit_M₂
+      (Set.ssubset_of_ssubset_of_subset (ssubset_union_disjoint_nonempty hC₂.disjoint_inter assumptions.inter_nonempty)
+        (Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.subset_inter hCC.left hC₂.circuit_M₂.subset_ground)))
 
 /-- Circuit of type 2 is not a strict subset of any other circuit -/
 lemma TwoSumAssumptions.circuitType2_not_ssubset {C₂ C : Set α}
@@ -367,22 +366,15 @@ lemma TwoSumCircuitType3.not_ssubset_circuitType3 {C C' : Set α}
     (hC : TwoSumCircuitType3 M₁ M₂ C) (hC' : TwoSumCircuitType3 M₁ M₂ C') :
     ¬(C ⊂ C') := by
   intro ⟨hCC', hnCC'⟩
-
-  have hM₁circ_sub := Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.inter_subset_inter_left M₁.E hCC')
-  have hM₁circ_nssub := Set.ssubset_def ▸ hC.to_circuit_M₁.not_ssubset_circuit hC'.to_circuit_M₁
-  push_neg at hM₁circ_nssub
-  have hDisjM₁ := hC.disjoint_inter_M₁_inter
-  have hDisjM₁' := hC'.disjoint_inter_M₁_inter
-  have hM₁circ'_sub := (union_subset_union_iff hDisjM₁' hDisjM₁).mp (hM₁circ_nssub hM₁circ_sub)
-
-  have hM₂circ_sub := Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.inter_subset_inter_left M₂.E hCC')
-  have hM₂circ_nssub := Set.ssubset_def ▸ hC.to_circuit_M₂.not_ssubset_circuit hC'.to_circuit_M₂
-  push_neg at hM₂circ_nssub
-  have hDisjM₂ := hC.disjoint_inter_M₂_inter
-  have hDisjM₂' := hC'.disjoint_inter_M₂_inter
-  have hM₂circ'_sub := (union_subset_union_iff hDisjM₂' hDisjM₂).mp (hM₂circ_nssub hM₂circ_sub)
-
-  have hC'C := Set.union_subset_union hM₁circ'_sub hM₂circ'_sub
+  have M₁_circ_nssub := Set.ssubset_def ▸ hC.to_circuit_M₁.not_ssubset_circuit hC'.to_circuit_M₁
+  have M₂_circ_nssub := Set.ssubset_def ▸ hC.to_circuit_M₂.not_ssubset_circuit hC'.to_circuit_M₂
+  push_neg at M₁_circ_nssub
+  push_neg at M₂_circ_nssub
+  have M₁_circ_sub := (union_subset_union_iff hC'.disjoint_inter_M₁_inter hC.disjoint_inter_M₁_inter).mp
+    (M₁_circ_nssub (Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.inter_subset_inter_left M₁.E hCC')))
+  have M₂_circ_sub := (union_subset_union_iff hC'.disjoint_inter_M₂_inter hC.disjoint_inter_M₂_inter).mp
+    (M₂_circ_nssub (Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.inter_subset_inter_left M₂.E hCC')))
+  have hC'C := Set.union_subset_union M₁_circ_sub M₂_circ_sub
   rw [sub_parts_eq hC.subset_union, sub_parts_eq hC'.subset_union] at hC'C
   exact hnCC' hC'C
 
