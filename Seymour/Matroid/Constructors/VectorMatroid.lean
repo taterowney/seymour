@@ -109,7 +109,7 @@ end EquivalentTransformations
 
 section StandardRepr
 
-/-- Standard matrix representation of a vector matroid matroid. -/
+/-- Standard matrix representation of a vector matroid. -/
 structure StandardRepr (α R : Type) [Ring R] where
   /-- row index set -/
   X : Set α

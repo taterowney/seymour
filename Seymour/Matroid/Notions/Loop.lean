@@ -14,9 +14,9 @@ lemma Matroid.Loop.iff_circuit (M : Matroid α) {a : α} :
   ⟨
     fun ha => ⟨
       ha.right,
-      fun T dT hTa => by cases Set.subset_singleton_iff_eq.mp hTa with
-        | inl hT => exact False.elim ((Matroid.Dep.not_indep (hT ▸ dT)) M.empty_indep)
-        | inr hT => exact le_of_eq_of_le hT.symm Set.Subset.rfl
+      fun _ hM hMa => (Set.subset_singleton_iff_eq.mp hMa).casesOn
+        (· ▸ hM |>.not_indep M.empty_indep |>.elim)
+        (·.symm.subset)
       ⟩,
-    fun ha => ⟨ha.left.right rfl, Matroid.Circuit.dep M ha⟩
+    fun ha => ⟨ha.left.right rfl, ha.dep⟩
   ⟩

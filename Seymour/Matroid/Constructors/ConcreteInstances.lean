@@ -1,7 +1,7 @@
 import Seymour.Matroid.Classes.Binary
 import Seymour.Matroid.Classes.Regular
 
--- TODO: could be computable -- construct directly via `VectorMatroid Z2`?
+-- TODO construct directly via `VectorMatroid Z2`
 noncomputable def MatroidR10 : StandardRepr (Fin 10) Z2 where
   X := (·.val < 5)
   Y := (·.val ≥ 5)

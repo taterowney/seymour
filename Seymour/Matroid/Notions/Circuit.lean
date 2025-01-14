@@ -24,11 +24,11 @@ lemma Matroid.Circuit.circuit_iff_def {M : Matroid α} {C : Set α} :
 /-- Every strict subset of a circuit is independent. -/
 lemma Matroid.Circuit.indep_ssub {M : Matroid α} {C C' : Set α} (hC : M.Circuit C) (hC' : C' ⊂ C) :
     M.Indep C' := by
-  by_contra contr
-  have hC'subC : C' ⊆ C := subset_of_ssubset hC'
-  have hCsubE : C ⊆ M.E := hC.subset_ground
-  have hC'subE : C' ⊆ M.E := hC'subC.trans hCsubE
-  exact hC'.ne.symm ((hC.right (Matroid.dep_of_not_indep contr hC'subE) hC'subC).antisymm hC'subC)
+  by_contra notIndep_M_C'
+  have C'_sub_C : C' ⊆ C := subset_of_ssubset hC'
+  have C_sub_ME : C ⊆ M.E := hC.subset_ground
+  have C'_sub_ME : C' ⊆ M.E := hC'.subset.trans C_sub_ME
+  exact hC'.ne.symm ((hC.right (M.dep_of_not_indep notIndep_M_C' C'_sub_ME) C'_sub_C).antisymm C'_sub_C)
 
 /-- Deleting one element from a circuit produces an independent set. -/
 lemma Matroid.Circuit.indep_diff_singleton {M : Matroid α} {C : Set α} {a : α} (hC : M.Circuit C) (ha : a ∈ C) :
@@ -41,8 +41,8 @@ lemma Matroid.Circuit.not_circuit_empty (M : Matroid α) : ¬(M.Circuit ∅) :=
 
 /-- Every circuit is nonempty. -/
 lemma Matroid.Circuit.nonempty {M : Matroid α} {C : Set α} (hC : M.Circuit C) : C.Nonempty := by
-  by_contra! hC'
-  rw [hC'] at hC
+  by_contra! C_empty
+  rw [C_empty] at hC
   exact hC.not_circuit_empty
 
 /-- Independent set is not a circuit. -/
@@ -79,6 +79,7 @@ lemma Matroid.Circuit.indep_ext_dep_has_circuit_w_ext {M : Matroid α} {I : Set 
 /-- If two matroids have the same ground sets and sets of circuits, then they are equal. -/
 theorem Matroid.ext_circuit {M₁ M₂ : Matroid α} (hE : M₁.E = M₂.E) (hC : ∀ C ⊆ M₁.E, M₁.Circuit C ↔ M₂.Circuit C) :
     M₁ = M₂ := by
+  -- TODO bump Mathlib
   sorry
 
 /-- Two matroids are equal iff they have the same ground sets and sets of circuits. -/

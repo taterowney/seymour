@@ -12,23 +12,15 @@ def Matroid.Coloop (M : Matroid α) (a : α) : Prop :=
 lemma Matroid.Coloop.iff_in_no_circuit (M : Matroid α) {a : α} :
     M.Coloop a ↔ a ∈ M.E ∧ ∀ C, M.Circuit C → a ∉ C := by
   constructor
-  · intro ⟨haE, hanIndep⟩
-    constructor
-    · exact haE
-    · intro C hC haC
-      have hCmaIndep : M.Indep (C \ {a}) := Matroid.Circuit.indep_diff_singleton hC haC
-      apply Matroid.Indep.exists_base_superset at hCmaIndep
-      obtain ⟨B, hB, hCmaB⟩ := hCmaIndep
-      have haB := (Matroid.dual_dep_iff_forall.mp hanIndep).left
-      specialize haB B hB
-      have hBdep : M.Dep B  := by
-        rw [Matroid.Circuit.dep_iff_has_circuit]
-        use C
-        have hCsubB : C \ {a} ∪ {a} ⊆ B := Set.union_subset hCmaB
-          (Set.singleton_subset_iff.mpr (Set.singleton_inter_nonempty.mp haB))
-        have hCeq : C \ {a} ∪ {a} = C := Set.diff_union_of_subset (Set.singleton_subset_iff.mpr haC)
-        exact ⟨hC, hCeq ▸ hCsubB⟩
-      exact Matroid.Dep.not_indep hBdep (Matroid.Base.indep hB)
+  · intro ⟨haE, M_dual_Dep_a⟩
+    refine ⟨haE, fun C hC haC => ?_⟩
+    obtain ⟨B, hB, hCaB⟩ := (hC.indep_diff_singleton haC).exists_base_superset
+    have haB := (Matroid.dual_dep_iff_forall.mp M_dual_Dep_a).left B hB
+    have hMB : M.Dep B
+    · rw [Matroid.Circuit.dep_iff_has_circuit]
+      exact ⟨C, hC, Set.diff_union_of_subset (Set.singleton_subset_iff.mpr haC) ▸ Set.union_subset hCaB
+        (Set.singleton_subset_iff.mpr (Set.singleton_inter_nonempty.mp haB))⟩
+    exact hMB.not_indep hB.indep
   · intro ⟨haE, haC⟩
     constructor
     · exact haE
@@ -36,7 +28,7 @@ lemma Matroid.Coloop.iff_in_no_circuit (M : Matroid α) {a : α} :
       constructor
       · intro B hB
         by_contra! haB
-        have haBdep : M.Dep (a ᕃ B) := Base.dep_of_insert hB (Set.singleton_inter_eq_empty.mp haB) haE
-        obtain ⟨C', hC', hC'aB, haC'⟩ := Matroid.Circuit.indep_ext_dep_has_circuit_w_ext (Matroid.Base.indep hB) haBdep
+        obtain ⟨C', hC', hC'aB, haC'⟩ := Matroid.Circuit.indep_ext_dep_has_circuit_w_ext hB.indep
+          (hB.dep_of_insert (Set.singleton_inter_eq_empty.mp haB) haE)
         exact haC C' hC' haC'
-      · exact Set.singleton_subset_iff.mpr haE
+      · rwa [Set.singleton_subset_iff]

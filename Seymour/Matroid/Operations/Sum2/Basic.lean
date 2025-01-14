@@ -68,7 +68,7 @@ section PropertiesAssumptions
 variable {M₁ M₂ : Matroid α}
 
 /-- 2-sum assumptions are symmetric -/
-def TwoSumAssumptions.symm (assumptions : TwoSumAssumptions M₁ M₂) :
+lemma TwoSumAssumptions.symm (assumptions : TwoSumAssumptions M₁ M₂) :
     TwoSumAssumptions M₂ M₁ :=
   ⟨
     assumptions.M₂fin,
@@ -365,7 +365,7 @@ lemma TwoSumAssumptions.circuitType3_not_ssubset_circuitType2 {C₂ C₃ : Set �
 /-- Circuit of type 3 is not a strict subset of any circuit of type 3 -/
 lemma TwoSumCircuitType3.not_ssubset_circuitType3 {C C' : Set α}
     (hC : TwoSumCircuitType3 M₁ M₂ C) (hC' : TwoSumCircuitType3 M₁ M₂ C') :
-    ¬C ⊂ C' := by
+    ¬(C ⊂ C') := by
   intro ⟨hCC', hnCC'⟩
 
   have hM₁circ_sub := Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.inter_subset_inter_left M₁.E hCC')
