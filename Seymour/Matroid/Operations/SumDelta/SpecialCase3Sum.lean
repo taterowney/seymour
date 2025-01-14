@@ -24,6 +24,9 @@ structure ThreeSumAssumptions (M₁ M₂ : BinaryMatroid α) where
   /-- Neither `M₁` nor `M₂` has a cocircuit contained in `T` -/
   hT_no_sub_cocircuit : ∀ T' ⊆ M₁.E ∩ M₂.E, ¬(M₁.toMatroid✶.Circuit T') ∧ ¬(M₂.toMatroid✶.Circuit T')
 
+-- TODO so do we assume `assumptions` or not ?!
+-- Is it that Δ-sum general but 3-sum is considered only when the `ThreeSumAssumptions` hold?
+
 /-- todo: desc -/
 def ThreeSumAssumptions.build3sum {M₁ M₂ : BinaryMatroid α} (assumptions : ThreeSumAssumptions M₁ M₂) : Matroid α :=
   BinaryMatroid.DeltaSum.toMatroid M₁ M₂

@@ -35,19 +35,14 @@ lemma BinaryMatroid.DeltaSum.CircuitForm2.disjoint_circuit_pred {M₁ M₂ : Bin
   · intro C' hC' hCC'
     obtain ⟨hC, hCE⟩ := hC
     unfold CircuitForm at hC'
-    obtain ⟨hC'nempty, _, X₁, X₂, hCXX, hX₁udc, hX₂udc⟩ := hC'
-    rw [(Set.disjoint_of_subset hX₁udc.subset_ground hX₂udc.subset_ground hMM).inter_eq, Set.diff_empty] at hCXX
-
-    have hC'M₂ : C' ⊆ M₂.E := hCC'.trans hC.subset_ground
-    have hC'M₁ := Set.disjoint_of_subset_right hC'M₂ hMM
-    have hX₁C' : X₁ ⊆ C' := Set.subset_union_left.trans hCXX.symm.subset
-    have hX₁empty : X₁ = ∅ := Set.subset_eq_empty (hC'M₁.symm hX₁C' hX₁udc.subset_ground) rfl
-    rw [hX₁empty, Set.empty_union] at hCXX
-
-    rw [hCXX] at hCC' hC'nempty ⊢
-
-    have hX₂dep := hX₂udc.nonempty_dep hC'nempty
-    exact hC.right hX₂dep hCC'
+    obtain ⟨C'_nonempty, _, X₁, X₂, hXX, hX₁, hX₂⟩ := hC'
+    rw [(Set.disjoint_of_subset hX₁.subset_ground hX₂.subset_ground hMM).inter_eq, Set.diff_empty] at hXX
+    have X₁_empty : X₁ = ∅ := Set.subset_eq_empty
+      ((Set.disjoint_of_subset_right (hCC'.trans hC.subset_ground) hMM).symm (Set.subset_union_left.trans hXX.symm.subset)
+        hX₁.subset_ground) rfl
+    rw [X₁_empty, Set.empty_union] at hXX
+    rw [hXX] at hCC' C'_nonempty ⊢
+    exact hC.right (hX₂.nonempty_dep C'_nonempty) hCC'
 
 end CircuitFormsProperties
 
@@ -55,110 +50,92 @@ end CircuitFormsProperties
 section disjointSumProperties
 
 /-- Dependent set in disjoint sum is depenent in one of summand matroids -/
-lemma Matroid.disjointSum_dep_iff {M N : Matroid α} {h : M.E ⫗ N.E} {D : Set α} :
-    (M.disjointSum N h).Dep D ↔ (M.Dep (D ∩ M.E) ∨ N.Dep (D ∩ N.E)) ∧ D ⊆ M.E ∪ N.E := by
+lemma Matroid.disjointSum_dep_iff {M N : Matroid α} {hE : M.E ⫗ N.E} {D : Set α} :
+    (M.disjointSum N hE).Dep D ↔ (M.Dep (D ∩ M.E) ∨ N.Dep (D ∩ N.E)) ∧ D ⊆ M.E ∪ N.E := by
   constructor
   · intro hD
     constructor
     · have hDE := Matroid.disjointSum_ground_eq ▸ hD.subset_ground
-      apply Matroid.Dep.not_indep at hD
-      rw [Matroid.disjointSum_indep_iff] at hD
-      push_neg at hD
+      have hD' := hD.not_indep
+      rw [Matroid.disjointSum_indep_iff] at hD'
+      push_neg at hD'
       if hDM : M.Indep (D ∩ M.E) then
-        if hDN : N.Indep (D ∩ N.E) then
-          exact False.elim (hD hDM hDN hDE)
-        else
-          exact Or.inr ⟨hDN, Set.inter_subset_right⟩
-      else
-        exact Or.inl ⟨hDM, Set.inter_subset_right⟩
+      if hDN : N.Indep (D ∩ N.E) then
+      exact (hD' hDM hDN hDE).elim
+      else exact Or.inr ⟨hDN, Set.inter_subset_right⟩
+      else exact Or.inl ⟨hDM, Set.inter_subset_right⟩
     · exact Matroid.disjointSum_ground_eq ▸ hD.subset_ground
   · intro ⟨hD, hDE⟩
     cases hD with
     | inl hDM => exact ⟨
-        fun hD => False.elim ((Matroid.Dep.not_indep hDM) (Matroid.disjointSum_indep_iff.mp hD).left),
-        Matroid.disjointSum_ground_eq ▸ hDE
-      ⟩
+        fun hD => (hDM.not_indep (Matroid.disjointSum_indep_iff.mp hD).left).elim,
+        Matroid.disjointSum_ground_eq ▸ hDE⟩
     | inr hDN => exact ⟨
-        fun hD => False.elim ((Matroid.Dep.not_indep hDN) (Matroid.disjointSum_indep_iff.mp hD).right.left),
-        Matroid.disjointSum_ground_eq ▸ hDE
-      ⟩
+        fun hD => (hDN.not_indep (Matroid.disjointSum_indep_iff.mp hD).right.left).elim,
+        Matroid.disjointSum_ground_eq ▸ hDE⟩
 
 /-- Circuit in disjoint sum is circuit in one of summand matroids -/
 lemma Matroid.disjointSum_circuit_iff (M N : Matroid α) (hE : M.E ⫗ N.E) {C : Set α} :
     (M.disjointSum N hE).Circuit C ↔ M.Circuit C ∨ N.Circuit C := by
   constructor
-  · intro ⟨hCdep, hCmin⟩
-    have ⟨hC, hCE⟩ := Matroid.disjointSum_dep_iff.mp hCdep
+  · intro ⟨dep_C, min_C⟩
+    have ⟨hC, hCE⟩ := Matroid.disjointSum_dep_iff.mp dep_C
     cases hC with
     | inl hCM =>
-        have hCMMeq : C ∩ M.E ∩ M.E = C ∩ M.E := Set.inter_eq_left.mpr Set.inter_subset_right
-        have hCinterM : (M.disjointSum N hE).Dep (C ∩ M.E) := Matroid.disjointSum_dep_iff.mpr ⟨
-          Or.inl (hCMMeq.symm ▸ hCM),
-          inter_subset_parent_left hCE
-        ⟩
-        have hCMeq : C = C ∩ M.E := Set.Subset.antisymm (hCmin hCinterM Set.inter_subset_left) Set.inter_subset_left
-
-        left
-        constructor
-        · exact hCMeq ▸ hCM
-        · intro D hD hDC
-          have hDM : D = D ∩ M.E :=
-            (Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCMeq.symm))).antisymm Set.inter_subset_left
-          have hDdep : (M.disjointSum N hE).Dep D := Matroid.disjointSum_dep_iff.mpr ⟨
-            Or.inl (hDM ▸ hD),
-            hDC.trans hCE
-          ⟩
-          exact hCmin hDdep hDC
+      have hCMM : C ∩ M.E ∩ M.E = C ∩ M.E := Set.inter_eq_left.mpr Set.inter_subset_right
+      have C_inter_ME_dep : (M.disjointSum N hE).Dep (C ∩ M.E) := Matroid.disjointSum_dep_iff.mpr ⟨Or.inl (hCMM.symm ▸ hCM),
+        inter_subset_parent_left hCE⟩
+      have hCM' : C = C ∩ M.E := Set.Subset.antisymm (min_C C_inter_ME_dep Set.inter_subset_left) Set.inter_subset_left
+      left
+      constructor
+      · exact hCM' ▸ hCM
+      · intro D hD hDC
+        have hDM : D = D ∩ M.E :=
+          (Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCM'.symm))).antisymm Set.inter_subset_left
+        have dep_D : (M.disjointSum N hE).Dep D := Matroid.disjointSum_dep_iff.mpr ⟨Or.inl (hDM ▸ hD), hDC.trans hCE⟩
+        exact min_C dep_D hDC
     | inr hCN =>
-        have hCNNeq : C ∩ N.E ∩ N.E = C ∩ N.E := Set.inter_eq_left.mpr Set.inter_subset_right
-        have hCinterN : (M.disjointSum N hE).Dep (C ∩ N.E) := Matroid.disjointSum_dep_iff.mpr ⟨
-          Or.inr (hCNNeq.symm ▸ hCN),
-          inter_subset_parent_left hCE
-        ⟩
-        have hCMeq : C = C ∩ N.E := Set.Subset.antisymm (hCmin hCinterN Set.inter_subset_left) Set.inter_subset_left
-
-        right
-        constructor
-        · exact hCMeq ▸ hCN
-        · intro D hD hDC
-          have hDN : D = D ∩ N.E :=
-            (Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCMeq.symm))).antisymm Set.inter_subset_left
-          have hDdep : (M.disjointSum N hE).Dep D := Matroid.disjointSum_dep_iff.mpr ⟨
-            Or.inr (hDN ▸ hD),
-            hDC.trans hCE
-          ⟩
-          exact hCmin hDdep hDC
+      have C_inter_N_dep : (M.disjointSum N hE).Dep (C ∩ N.E) :=
+        Matroid.disjointSum_dep_iff.mpr ⟨Or.inr ((Set.inter_eq_left.mpr Set.inter_subset_right).symm ▸ hCN),
+          inter_subset_parent_left hCE⟩
+      have hCN' : C = C ∩ N.E := Set.Subset.antisymm (min_C C_inter_N_dep Set.inter_subset_left) Set.inter_subset_left
+      right
+      constructor
+      · exact hCN' ▸ hCN
+      · intro D hD hDC
+        have hDN : D = D ∩ N.E :=
+          (Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCN'.symm))).antisymm Set.inter_subset_left
+        have dep_D : (M.disjointSum N hE).Dep D := Matroid.disjointSum_dep_iff.mpr ⟨Or.inr (hDN ▸ hD), hDC.trans hCE⟩
+        exact min_C dep_D hDC
   · intro hC
     cases hC with
     | inl hCM =>
-        have hCMeq : C = C ∩ M.E := Set.left_eq_inter.mpr hCM.subset_ground
+        have hCM' : C = C ∩ M.E := Set.left_eq_inter.mpr hCM.subset_ground
         constructor
         · rw [Matroid.disjointSum_dep_iff]
-          exact ⟨Or.inl (hCMeq ▸ hCM.dep), (hCM.subset_ground).trans Set.subset_union_left⟩
+          exact ⟨Or.inl (hCM' ▸ hCM.dep), (hCM.subset_ground).trans Set.subset_union_left⟩
         · intro D hD hDC
           rw [Matroid.disjointSum_dep_iff] at hD
-          have ⟨hD, hDE⟩ := hD
-          have hDMeq : D = D ∩ M.E :=
-            (Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCMeq.symm))).antisymm Set.inter_subset_left
-          have hDNeq : D ∩ N.E = ∅ := Disjoint.inter_eq (Set.disjoint_of_subset_left (Set.inter_eq_left.mp hDMeq.symm) hE)
-          rw [←hDMeq, hDNeq] at hD
+          replace ⟨hD, _⟩ := hD
+          have D_eq : D = D ∩ M.E :=
+            (Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCM'.symm))).antisymm Set.inter_subset_left
+          rw [←D_eq, (Set.disjoint_of_subset_left (Set.inter_eq_left.mp D_eq.symm) hE).inter_eq] at hD
           cases hD with
           | inl hD => exact hCM.right hD hDC
-          | inr hD => exact False.elim (Set.Nonempty.ne_empty (Matroid.Dep.nonempty hD) rfl)
+          | inr hD => exact (hD.nonempty.ne_empty rfl).elim
     | inr hCN =>
-        have hCNeq : C = C ∩ N.E := Set.left_eq_inter.mpr hCN.subset_ground
+        have hCN' : C = C ∩ N.E := Set.left_eq_inter.mpr hCN.subset_ground
         constructor
         · rw [Matroid.disjointSum_dep_iff]
-          exact ⟨Or.inr (hCNeq ▸ hCN.dep), (hCN.subset_ground).trans Set.subset_union_right⟩
+          exact ⟨Or.inr (hCN' ▸ hCN.dep), (hCN.subset_ground).trans Set.subset_union_right⟩
         · intro D hD hDC
           rw [Matroid.disjointSum_dep_iff] at hD
-          have ⟨hD, hDE⟩ := hD
-          have hDNeq : D ⊆ D ∩ N.E := Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCNeq.symm))
-          have hDNeq : D = D ∩ N.E := Set.Subset.antisymm hDNeq Set.inter_subset_left
-          have hDMeq : D ∩ M.E = ∅ := Disjoint.inter_eq (Set.disjoint_of_subset_left (Set.inter_eq_left.mp hDNeq.symm) hE.symm)
-          rw [←hDNeq, hDMeq] at hD
+          replace ⟨hD, _⟩ := hD
+          have D_eq : D = D ∩ N.E :=
+            (Set.subset_inter Set.Subset.rfl (hDC.trans (Set.inter_eq_left.mp hCN'.symm))).antisymm Set.inter_subset_left
+          rw [←D_eq, (Set.disjoint_of_subset_left (Set.inter_eq_left.mp D_eq.symm) hE.symm).inter_eq] at hD
           cases hD with
-          | inl hD => exact False.elim (Set.Nonempty.ne_empty (Matroid.Dep.nonempty hD) rfl)
+          | inl hD => exact (hD.nonempty.ne_empty rfl).elim
           | inr hD => exact hCN.right hD hDC
 
 end disjointSumProperties
@@ -170,46 +147,40 @@ section Equivalence
 lemma BinaryMatroid.DeltaSum.SpecialCase1Sum [DecidableEq α] {M₁ M₂ : BinaryMatroid α}
     (hE : M₁.E ⫗ M₂.E) : Matroid.disjointSum M₁.toMatroid M₂.toMatroid hE = BinaryMatroid.DeltaSum.toMatroid M₁ M₂ := by
   apply Matroid.ext_circuit
-  · rw [Matroid.disjointSum_ground_eq,
-        VectorMatroid.toMatroid_E, VectorMatroid.toMatroid_E,
-        BinaryMatroid.DeltaSum.E_eq, hE.inter_eq, Set.diff_empty]
+  · rw [Matroid.disjointSum_ground_eq, VectorMatroid.toMatroid_E, VectorMatroid.toMatroid_E,
+      BinaryMatroid.DeltaSum.E_eq, hE.inter_eq, Set.diff_empty]
   · intro C hCE
     rw [Matroid.disjointSum_ground_eq, VectorMatroid.toMatroid_E, VectorMatroid.toMatroid_E] at hCE
     rw [Matroid.disjointSum_circuit_iff, BinaryMatroid.DeltaSum.circuit_iff]
     constructor
-    · intro hCcirc
-      cases hCcirc with
-      | inl hCM₁ =>
-          have hC : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ C := ⟨hCM₁, disjoint_inter_disjoint C hE⟩
-          exact hC.disjoint_circuit_pred hE
-      | inr hCM₂ =>
-          have hC : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ C := ⟨hCM₂, disjoint_inter_disjoint C hE⟩
-          exact hC.disjoint_circuit_pred hE
     · intro hC
-      have ⟨⟨hCnempty, hCE, X₁, X₂, hCX₁X₂, hX₁udc, hX₂udc⟩, hCmin⟩ := hC
-      if hX₂empty : X₂ = ∅ then
+      cases hC with
+      | inl hCM₁ =>
+        have hC₁ : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ C := ⟨hCM₁, disjoint_inter_disjoint C hE⟩
+        exact hC₁.disjoint_circuit_pred hE
+      | inr hCM₂ =>
+        have hC₂ : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ C := ⟨hCM₂, disjoint_inter_disjoint C hE⟩
+        exact hC₂.disjoint_circuit_pred hE
+    · intro hC
+      have ⟨⟨hCnempty, hCE, X₁, X₂, hXX, hX₁, hX₂⟩, min_C⟩ := hC
+      if X₂_empty : X₂ = ∅ then
           left
-          rw [hX₂empty, Set.union_empty, Set.inter_empty, Set.diff_empty] at hCX₁X₂
-          exact BinaryMatroid.DeltaSum.CircuitPred_udc_M₁ hC (hCX₁X₂ ▸ hX₁udc)
+          rw [X₂_empty, Set.union_empty, Set.inter_empty, Set.diff_empty] at hXX
+          exact BinaryMatroid.DeltaSum.CircuitPred_udc_M₁ hC (hXX ▸ hX₁)
       else
-        if hX₁empty : X₁ = ∅ then
+        if X₁_empty : X₁ = ∅ then
           right
-          rw [hX₁empty, Set.empty_union, Set.empty_inter, Set.diff_empty] at hCX₁X₂
-          exact BinaryMatroid.DeltaSum.CircuitPred_udc_M₂ hC (hCX₁X₂ ▸ hX₂udc)
+          rw [X₁_empty, Set.empty_union, Set.empty_inter, Set.diff_empty] at hXX
+          exact BinaryMatroid.DeltaSum.CircuitPred_udc_M₂ hC (hXX ▸ hX₂)
         else
-          apply Set.nonempty_iff_ne_empty.mpr at hX₁empty
-          apply Set.nonempty_iff_ne_empty.mpr at hX₂empty
-
-          have hX₁E : X₁ ⊆ BinaryMatroid.DeltaSum.E M₁ M₂ := by
-            rw [BinaryMatroid.DeltaSum.E, hE.inter_eq, Set.diff_empty]
-            exact Set.subset_union_of_subset_left hX₁udc.subset_ground M₂.E
-
-          have hX₁X₂ := Set.disjoint_of_subset hX₁udc.subset_ground hX₂udc.subset_ground hE
-          rw [hX₁X₂.inter_eq, Set.diff_empty] at hCX₁X₂
-
-          specialize hCmin (BinaryMatroid.DeltaSum.CircuitForm_left hX₁empty hX₁E hX₁udc)
-          specialize hCmin (hCX₁X₂.symm ▸ Set.subset_union_left)
-          apply Set.ssubset_of_ssubset_of_subset (hCX₁X₂ ▸ ssubset_disjoint_union_nonempty hX₁X₂ hX₂empty) at hCmin
-          exact False.elim ((HasSSubset.SSubset.ne hCmin) rfl)
+          apply Set.nonempty_iff_ne_empty.mpr at X₁_empty
+          apply Set.nonempty_iff_ne_empty.mpr at X₂_empty
+          have X₁_subset_E : X₁ ⊆ BinaryMatroid.DeltaSum.E M₁ M₂
+          · rw [BinaryMatroid.DeltaSum.E, hE.inter_eq, Set.diff_empty]
+            exact Set.subset_union_of_subset_left hX₁.subset_ground M₂.E
+          have hXX' := Set.disjoint_of_subset hX₁.subset_ground hX₂.subset_ground hE
+          rw [hXX'.inter_eq, Set.diff_empty] at hXX
+          specialize min_C (BinaryMatroid.DeltaSum.CircuitForm_left X₁_empty X₁_subset_E hX₁) (hXX.symm ▸ Set.subset_union_left)
+          exact ((Set.ssubset_of_ssubset_of_subset (hXX ▸ ssubset_disjoint_union_nonempty hXX' X₂_empty) min_C).ne rfl).elim
 
 end Equivalence
