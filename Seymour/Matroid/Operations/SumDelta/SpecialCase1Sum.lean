@@ -17,20 +17,14 @@ lemma BinaryMatroid.DeltaSum.CircuitForm1.disjoint_circuit_pred {M₁ M₂ : Bin
   · exact hC.circuit_form
   · intro C' hC' hCC'
     obtain ⟨hC, hCE⟩ := hC
-    unfold CircuitForm at hC'
-    obtain ⟨hC'nempty, _, X₁, X₂, hCXX, hX₁udc, hX₂udc⟩ := hC'
-    rw [(Set.disjoint_of_subset hX₁udc.subset_ground hX₂udc.subset_ground hMM).inter_eq, Set.diff_empty] at hCXX
-
-    have hC'M₁ : C' ⊆ M₁.E := hCC'.trans hC.subset_ground
-    have hC'M₂ := Set.disjoint_of_subset_left hC'M₁ hMM
-    have hX₂C' : X₂ ⊆ C' := Set.subset_union_right.trans hCXX.symm.subset
-    have hX₂empty : X₂ = ∅ := Set.subset_eq_empty (hC'M₂ hX₂C' hX₂udc.subset_ground) rfl
-    rw [hX₂empty, Set.union_empty] at hCXX
-
-    rw [hCXX] at hCC' hC'nempty ⊢
-
-    have hX₁dep := hX₁udc.nonempty_dep hC'nempty
-    exact (Matroid.Circuit.circuit_iff_def.mp hC).right X₁ hX₁dep hCC'
+    obtain ⟨C'_nonempty, _, X₁, X₂, hXX, hX₁, hX₂⟩ := hC'
+    rw [(Set.disjoint_of_subset hX₁.subset_ground hX₂.subset_ground hMM).inter_eq, Set.diff_empty] at hXX
+    have X₂_empty : X₂ = ∅ := Set.subset_eq_empty
+      (Set.disjoint_of_subset_left (hCC'.trans hC.subset_ground) hMM (Set.subset_union_right.trans hXX.symm.subset)
+        hX₂.subset_ground) rfl
+    rw [X₂_empty, Set.union_empty] at hXX
+    rw [hXX] at hCC' C'_nonempty ⊢
+    exact hC.right (hX₁.nonempty_dep C'_nonempty) hCC'
 
 /-- Circuit of form 2 satisfies circuit predicate of `M₁ Δ M₂` if `M₁.E` and `M₂.E` are disjoint -/
 lemma BinaryMatroid.DeltaSum.CircuitForm2.disjoint_circuit_pred {M₁ M₂ : BinaryMatroid α} {C : Set α}
@@ -53,7 +47,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm2.disjoint_circuit_pred {M₁ M₂ : Bin
     rw [hCXX] at hCC' hC'nempty ⊢
 
     have hX₂dep := hX₂udc.nonempty_dep hC'nempty
-    exact (Matroid.Circuit.circuit_iff_def.mp hC).right X₂ hX₂dep hCC'
+    exact hC.right hX₂dep hCC'
 
 end CircuitFormsProperties
 

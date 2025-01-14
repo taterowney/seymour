@@ -17,8 +17,8 @@ lemma Matroid.Circuit.subset_ground (M : Matroid α) {C : Set α} (hC : M.Circui
   hC.left.right
 
 /-- Equivalence with explicit definition of circuits. -/
-lemma Matroid.Circuit.circuit_iff_def {M : Matroid α} {C : Set α} :
-    M.Circuit C ↔ M.Dep C ∧ ∀ C', M.Dep C' → C' ⊆ C → C ⊆ C' :=
+lemma Matroid.circuit_iff_def (M : Matroid α) (C : Set α) :
+    M.Circuit C ↔ M.Dep C ∧ ∀ C' : Set α, M.Dep C' → C' ⊆ C → C ⊆ C' :=
   rfl.to_iff
 
 /-- Every strict subset of a circuit is independent. -/

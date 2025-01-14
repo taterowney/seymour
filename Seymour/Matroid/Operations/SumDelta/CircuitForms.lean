@@ -262,18 +262,18 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.disjoint_inter_M₂_inter_M₁ {M₁ M
 lemma BinaryMatroid.DeltaSum.CircuitForm3.inter_M₁_nonempty {M₁ M₂ : BinaryMatroid α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) (hp : ¬(M₁.toMatroid.Circuit {p})) :
     (C ∩ M₁.E).Nonempty := by
-  by_contra! hCM₁empty
+  by_contra! C_inter_E₁_empty
   have hCM₁ := hC.to_circuit_M₁
-  rw [hCM₁empty, Set.empty_union] at hCM₁
+  rw [C_inter_E₁_empty, Set.empty_union] at hCM₁
   exact hp hCM₁
 
 /-- Circuit of form 3 has nonempty intersection with `M₂.E` provided {p} is not a circuit in `M₂` -/
 lemma BinaryMatroid.DeltaSum.CircuitForm3.inter_M₂_nonempty {M₁ M₂ : BinaryMatroid α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) (hp : ¬(M₂.toMatroid.Circuit {p})) :
     (C ∩ M₂.E).Nonempty := by
-  by_contra! hCM₂empty
+  by_contra! C_inter_E₂_empty
   have hCM₂ := hC.to_circuit_M₂
-  rw [hCM₂empty, Set.empty_union] at hCM₂
+  rw [C_inter_E₂_empty, Set.empty_union] at hCM₂
   exact hp hCM₂
 
 /-- Circuit of form 3 intersected with `M₁.E` is disjoint with `{p}` -/

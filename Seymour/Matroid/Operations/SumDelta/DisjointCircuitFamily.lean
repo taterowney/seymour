@@ -32,7 +32,7 @@ lemma Matroid.disjointCircuitFamily.mem_subset_ground {M : Matroid α} (F : M.di
 /-- Union of sets in `M.disjointCircuitFamily` is subset of ground set. -/
 lemma Matroid.disjointCircuitFamily.union_subset_ground {M : Matroid α} (F : M.disjointCircuitFamily) :
     F.union ⊆ M.E := by
-  simp only [union, Set.iUnion_coe_set, Set.iUnion_subset_iff]
+  simp only [Matroid.disjointCircuitFamily.union, Set.iUnion_coe_set, Set.iUnion_subset_iff]
   exact fun i hi => mem_subset_ground F ⟨i, hi⟩
 
 /-- If union of disjoint circuits is independent, then it is empty. -/
@@ -42,10 +42,9 @@ lemma Matroid.disjointCircuitFamily.union_indep_empty {M : Matroid α} (F : M.di
   have ⟨x, hx⟩ : ∃ x, (F.F x).Nonempty := by
     by_contra!
     simp_all only [Matroid.disjointCircuitFamily.union, Set.iUnion_coe_set, Set.iUnion_empty, not_true_eq_false]
-  have hFxdep := Matroid.Dep.not_indep (F.AllCircuits x).left
-  have hFxsubF : F.F x ⊆ F.union := Set.subset_iUnion_of_subset x Set.Subset.rfl
-  have hFxindep := hMF.subset hFxsubF
-  exact hFxdep hFxindep
+  apply (F.AllCircuits x).left.not_indep
+  have F_x_sub_F_union : F.F x ⊆ F.union := Set.subset_iUnion_of_subset x Set.Subset.rfl
+  exact hMF.subset F_x_sub_F_union
 
 /-- Nonempty union of disjoint circuits is dependent. -/
 lemma Matroid.disjointCircuitFamily.union_nonempty_dep {M : Matroid α} (F : M.disjointCircuitFamily) (hF : F.union.Nonempty) :
