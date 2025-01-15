@@ -199,7 +199,7 @@ lemma union_ssubset_union_iff {A B X : Set α} (hAX : A ⫗ X) (hBX : B ⫗ X) :
     rw [Set.mem_union] at hx'
     cases hx' with
     | inl hA => exact hx.right hA
-    | inr hX => exact Disjoint.ni_of_in hBX hx.left hX
+    | inr hX => exact hBX.ni_of_in hx.left hX
 
 lemma union_subset_union_iff {A B X : Set α} (hAX : A ⫗ X) (hBX : B ⫗ X) :
     A ∪ X ⊆ B ∪ X ↔ A ⊆ B := by

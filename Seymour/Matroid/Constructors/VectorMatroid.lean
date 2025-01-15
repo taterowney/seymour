@@ -169,11 +169,25 @@ lemma VectorMatroid.exists_standardRepr_base {B : Set α}
 def StandardRepr.toMatroid (S : StandardRepr α R) : Matroid α :=
   S.toVectorMatroid.toMatroid
 
+/-- The identity matrix has linearly independent rows. -/
+lemma Matrix.one_linearIndependent : LinearIndependent R (1 : Matrix α α R) := by
+  sorry -- TODO move and prove
+
 /-- todo: desc -/
 lemma StandardRepr.toMatroid_base (S : StandardRepr α R) :
     S.toMatroid.Base S.X := by
   unfold StandardRepr.toMatroid StandardRepr.toVectorMatroid VectorMatroid.toMatroid
-  sorry
+  apply Matroid.Indep.base_of_forall_insert
+  · simp [Matrix.setUnion_fromCols, VectorMatroid.toIndepMatroid, VectorMatroid.IndepCols, Matrix.IndepCols]
+    show LinearIndependent R ((Matrix.fromCols 1 S.B).transpose.submatrix _ id)
+    rw [Matrix.transpose_fromCols, Matrix.transpose_one]
+    simp [Matrix.fromRows, Matrix.submatrix, Subtype.toSum, HasSubset.Subset.elem]
+    exact Matrix.one_linearIndependent
+  · intro e he
+    have e_in_Y : e ∈ S.Y
+    · sorry
+    -- TODO if you add anything extra to the identity matrix, it becomes singular.
+    sorry
 
 def StandardRepr.dual (S : StandardRepr α R) : StandardRepr α R where
   X := S.Y
