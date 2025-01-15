@@ -123,7 +123,7 @@ lemma CircuitMatroid.maximal_iff (M : CircuitMatroid α) (B : Set α) :
 lemma CircuitMatroid.toMatroid_eq_toMatroid {M₁ M₂ : CircuitMatroid α} (hMM : M₁.CircuitPred = M₂.CircuitPred) :
     M₁.toMatroid = M₂.toMatroid := by
   ext
-  · sorry
+  · sorry -- TODO is it intentional that `M₁.E = M₂.E` is not assumed?
   · sorry
 
 /-- todo: desc -/

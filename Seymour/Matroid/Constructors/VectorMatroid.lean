@@ -170,6 +170,7 @@ def StandardRepr.toMatroid [DecidableEq α] (S : StandardRepr α R) : Matroid α
 /-- todo: desc -/
 lemma StandardRepr.toMatroid_base [DecidableEq α] (S : StandardRepr α R) :
     S.toMatroid.Base S.X := by
+  unfold StandardRepr.toMatroid StandardRepr.toVectorMatroid VectorMatroid.toMatroid
   sorry
 
 def StandardRepr.dual [DecidableEq α] (S : StandardRepr α R) : StandardRepr α R where
