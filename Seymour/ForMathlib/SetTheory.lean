@@ -124,27 +124,27 @@ end Other
 
 section Disjoint
 
-lemma Disjoint.ni_of_in {X Y : Set α} {a : α} (hXY : Disjoint X Y) (ha : a ∈ X) :
+lemma Disjoint.ni_of_in {X Y : Set α} {a : α} (hXY : X ⫗ Y) (ha : a ∈ X) :
     a ∉ Y := by
   intro ha'
   simpa [hXY.inter_eq] using Set.mem_inter ha ha'
 
 lemma disjoint_of_singleton_inter_left_wo {X Y : Set α} {a : α} (hXY : X ∩ Y = {a}) :
-    Disjoint (X \ {a}) Y := by
+    X \ {a} ⫗ Y := by
   tauto_set
 
 lemma disjoint_of_singleton_inter_right_wo {X Y : Set α} {a : α} (hXY : X ∩ Y = {a}) :
-    Disjoint X (Y \ {a}) := by
+    X ⫗ Y \ {a} := by
   rw [disjoint_comm]
   rw [Set.inter_comm] at hXY
   exact disjoint_of_singleton_inter_left_wo hXY
 
 lemma disjoint_of_singleton_inter_both_wo {X Y : Set α} {a : α} (hXY : X ∩ Y = {a}) :
-    Disjoint (X \ {a}) (Y \ {a}) :=
+    X \ {a} ⫗ Y \ {a} :=
   Disjoint.disjoint_sdiff_left (disjoint_of_singleton_inter_right_wo hXY)
 
 lemma disjoint_of_singleton_inter_subset_left {X Y Z : Set α} {a : α} (hXY : X ∩ Y = {a}) (hZ : Z ⊆ X) (haZ : a ∉ Z) :
-    Disjoint Z Y := by
+    Z ⫗ Y := by
   have hY : (Y \ {a}) ∪ {a} = Y := (Set.diff_union_of_subset (singleton_inter_subset_right hXY))
   rw [←hY, Set.disjoint_union_right]
   constructor
@@ -152,23 +152,23 @@ lemma disjoint_of_singleton_inter_subset_left {X Y Z : Set α} {a : α} (hXY : X
   · exact Set.disjoint_singleton_right.← haZ
 
 lemma disjoint_of_singleton_inter_subset_right {X Y Z : Set α} {a : α} (hXY : X ∩ Y = {a}) (hZ : Z ⊆ Y) (haZ : a ∉ Z) :
-    Disjoint X Z := by
+    X ⫗ Z := by
   rw [Set.inter_comm] at hXY
   rw [disjoint_comm]
   exact disjoint_of_singleton_inter_subset_left hXY hZ haZ
 
-lemma disjoint_nonempty_not_subset {A B : Set α} (hAB : Disjoint A B) (hA : A.Nonempty) :
+lemma disjoint_nonempty_not_subset {A B : Set α} (hAB : A ⫗ B) (hA : A.Nonempty) :
     ¬(A ⊆ B) := by
   intro contr
   simp [Disjoint.eq_bot_of_le hAB, contr] at hA
 
-lemma disjoint_nonempty_not_ssubset {A B : Set α} (hAB : Disjoint A B) (hA : A.Nonempty) :
+lemma disjoint_nonempty_not_ssubset {A B : Set α} (hAB : A ⫗ B) (hA : A.Nonempty) :
     ¬(A ⊂ B) := by
   apply disjoint_nonempty_not_subset hAB at hA
   intro ⟨_, _⟩
   tauto
 
-lemma ssubset_union_disjoint_nonempty {X Y : Set α} (hXY : Disjoint X Y) (hY : Y.Nonempty) :
+lemma ssubset_union_disjoint_nonempty {X Y : Set α} (hXY : X ⫗ Y) (hY : Y.Nonempty) :
     X ⊂ X ∪ Y := by
   constructor
   · exact Set.subset_union_left
@@ -177,7 +177,7 @@ lemma ssubset_union_disjoint_nonempty {X Y : Set α} (hXY : Disjoint X Y) (hY : 
     rw [Set.union_diff_cancel_left (Set.disjoint_iff.→ hXY), Set.diff_self] at hX
     exact Set.not_nonempty_empty (Set.eq_empty_of_subset_empty hX ▸ hY)
 
-lemma union_ssubset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjoint B X) :
+lemma union_ssubset_union_iff {A B X : Set α} (hAX : A ⫗ X) (hBX : B ⫗ X) :
     A ∪ X ⊂ B ∪ X ↔ A ⊂ B := by
   constructor
   · intro hAB
@@ -201,7 +201,7 @@ lemma union_ssubset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjo
     | inl hA => exact hx.right hA
     | inr hX => exact Disjoint.ni_of_in hBX hx.left hX
 
-lemma union_subset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjoint B X) :
+lemma union_subset_union_iff {A B X : Set α} (hAX : A ⫗ X) (hBX : B ⫗ X) :
     A ∪ X ⊆ B ∪ X ↔ A ⊆ B := by
   constructor
   · intro hABX
@@ -211,20 +211,20 @@ lemma union_subset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjoi
     rwa [hXA, hXB] at hXX
   · exact Set.union_subset_union_left X
 
-lemma ssubset_disjoint_union_nonempty {X₁ X₂ : Set α} (hXX : Disjoint X₁ X₂) (hX₂ : X₂.Nonempty) :
+lemma ssubset_disjoint_union_nonempty {X₁ X₂ : Set α} (hXX : X₁ ⫗ X₂) (hX₂ : X₂.Nonempty) :
     X₁ ⊂ X₁ ∪ X₂ := by
   rw [Set.ssubset_iff_of_subset Set.subset_union_left]
   obtain ⟨x, hx⟩ := hX₂
   exact ⟨x, Set.mem_union_right X₁ hx, Disjoint.ni_of_in hXX.symm hx⟩
 
-lemma ssubset_disjoint_nonempty_union {X₁ X₂ : Set α} (hXX : Disjoint X₁ X₂) (hX₁ : X₁.Nonempty) :
+lemma ssubset_disjoint_nonempty_union {X₁ X₂ : Set α} (hXX : X₁ ⫗ X₂) (hX₁ : X₁.Nonempty) :
     X₂ ⊂ X₁ ∪ X₂ := by
   rw [disjoint_comm] at hXX
   rw [Set.union_comm]
   exact ssubset_disjoint_union_nonempty hXX hX₁
 
 /-- If two sets are disjoint, then any set is disjoint with their intersection -/
-lemma disjoint_inter_disjoint {A B : Set α} (C : Set α) (hAB : Disjoint A B) : Disjoint C (A ∩ B) := by
+lemma disjoint_inter_disjoint {A B : Set α} (C : Set α) (hAB : A ⫗ B) : C ⫗ A ∩ B := by
   rw [hAB.inter_eq]
   exact Set.disjoint_empty C
 
@@ -238,7 +238,7 @@ lemma symmDiff_eq_alt (X Y : Set α) : symmDiff X Y = (X ∪ Y) \ (X ∩ Y) := b
   tauto_set
 
 /-- Symmetric difference of two sets is disjoint with their intersection. -/
-lemma symmDiff_disjoint_inter (X Y : Set α) : Disjoint (symmDiff X Y) (X ∩ Y) := by
+lemma symmDiff_disjoint_inter (X Y : Set α) : symmDiff X Y ⫗ X ∩ Y := by
   rw [symmDiff_eq_alt]
   exact Set.disjoint_sdiff_left
 
