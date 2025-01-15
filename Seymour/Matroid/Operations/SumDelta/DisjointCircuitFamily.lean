@@ -79,7 +79,7 @@ def Matroid.Circuit.singleDisjointCircuitFamily {M : Matroid α} {C : Set α} (h
   ι := {p}
   F _ := C
   AllCircuits _ := hC
-  AllDisjoint x y hxy := ((x.property ▸ y.property ▸ Subtype.coe_ne_coe.mpr hxy) rfl).elim
+  AllDisjoint x y hxy := ((x.property ▸ y.property ▸ Subtype.coe_ne_coe.← hxy) rfl).elim
 
 /-- Union of sets in family of one circuit is that circuit. -/
 lemma Matroid.Circuit.singleDisjointCircuitFamily_union {M : Matroid α} {C : Set α} (hC : M.Circuit C) (p : α) :

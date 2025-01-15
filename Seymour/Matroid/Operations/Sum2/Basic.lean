@@ -83,12 +83,12 @@ lemma TwoSumAssumptions.symm (assumptions : TwoSumAssumptions M₁ M₂) :
 /-- Intersection of ground sets is nonempty -/
 lemma TwoSumAssumptions.inter_nonempty (assumptions : TwoSumAssumptions M₁ M₂) :
     (M₁.E ∩ M₂.E).Nonempty :=
-  Set.one_le_encard_iff_nonempty.mp assumptions.interSingleton.symm.le
+  Set.one_le_encard_iff_nonempty.→ assumptions.interSingleton.symm.le
 
 /-- Intersection of ground sets is a singleton set -/
 lemma TwoSumAssumptions.inter_singleton (assumptions : TwoSumAssumptions M₁ M₂) :
     ∃ p, M₁.E ∩ M₂.E = {p} :=
-  Set.encard_eq_one.mp assumptions.interSingleton
+  Set.encard_eq_one.→ assumptions.interSingleton
 
 variable {p : α}
 
@@ -150,17 +150,17 @@ lemma TwoSumCircuitType1.subset_union (hC : TwoSumCircuitType1 M₁ M₂ C) : C 
 
 /-- Circuit of type 1 lies in ground set of `M₁ ⊕₂ M₂` -/
 lemma TwoSumCircuitType1.subset_ground (hC : TwoSumCircuitType1 M₁ M₂ C) : C ⊆ twoSumGround M₁ M₂ :=
-  Set.subset_diff.mpr ⟨hC.subset_union, hC.disjoint_inter⟩
+  Set.subset_diff.← ⟨hC.subset_union, hC.disjoint_inter⟩
 
 /-- Circuit of type 1 lies in `M₁.E \ (M₁.E ∩ M₂.E)` -/
 lemma TwoSumCircuitType1.subset_M₁_diff_inter (hC : TwoSumCircuitType1 M₁ M₂ C) : C ⊆ M₁.E \ (M₁.E ∩ M₂.E) :=
-  Set.subset_diff.mpr ⟨hC.circuit_M₁.subset_ground, hC.disjoint_inter⟩
+  Set.subset_diff.← ⟨hC.circuit_M₁.subset_ground, hC.disjoint_inter⟩
 
 /-- Circuit of type 1 is disjoint with `M₂.E` -/
 lemma TwoSumCircuitType1.disjoint_M₂ (hC : TwoSumCircuitType1 M₁ M₂ C) : C ⫗ M₂.E := by
   have hMM := twoSum_disjoint_grounds_diff_inter M₁ M₂
   have hCM₂ := Set.disjoint_of_subset_left hC.subset_M₁_diff_inter hMM
-  have hCM₂ := Set.disjoint_union_right.mpr ⟨hCM₂, hC.disjoint_inter⟩
+  have hCM₂ := Set.disjoint_union_right.← ⟨hCM₂, hC.disjoint_inter⟩
   rw [Set.diff_union_of_subset Set.inter_subset_right] at hCM₂
   exact hCM₂
 
@@ -185,17 +185,17 @@ lemma TwoSumCircuitType2.subset_union (hC : TwoSumCircuitType2 M₁ M₂ C) : C 
 
 /-- Circuit of type 2 lies in ground set of `M₁ ⊕₂ M₂` -/
 lemma TwoSumCircuitType2.subset_ground (hC : TwoSumCircuitType2 M₁ M₂ C) : C ⊆ twoSumGround M₁ M₂ :=
-  Set.subset_diff.mpr ⟨hC.subset_union, hC.disjoint_inter⟩
+  Set.subset_diff.← ⟨hC.subset_union, hC.disjoint_inter⟩
 
 /-- Circuit of type 2 lies in `M₂.E \ (M₁.E ∩ M₂.E)` -/
 lemma TwoSumCircuitType2.subset_M₂_diff_inter (hC : TwoSumCircuitType2 M₁ M₂ C) : C ⊆ M₂.E \ (M₁.E ∩ M₂.E) :=
-  Set.subset_diff.mpr ⟨hC.circuit_M₂.subset_ground, hC.disjoint_inter⟩
+  Set.subset_diff.← ⟨hC.circuit_M₂.subset_ground, hC.disjoint_inter⟩
 
 /-- Circuit of type 2 is disjoint with `M₁.E` -/
 lemma TwoSumCircuitType2.disjoint_M₁ (hC : TwoSumCircuitType2 M₁ M₂ C) : C ⫗ M₁.E := by
   have hMM := twoSum_disjoint_grounds_diff_inter M₁ M₂
   have hCM₁ := (Set.disjoint_of_subset_right hC.subset_M₂_diff_inter hMM).symm
-  have hCM₁ := Set.disjoint_union_right.mpr ⟨hCM₁, hC.disjoint_inter⟩
+  have hCM₁ := Set.disjoint_union_right.← ⟨hCM₁, hC.disjoint_inter⟩
   rw [Set.diff_union_of_subset Set.inter_subset_left] at hCM₁
   exact hCM₁
 
@@ -370,9 +370,9 @@ lemma TwoSumCircuitType3.not_ssubset_circuitType3 {C C' : Set α}
   have M₂_circ_nssub := Set.ssubset_def ▸ hC.to_circuit_M₂.not_ssubset_circuit hC'.to_circuit_M₂
   push_neg at M₁_circ_nssub
   push_neg at M₂_circ_nssub
-  have M₁_circ_sub := (union_subset_union_iff hC'.disjoint_inter_M₁_inter hC.disjoint_inter_M₁_inter).mp
+  have M₁_circ_sub := (union_subset_union_iff hC'.disjoint_inter_M₁_inter hC.disjoint_inter_M₁_inter).→
     (M₁_circ_nssub (Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.inter_subset_inter_left M₁.E hCC')))
-  have M₂_circ_sub := (union_subset_union_iff hC'.disjoint_inter_M₂_inter hC.disjoint_inter_M₂_inter).mp
+  have M₂_circ_sub := (union_subset_union_iff hC'.disjoint_inter_M₂_inter hC.disjoint_inter_M₂_inter).→
     (M₂_circ_nssub (Set.union_subset_union_left (M₁.E ∩ M₂.E) (Set.inter_subset_inter_left M₂.E hCC')))
   exact hnCC' (hC.subset_union.parts_eq ▸ hC'.subset_union.parts_eq ▸ Set.union_subset_union M₁_circ_sub M₂_circ_sub)
 

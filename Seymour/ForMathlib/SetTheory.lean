@@ -4,9 +4,10 @@ import Mathlib.Order.Disjoint
 import Mathlib.Order.SymmDiff
 import Mathlib.Tactic
 
+import Seymour.Basic
+
 /-!
 This provides lemmas about sets (mostly dealing with disjointness) that are missing in Mathlib.
-We do not use out custom notation here because this file is higher than `Basic.lean` in the import hierarchy.
 -/
 
 variable {α : Type}
@@ -51,7 +52,7 @@ lemma singleton_union_ssubset_union_iff {a : α} {A B : Set α} (haA : a ∉ A) 
     · exact Set.union_subset_union_left {a} hABl
     · by_contra hBA
       rw [Set.union_singleton, Set.union_singleton] at hBA
-      apply (Set.insert_subset_insert_iff haB).mp at hBA
+      apply (Set.insert_subset_insert_iff haB).→ at hBA
       tauto
 
 lemma ssub_parts_ssub {A B E₁ E₂ : Set α}
@@ -60,11 +61,11 @@ lemma ssub_parts_ssub {A B E₁ E₂ : Set α}
   constructor
   · obtain ⟨hE₁, _⟩ := hAB₁
     obtain ⟨hE₂, _⟩ := hAB₂
-    rw [Set.left_eq_inter.mpr hA, Set.left_eq_inter.mpr hB, Set.inter_union_distrib_left, Set.inter_union_distrib_left]
+    rw [Set.left_eq_inter.← hA, Set.left_eq_inter.← hB, Set.inter_union_distrib_left, Set.inter_union_distrib_left]
     exact Set.union_subset_union hE₁ hE₂
   · intro hBA
     obtain ⟨_, hE₁⟩ := hAB₁
-    obtain ⟨x, hxBE₁, hxnAE₁⟩ := Set.not_subset.mp hE₁
+    obtain ⟨x, hxBE₁, hxnAE₁⟩ := Set.not_subset.→ hE₁
     have hxB : x ∈ B := Set.mem_of_mem_inter_left hxBE₁
     have hxE₁ : x ∈ E₁ := Set.mem_of_mem_inter_right hxBE₁
     tauto
@@ -97,7 +98,7 @@ lemma singleton_inter_subset_right {X Y : Set α} {a : α} (ha : X ∩ Y = {a}) 
 /-- Being a subset is preserved under subtracting sets. -/
 lemma diff_subset_parent {X₁ X₂ E : Set α} (hX₁E : X₁ ⊆ E) :
     X₁ \ X₂ ⊆ E :=
-  Set.diff_subset_iff.mpr (Set.subset_union_of_subset_right hX₁E X₂)
+  Set.diff_subset_iff.← (Set.subset_union_of_subset_right hX₁E X₂)
 
 /-- Being a subset is preserved under taking intersections. -/
 lemma inter_subset_parent_left {X₁ X₂ E : Set α} (hX₁E : X₁ ⊆ E) :
@@ -148,7 +149,7 @@ lemma disjoint_of_singleton_inter_subset_left {X Y Z : Set α} {a : α} (hXY : X
   rw [←hY, Set.disjoint_union_right]
   constructor
   · exact Set.disjoint_of_subset_left hZ (disjoint_of_singleton_inter_right_wo hXY)
-  · exact Set.disjoint_singleton_right.mpr haZ
+  · exact Set.disjoint_singleton_right.← haZ
 
 lemma disjoint_of_singleton_inter_subset_right {X Y Z : Set α} {a : α} (hXY : X ∩ Y = {a}) (hZ : Z ⊆ Y) (haZ : a ∉ Z) :
     Disjoint X Z := by
@@ -173,7 +174,7 @@ lemma ssubset_union_disjoint_nonempty {X Y : Set α} (hXY : Disjoint X Y) (hY : 
   · exact Set.subset_union_left
   · by_contra hX
     apply Set.diff_subset_diff_left at hX
-    rw [Set.union_diff_cancel_left (Set.disjoint_iff.mp hXY), Set.diff_self] at hX
+    rw [Set.union_diff_cancel_left (Set.disjoint_iff.→ hXY), Set.diff_self] at hX
     exact Set.not_nonempty_empty (Set.eq_empty_of_subset_empty hX ▸ hY)
 
 lemma union_ssubset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjoint B X) :
@@ -205,8 +206,8 @@ lemma union_subset_union_iff {A B X : Set α} (hAX : Disjoint A X) (hBX : Disjoi
   constructor
   · intro hABX
     have hXX : (A ∪ X) \ X ⊆ (B ∪ X) \ X := Set.diff_subset_diff_left hABX
-    have hXA : (A ∪ X) \ X = A := Set.union_diff_cancel_right (Set.disjoint_iff.mp hAX)
-    have hXB : (B ∪ X) \ X = B := Set.union_diff_cancel_right (Set.disjoint_iff.mp hBX)
+    have hXA : (A ∪ X) \ X = A := Set.union_diff_cancel_right (Set.disjoint_iff.→ hAX)
+    have hXB : (B ∪ X) \ X = B := Set.union_diff_cancel_right (Set.disjoint_iff.→ hBX)
     rwa [hXA, hXB] at hXX
   · exact Set.union_subset_union_left X
 

@@ -81,7 +81,7 @@ lemma Matroid.indep_aug_alt (M : Matroid α) :
           (Set.insert_subset_insert (Set.subset_diff_singleton hIB (Set.not_mem_of_mem_diff hx))),
       ⟩
   else
-    have I_eq_B : I = B := Set.union_empty I ▸ (Set.not_nonempty_iff_eq_empty.mp hBI) ▸ Set.union_diff_cancel hIB
+    have I_eq_B : I = B := Set.union_empty I ▸ (Set.not_nonempty_iff_eq_empty.→ hBI) ▸ Set.union_diff_cancel hIB
     have maximal_B : Maximal M.Indep B :=
       ⟨maximal_B.left.left, fun _ hC hBC => maximal_B.right ⟨hC, Matroid.Indep.subset_ground hC⟩ hBC⟩
     exact (nonmaximal_M_I (I_eq_B ▸ maximal_B)).elim

@@ -31,7 +31,7 @@ def Matroid.Separator {α : Type} (M : Matroid α) (X : Set α) : Prop :=
 /-- Every component is a separator -/
 lemma Matroid.separator_component {α : Type} (M : Matroid α) {X : Set α} (hX : M.Component X) :
     M.Separator X :=
-  fun e he f hf hef => (hX e he f hf).mp hef
+  fun e he f hf hef => (hX e he f hf).→ hef
 
 /-- Every loop is a separator -/
 lemma Matroid.separator_loop {α : Type} {M : Matroid α} {x : α} (hx : M.Loop x) :
@@ -81,7 +81,7 @@ lemma Matroid.singleton_separator_loop_coloop {α : Type} {M : Matroid α} {x : 
       obtain ⟨f', hf'⟩ := hg
       exact (hf f' hf'.left ▸ hf'.right) rfl
     have hCsubx : C ⊆ {x} := hf
-    have hxsubC : {x} ⊆ C := Set.singleton_subset_iff.mpr hxC
+    have hxsubC : {x} ⊆ C := Set.singleton_subset_iff.← hxC
     have hCeqx : {x} = C := Set.Subset.antisymm hxsubC hf
     rw [hCeqx] at hnLoop
     exact hnLoop hC

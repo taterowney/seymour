@@ -241,9 +241,9 @@ lemma IndepPredicate.Matroid_ToCircuit_ToIndep_iff (M : Matroid α) (I : Set α)
         have hC : ∃ C, C ⊆ J ∪ {a} ∧ ¬M.Indep C ∧ ∀ C' ⊂ C, M.Indep C' := by sorry
         obtain ⟨C, hCJa, hCnindep, hCsindep⟩ := hC
         have hJE : J ⊆ M.E := fun ⦃a⦄ a_1 => hIE (hJI a_1)
-        have haE : {a} ⊆ M.E := Set.singleton_subset_iff.mpr (hIE (Set.mem_of_mem_diff ha))
+        have haE : {a} ⊆ M.E := Set.singleton_subset_iff.← (hIE (Set.mem_of_mem_diff ha))
         have hCE : C ⊆ M.E := fun _ a_1 => (Set.union_subset hJE haE) (hCJa a_1)
-        have haI : {a} ⊆ I := (Set.singleton_subset_iff.mpr (Set.mem_of_mem_diff ha))
+        have haI : {a} ⊆ I := (Set.singleton_subset_iff.← (Set.mem_of_mem_diff ha))
         have hJaI : J ∪ {a} ⊆ I := Set.union_subset hJI haI
         have hCI : C ⊆ I := hCJa.trans hJaI
         unfold IndepPredicate.ToCircuitPredicate Minimal at hI
@@ -325,13 +325,13 @@ lemma CircuitPredicate.toIndepPredicate.indep_aug {P : CircuitPredicate α} {E :
   --   have X := C \ B
   --   have hXJ' : X ⊆ J' := fun _ x => hCJ' (Set.diff_subset x)
   --   have hzX : z ∉ X := Set.not_mem_diff_of_mem hzB
-  --   have hXI' : X ⊆ I' := (Set.subset_insert_iff_of_not_mem hzX).mp hXJ'
+  --   have hXI' : X ⊆ I' := (Set.subset_insert_iff_of_not_mem hzX).→ hXJ'
   --   have hBX : B ∩ X = ∅ := Set.inter_diff_self B C
   --   have tmp : I ∩ X ⊆ B ∩ X := Set.inter_subset_inter hIB Set.Subset.rfl
   --   have hIX : I ∩ X = ∅ := Set.subset_eq_empty tmp hBX
-  --   have hIXsubnone : I ∩ X ⊆ ∅ := Set.subset_empty_iff.mpr hIX
-  --   have hIXdisj : Disjoint I X := Set.disjoint_iff.mpr hIXsubnone
-  --   have hXII' : X ⊆ I' \ I := Set.subset_diff.mpr ⟨hXI', hIXdisj.symm⟩
+  --   have hIXsubnone : I ∩ X ⊆ ∅ := Set.subset_empty_iff.← hIX
+  --   have hIXdisj : Disjoint I X := Set.disjoint_iff.← hIXsubnone
+  --   have hXII' : X ⊆ I' \ I := Set.subset_diff.← ⟨hXI', hIXdisj.symm⟩
 
   --   by_contra hx
   --   unfold CircuitPredicate.toIndepPredicate at hx
@@ -360,7 +360,7 @@ lemma CircuitPredicate.toIndepPredicate.indep_aug {P : CircuitPredicate α} {E :
   --   have hCxB : ∀ x, F.F x \ X ⊆ B := fun x _ hFFxX => hIB (hCxI x hFFxX)
   --   have hCalt : C' ⊆ (C \ X) ∪ Set.iUnion (F.F · \ X) := sorry -- holds by construction of `C'`
   --   have hUB : Set.iUnion (F.F · \ X) ⊆ B := Set.iUnion_subset hCxB
-  --   have hCXB : C \ X ⊆ B := Set.diff_subset_comm.mp (fun _ => id)
+  --   have hCXB : C \ X ⊆ B := Set.diff_subset_comm.→ (fun _ => id)
   --   have hC'exprB : (C \ X) ∪ Set.iUnion (F.F · \ X) ⊆ B := Set.union_subset hCXB hUB
   --   have hC'B : C' ⊆ B := hCalt.trans hC'exprB
 

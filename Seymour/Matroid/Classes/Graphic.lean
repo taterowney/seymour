@@ -42,6 +42,6 @@ def Matroid.IsCographic {α : Type} (M : Matroid α) : Prop :=
 
 /-- Cographic matroid is regular. -/
 lemma Matroid.IsCographic.is_regular {α : Type} {M : Matroid α} (hM : M.IsCographic) : M.IsRegular :=
-  M.isRegular_iff_dual_isRegular.mpr hM.isRegular
+  M.isRegular_iff_dual_isRegular.← hM.isRegular
 
 end IsCographic

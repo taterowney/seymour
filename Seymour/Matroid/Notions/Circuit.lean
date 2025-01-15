@@ -33,7 +33,7 @@ lemma Matroid.Circuit.indep_ssub {M : Matroid α} {C C' : Set α} (hC : M.Circui
 /-- Deleting one element from a circuit produces an independent set. -/
 lemma Matroid.Circuit.indep_diff_singleton {M : Matroid α} {C : Set α} {a : α} (hC : M.Circuit C) (ha : a ∈ C) :
     M.Indep (C \ {a}) :=
-  Matroid.Circuit.indep_ssub hC (Set.diff_singleton_sSubset.mpr ha)
+  Matroid.Circuit.indep_ssub hC (Set.diff_singleton_sSubset.← ha)
 
 /-- Empty set is not a circuit. -/
 lemma Matroid.Circuit.not_empty {M : Matroid α} (hM : M.Circuit ∅) : False :=
@@ -69,10 +69,10 @@ lemma Matroid.dep_iff_has_circuit (M : Matroid α) {D : Set α} :
 /-- todo: desc -/
 lemma Matroid.Indep.circuit_of_insert_dep {M : Matroid α} {I : Set α} (hI : M.Indep I) {a : α} (hIa : M.Dep (a ᕃ I)) :
     ∃ C, M.Circuit C ∧ C ⊆ a ᕃ I ∧ a ∈ C := by
-  obtain ⟨C, hC, hCIa⟩ := M.dep_iff_has_circuit.mp hIa
+  obtain ⟨C, hC, hCIa⟩ := M.dep_iff_has_circuit.→ hIa
   exact ⟨C, hC, hCIa, by
     by_contra haC
-    exact hC.left.left (hI.subset ((Set.disjoint_singleton_right.mpr haC).subset_right_of_subset_union hCIa))
+    exact hC.left.left (hI.subset ((Set.disjoint_singleton_right.← haC).subset_right_of_subset_union hCIa))
   ⟩
 
 /-- If two matroids have the same ground sets and sets of circuits, then they are equal. -/

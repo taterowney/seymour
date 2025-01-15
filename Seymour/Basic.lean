@@ -1,4 +1,3 @@
-import Seymour.ForMathlib.SetTheory
 import Seymour.ForMathlib.MatrixTU
 
 /-!
@@ -16,6 +15,12 @@ infixr:66 " ᕃ " => Insert.insert
 
 /-- Writing `X ⫗ Y` is slightly more general than writing `X ∩ Y = ∅`. -/
 infix:61 " ⫗ " => Disjoint
+
+/-- Using the left-to-right direction of `↔`. -/
+postfix:max ".→" => Iff.mp
+
+/-- Using the right-to-left direction of `↔`. -/
+postfix:max ".←" => Iff.mpr
 
 
 section utils
