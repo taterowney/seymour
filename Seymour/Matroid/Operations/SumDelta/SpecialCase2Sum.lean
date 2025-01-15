@@ -197,7 +197,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
               exact (Set.subset_singleton_iff_eq.mp hXXp).casesOn contr inter_neq_p
             have disjoint_X₁_inter : X₁ ⫗ M₁.E ∩ M₂.E := hp ▸ disjoint_X₁_p
             have X₁_sub_C : X₁ ⊆ C := (Set.diff_empty ▸ hXX ▸ hCXX) ▸ Set.subset_union_left
-            have ⟨Y₁, hY₁, Y₁_sub_X₁⟩ := Matroid.Circuit.dep_iff_has_circuit.mp X₁_dep
+            have ⟨Y₁, hY₁, Y₁_sub_X₁⟩ := Matroid.dep_iff_has_circuit.mp X₁_dep
             have disjoint_Y₁_inter := Set.disjoint_of_subset_left Y₁_sub_X₁ disjoint_X₁_inter
             have hMMY₁ : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ Y₁ := ⟨hY₁, disjoint_Y₁_inter⟩
             specialize C_min hMMY₁.circuit_form (Y₁_sub_X₁.trans X₁_sub_C)
@@ -218,7 +218,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
               exact (Set.subset_singleton_iff_eq.mp hXXp).casesOn contr inter_neq_p
             have disjoint_X₂_inter : X₂ ⫗ M₁.E ∩ M₂.E := hp ▸ disjoint_X₂_p
             have X₂_sub_C : X₂ ⊆ C := (Set.diff_empty ▸ hXX ▸ hCXX) ▸ Set.subset_union_right
-            have ⟨Y₂, hY₂, hY₂X₂⟩ := Matroid.Circuit.dep_iff_has_circuit.mp X₂_dep
+            have ⟨Y₂, hY₂, hY₂X₂⟩ := Matroid.dep_iff_has_circuit.mp X₂_dep
             have disjoint_Y₂_inter := Set.disjoint_of_subset_left hY₂X₂ disjoint_X₂_inter
             have hMMY₂ : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ Y₂ := ⟨hY₂, disjoint_Y₂_inter⟩
             specialize C_min hMMY₂.circuit_form (hY₂X₂.trans X₂_sub_C)
@@ -310,7 +310,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
           · constructor
             · exact X₁_dep
             · intro Y₁ hY₁ Y₁_sub_X₁
-              have ⟨Z₁, hZ₁, Z₁_sub_Y₁⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hY₁
+              have ⟨Z₁, hZ₁, Z₁_sub_Y₁⟩ := Matroid.dep_iff_has_circuit.mp hY₁
               have Z₁_sub_X₁ : Z₁ ⊆ X₁ := Z₁_sub_Y₁.trans Y₁_sub_X₁
               if p_sub_Z₁ : {p} ⊆ Z₁ then
                 have hpZ₁X₂ : Z₁ ∩ X₂ = {p}
@@ -353,7 +353,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
           · constructor
             · exact X₂_dep
             · intro Y₂ hY₂ Y₂_sub_X₂
-              have ⟨Z₂, hZ₂, Z₂_sub_Y₂⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hY₂
+              have ⟨Z₂, hZ₂, Z₂_sub_Y₂⟩ := Matroid.dep_iff_has_circuit.mp hY₂
               have Z₂_sub_X₂ : Z₂ ⊆ X₂ := Z₂_sub_Y₂.trans Y₂_sub_X₂
               if p_sub_Z₂ : {p} ⊆ Z₂ then
                 have hpX₁Z₂ : X₁ ∩ Z₂ = {p}
@@ -385,8 +385,8 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
                 rw [Set.singleton_subset_iff] at p_sub_Z₂
                 have Z₂_disjoint_p : Z₂ ⫗ {p} := Set.disjoint_singleton_right.mpr p_sub_Z₂
                 have hMMZ₂ : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ Z₂ := ⟨hZ₂, hp ▸ Z₂_disjoint_p⟩
-                have Z₂_sub_C : Z₂ ⊆ C := by
-                  have hZ₂X₁X₂ : Z₂ ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_right Z₂_sub_X₂ X₁
+                have Z₂_sub_C : Z₂ ⊆ C
+                · have hZ₂X₁X₂ : Z₂ ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_right Z₂_sub_X₂ X₁
                   have hZ₂X₁X₂p : Z₂ ⊆ (X₁ ∪ X₂) \ {p} := Set.subset_diff_singleton hZ₂X₁X₂ p_sub_Z₂
                   exact hCXX ▸ inter_eq_p ▸ hZ₂X₁X₂p
                 specialize C_min hMMZ₂.circuit_form Z₂_sub_C

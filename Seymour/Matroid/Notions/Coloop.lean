@@ -17,7 +17,7 @@ lemma Matroid.Coloop.iff_in_no_circuit (M : Matroid α) {a : α} :
     obtain ⟨B, hB, hCaB⟩ := (hC.indep_diff_singleton haC).exists_base_superset
     have haB := (Matroid.dual_dep_iff_forall.mp M_dual_Dep_a).left B hB
     have hMB : M.Dep B
-    · rw [Matroid.Circuit.dep_iff_has_circuit]
+    · rw [Matroid.dep_iff_has_circuit]
       exact ⟨C, hC, Set.diff_union_of_subset (Set.singleton_subset_iff.mpr haC) ▸ Set.union_subset hCaB
         (Set.singleton_subset_iff.mpr (Set.singleton_inter_nonempty.mp haB))⟩
     exact hMB.not_indep hB.indep

@@ -60,7 +60,7 @@ lemma Matroid.Circuit.ssubset_not_circuit {M : Matroid α} {C C' : Set α} (hC :
   (Matroid.Circuit.not_ssubset_circuit · hC hC')
 
 /-- A set is dependent iff it contains a circuit. -/
-lemma Matroid.Circuit.dep_iff_has_circuit {M : Matroid α} {D : Set α} :
+lemma Matroid.dep_iff_has_circuit {M : Matroid α} {D : Set α} :
     M.Dep D ↔ ∃ C, M.Circuit C ∧ C ⊆ D := by
   constructor
   · sorry
@@ -70,7 +70,7 @@ lemma Matroid.Circuit.dep_iff_has_circuit {M : Matroid α} {D : Set α} :
 lemma Matroid.Circuit.indep_ext_dep_has_circuit_w_ext {M : Matroid α} {I : Set α} {a : α}
     (hI : M.Indep I) (hIa : M.Dep (a ᕃ I)) :
     ∃ C, M.Circuit C ∧ C ⊆ a ᕃ I ∧ a ∈ C := by
-  obtain ⟨C, hC, hCIa⟩ := Matroid.Circuit.dep_iff_has_circuit.mp hIa
+  obtain ⟨C, hC, hCIa⟩ := Matroid.dep_iff_has_circuit.mp hIa
   exact ⟨C, hC, hCIa, by
     by_contra haC
     exact hC.left.left (hI.subset ((Set.disjoint_singleton_right.mpr haC).subset_right_of_subset_union hCIa))
@@ -79,9 +79,13 @@ lemma Matroid.Circuit.indep_ext_dep_has_circuit_w_ext {M : Matroid α} {I : Set 
 /-- If two matroids have the same ground sets and sets of circuits, then they are equal. -/
 theorem Matroid.ext_circuit {M₁ M₂ : Matroid α} (hE : M₁.E = M₂.E) (hC : ∀ C ⊆ M₁.E, M₁.Circuit C ↔ M₂.Circuit C) :
     M₁ = M₂ := by
-  ext
-  · sorry
-  · sorry
+  apply Matroid.ext_indep hE
+  intro I hI₁
+  have hI₂ : I ⊆ M₂.E := hE ▸ hI₁
+  simp only [Matroid.indep_iff_not_dep, hI₁, hI₂, and_true, Matroid.dep_iff_has_circuit, not_iff_not]
+  constructor <;> intro ⟨C, hMC, hCI⟩ <;> have hCE := hCI.trans hI₁ <;> refine ⟨C, ?_, hCI⟩
+  · rwa [hC _ hCE] at hMC
+  · rwa [hC _ hCE]
 
 /-- Two matroids are equal iff they have the same ground sets and sets of circuits. -/
 theorem Matroid.ext_iff_circuit {M₁ M₂ : Matroid α} :
