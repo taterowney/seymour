@@ -28,7 +28,7 @@ lemma Matroid.Coloop.iff_in_no_circuit (M : Matroid α) {a : α} :
       constructor
       · intro B hB
         by_contra! haB
-        obtain ⟨C', hC', hC'aB, haC'⟩ := Matroid.Circuit.indep_ext_dep_has_circuit_w_ext hB.indep
+        obtain ⟨C', hC', hC'aB, haC'⟩ := hB.indep.circuit_of_insert_dep
           (hB.dep_of_insert (Set.singleton_inter_eq_empty.mp haB) haE)
         exact haC C' hC' haC'
       · rwa [Set.singleton_subset_iff]
