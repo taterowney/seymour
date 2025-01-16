@@ -5,6 +5,7 @@ defaultTargets = ["Seymour"]
 autoImplicit = false
 relaxedAutoImplicit = false
 pp.structureInstances = false
+pp.numericProj.prod = false
 
 [[require]]
 name = "mathlib"

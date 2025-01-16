@@ -16,10 +16,10 @@ infixr:66 " ᕃ " => Insert.insert
 /-- Writing `X ⫗ Y` is slightly more general than writing `X ∩ Y = ∅`. -/
 infix:61 " ⫗ " => Disjoint
 
-/-- Using the left-to-right direction of `↔`. -/
+/-- The left-to-right direction of `↔`. -/
 postfix:max ".→" => Iff.mp
 
-/-- Using the right-to-left direction of `↔`. -/
+/-- The right-to-left direction of `↔`. -/
 postfix:max ".←" => Iff.mpr
 
 
