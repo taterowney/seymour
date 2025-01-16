@@ -171,7 +171,12 @@ def StandardRepr.toMatroid (S : StandardRepr α R) : Matroid α :=
 
 /-- The identity matrix has linearly independent rows. -/
 lemma Matrix.one_linearIndependent : LinearIndependent R (1 : Matrix α α R) := by
-  sorry -- TODO move and prove
+-- Riccardo Brasca proved:
+  rw [linearIndependent_iff]
+  intro l hl
+  ext j
+  simpa [Finsupp.linearCombination_apply, Pi.zero_apply, Finsupp.sum_apply', Matrix.one_apply] using congr_fun hl j
+-- TODO replace with Mathlib version when available
 
 /-- todo: desc -/
 lemma StandardRepr.toMatroid_base (S : StandardRepr α R) :
