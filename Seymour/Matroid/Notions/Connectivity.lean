@@ -10,14 +10,14 @@ def Matroid.ConnectivityRelation {α : Type} (M : Matroid α) (e f : α) : Prop 
   e = f ∨ ∃ C, C ⊆ M.E ∧ M.Circuit C ∧ e ∈ C ∧ f ∈ C
 
 /-- Connectivity relation is an equivalence relation on M.E -/
-lemma Matroid.ConnectivityRelation.is_equiv_rel {α : Type} (M : Matroid α) :
+lemma Matroid.connectivityRelation_is_equiv_rel {α : Type} (M : Matroid α) :
     ∀ e f : α, M.ConnectivityRelation e f → M.ConnectivityRelation f e := by
   intro e f hef
   cases hef with
   | inl hef => exact Or.inl hef.symm
   | inr hef =>
     right
-    obtain ⟨C, hCE, hCcirc, heC, hfC⟩ := hef
+    obtain ⟨C, _, _, _, _⟩ := hef
     use C
 
 /-- Component is an equivalence class under the connectivity relation, i.e., a ξ-equivalence class -/
@@ -40,13 +40,13 @@ lemma Matroid.separator_loop {α : Type} {M : Matroid α} {x : α} (hx : M.Loop 
   cases hf with
   | inl hef => exact Set.mem_of_eq_of_mem hef.symm hex
   | inr hfC =>
-    obtain ⟨C, hCE, hCcirc, heC, hfC⟩ := hfC
+    obtain ⟨C, hCE, circC, heC, hfC⟩ := hfC
     rw [hex, ←Set.singleton_subset_iff] at heC
-    rw [Matroid.Loop.iff_circuit] at hx
-    apply Matroid.Circuit.not_ssubset_circuit hx at hCcirc
-    rw [Set.ssubset_def] at hCcirc
-    push_neg at hCcirc
-    exact hCcirc heC hfC
+    rw [Matroid.loop_iff_circuit] at hx
+    apply Matroid.Circuit.not_ssubset_circuit hx at circC
+    rw [Set.ssubset_def] at circC
+    push_neg at circC
+    exact circC heC hfC
 
 /-- Every coloop is a separator -/
 lemma Matroid.separator_coloop {α : Type} {M : Matroid α} {x : α} (hx : M.Coloop x) :
@@ -55,7 +55,7 @@ lemma Matroid.separator_coloop {α : Type} {M : Matroid α} {x : α} (hx : M.Col
   cases hf with
   | inl hef => exact Set.mem_of_eq_of_mem hef.symm hex
   | inr hfC =>
-    rw [Matroid.Coloop.iff_in_no_circuit] at hx
+    rw [Matroid.coloop_iff_in_no_circuit] at hx
     obtain ⟨_hxE, hxC⟩ := hx
     obtain ⟨C, _hCE, hCcirc, heC, hfC⟩ := hfC
     rw [hex, ←Set.singleton_subset_iff] at heC
@@ -67,26 +67,22 @@ lemma Matroid.singleton_separator_loop_coloop {α : Type} {M : Matroid α} {x : 
     M.Separator {x} → M.Loop x ∨ M.Coloop x := by
   intro hSep
   by_contra! contr
-  obtain ⟨hnLoop, hnColoop⟩ := contr
-  rw [Matroid.Loop.iff_circuit] at hnLoop
-  rw [Matroid.Coloop.iff_in_no_circuit] at hnColoop
-  push_neg at hnColoop
-  specialize hnColoop hx
-  obtain ⟨C, hC, hxC⟩ := hnColoop
-
-  have hf : ∃ f ∈ C, f ≠ x := by
+  obtain ⟨notLoop, notColoop⟩ := contr
+  rw [Matroid.loop_iff_circuit] at notLoop
+  rw [Matroid.coloop_iff_in_no_circuit] at notColoop
+  push_neg at notColoop
+  specialize notColoop hx
+  obtain ⟨C, hC, hxC⟩ := notColoop
+  have ⟨f, hfC, hfx⟩ : ∃ f ∈ C, f ≠ x := by
     by_contra! hf
     have hCx : ∀ f ∈ C, f ∈ ({x} : Set α) := by
       by_contra! hg
       obtain ⟨f', hf'⟩ := hg
       exact (hf f' hf'.left ▸ hf'.right) rfl
-    have hCsubx : C ⊆ {x} := hf
-    have hxsubC : {x} ⊆ C := Set.singleton_subset_iff.← hxC
-    have hCeqx : {x} = C := Set.Subset.antisymm hxsubC hf
-    rw [hCeqx] at hnLoop
-    exact hnLoop hC
-  obtain ⟨f, hfC, hfx⟩ := hf
-
+    have x_sub_C : {x} ⊆ C := Set.singleton_subset_iff.← hxC
+    have hCeqx : {x} = C := x_sub_C.antisymm hf
+    rw [hCeqx] at notLoop
+    exact notLoop hC
   have hCE := hC.subset_ground
   exact hfx (hSep x rfl f (hCE hfC) (Or.inr ⟨C, hCE, hC, hxC, hfC⟩))
 
@@ -95,8 +91,8 @@ lemma Matroid.singleton_separator_iff {α : Type} {M : Matroid α} (x : α) :
     x ∈ M.E ∧ M.Separator {x} ↔ M.Loop x ∨ M.Coloop x := by
   constructor
   · intro hxE
-    exact Matroid.singleton_separator_loop_coloop hxE.left hxE.right
+    exact M.singleton_separator_loop_coloop hxE.left hxE.right
   · intro hxx
     cases hxx with
-    | inl hxLoop => exact ⟨hxLoop.left, Matroid.separator_loop hxLoop⟩
-    | inr hxColoop => exact ⟨hxColoop.left, Matroid.separator_coloop hxColoop⟩
+    | inl xLoop => exact ⟨xLoop.left, Matroid.separator_loop xLoop⟩
+    | inr xColoop => exact ⟨xColoop.left, Matroid.separator_coloop xColoop⟩

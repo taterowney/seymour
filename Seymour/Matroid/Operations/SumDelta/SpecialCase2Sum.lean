@@ -81,7 +81,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {C : Set α} {p : α
     BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C := by
   have hp := hC.sum2_singleton_eq assumptions
   have not_loop_p := (assumptions.inter_singleton_not_loop_M₁ hp)
-  rw [Matroid.Loop.iff_circuit M₁.toMatroid] at not_loop_p
+  rw [M₁.toMatroid.loop_iff_circuit] at not_loop_p
   apply hC.inter_M₁_nonempty at not_loop_p
   apply Set.Nonempty.left at not_loop_p
   constructor
@@ -270,11 +270,11 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
           -- todo: make lemma in Sum2
           have M₁_noncirc_p : ¬(M₁.toMatroid.Circuit {p})
           · intro M₁_circ_p
-            exact assumptions.inter_singleton_not_loop_M₁ hp ((Matroid.Loop.iff_circuit M₁.toMatroid).← M₁_circ_p)
+            exact assumptions.inter_singleton_not_loop_M₁ hp ((M₁.toMatroid.loop_iff_circuit ).← M₁_circ_p)
           -- todo: make lemma in Sum2
           have M₂_noncirc_p : ¬(M₂.toMatroid.Circuit {p})
           · intro M₂_circ_p
-            exact assumptions.inter_singleton_not_loop_M₂ hp ((Matroid.Loop.iff_circuit M₂.toMatroid).← M₂_circ_p)
+            exact assumptions.inter_singleton_not_loop_M₂ hp ((M₂.toMatroid.loop_iff_circuit ).← M₂_circ_p)
           have not_X₁_sub_p : ¬(X₁ ⊆ {p})
           · intro X₁_sub_p
             have M₁_circ_p : M₁.toMatroid.Circuit {p} := ⟨

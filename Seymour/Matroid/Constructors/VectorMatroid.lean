@@ -181,8 +181,7 @@ lemma StandardRepr.toMatroid_base (S : StandardRepr α R) :
   · simp [Matrix.setUnion_fromCols, VectorMatroid.toIndepMatroid, VectorMatroid.IndepCols, Matrix.IndepCols]
     show LinearIndependent R ((Matrix.fromCols 1 S.B).transpose.submatrix _ id)
     rw [Matrix.transpose_fromCols, Matrix.transpose_one]
-    simp [Matrix.fromRows, Matrix.submatrix, Subtype.toSum, HasSubset.Subset.elem]
-    exact Matrix.one_linearIndependent
+    simpa [Matrix.fromRows, Matrix.submatrix, Subtype.toSum, HasSubset.Subset.elem] using Matrix.one_linearIndependent
   · intro e he
     have e_in_Y : e ∈ S.Y
     · sorry

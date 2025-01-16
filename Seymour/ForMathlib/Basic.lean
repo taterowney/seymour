@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 
+
 lemma finset_of_cardinality_between {α β : Type} [Fintype α] [Fintype β] {n : ℕ}
     (hα : Fintype.card α < n) (hn : n ≤ Fintype.card α + Fintype.card β) :
     ∃ b : Finset β, Fintype.card (α ⊕ b) = n ∧ Nonempty b := by

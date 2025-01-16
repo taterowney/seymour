@@ -240,7 +240,7 @@ lemma TwoSumCircuitType3.inter_M₁_nonempty (hC : TwoSumCircuitType3 M₁ M₂ 
   by_contra! hCM₁
   have hM₁ := hC.to_circuit_M₁
   have ⟨p, hp⟩ := assumptions.inter_singleton
-  rw [hCM₁, Set.empty_union, hp, ←Matroid.Loop.iff_circuit M₁] at hM₁
+  rw [hCM₁, Set.empty_union, hp, ←Matroid.loop_iff_circuit M₁] at hM₁
   have hpM₁ := assumptions.inter_singleton_not_loop_M₁ hp
   exact hpM₁ hM₁
 
@@ -250,7 +250,7 @@ lemma TwoSumCircuitType3.inter_M₂_nonempty (hC : TwoSumCircuitType3 M₁ M₂ 
   by_contra! hCM₂empty
   have hCM₂ := hC.to_circuit_M₂
   have ⟨p, hp⟩ := assumptions.inter_singleton
-  rw [hCM₂empty, Set.empty_union, hp, ←Matroid.Loop.iff_circuit M₂] at hCM₂
+  rw [hCM₂empty, Set.empty_union, hp, ←Matroid.loop_iff_circuit M₂] at hCM₂
   exact assumptions.inter_singleton_not_loop_M₂ hp hCM₂
 
 end PropertiesCircuitType3
@@ -398,7 +398,7 @@ lemma TwoSumAssumptions.twoSumCircuitPred_not_circuit_empty {M₁ M₂ : Matroid
   push_neg
   refine ⟨(·.circuit_M₁.nonempty.ne_empty rfl), (·.circuit_M₂.nonempty.ne_empty rfl), fun ⟨hpM₁, hpM₂, hE⟩ => ?_⟩
   have ⟨p, hp⟩ := assumptions.inter_singleton
-  rw [Set.empty_inter, Set.empty_union, hp, ←Matroid.Loop.iff_circuit M₁] at hpM₁
+  rw [Set.empty_inter, Set.empty_union, hp, ←Matroid.loop_iff_circuit M₁] at hpM₁
   exact (hp ▸ assumptions.M₁sep) (Matroid.separator_loop hpM₁)
 
 /-- In definition of 2-sum, no circuit is a strict subset of another -/

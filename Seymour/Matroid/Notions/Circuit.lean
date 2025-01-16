@@ -33,7 +33,7 @@ lemma Matroid.Circuit.indep_ssub {M : Matroid α} {C C' : Set α} (hC : M.Circui
 /-- Deleting one element from a circuit produces an independent set. -/
 lemma Matroid.Circuit.indep_diff_singleton {M : Matroid α} {C : Set α} {a : α} (hC : M.Circuit C) (ha : a ∈ C) :
     M.Indep (C \ {a}) :=
-  Matroid.Circuit.indep_ssub hC (Set.diff_singleton_sSubset.← ha)
+  hC.indep_ssub (Set.diff_singleton_sSubset.← ha)
 
 /-- Empty set is not a circuit. -/
 lemma Matroid.Circuit.not_empty {M : Matroid α} (hM : M.Circuit ∅) : False :=
@@ -57,7 +57,7 @@ lemma Matroid.Circuit.not_ssubset_circuit {M : Matroid α} {C C' : Set α} (hC :
 /-- Strict subset of a circuit is not a circuit. -/
 lemma Matroid.Circuit.ssubset_not_circuit {M : Matroid α} {C C' : Set α} (hC : M.Circuit C) (hC' : C' ⊂ C) :
     ¬(M.Circuit C') :=
-  (Matroid.Circuit.not_ssubset_circuit · hC hC')
+  (·.not_ssubset_circuit hC hC')
 
 /-- A set is dependent iff it contains a circuit. -/
 lemma Matroid.dep_iff_has_circuit (M : Matroid α) {D : Set α} :

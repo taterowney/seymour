@@ -9,7 +9,7 @@ def Matroid.Loop (M : Matroid α) (a : α) : Prop :=
   a ∈ M.E ∧ M.Dep {a}
 
 /-- An element is a loop iff its singleton set is a circuit. -/
-lemma Matroid.Loop.iff_circuit (M : Matroid α) {a : α} :
+lemma Matroid.loop_iff_circuit (M : Matroid α) {a : α} :
     M.Loop a ↔ M.Circuit {a} :=
   ⟨
     fun ha => ⟨

@@ -79,7 +79,7 @@ lemma TwoSumSummandRepr.twoSumGround_eq {M₁ M₂ : Matroid α} {p : α} (hp₁
 
 /-- todo: desc -/ -- glue representations of M₁ and M₂ as shown in fig. 7.6(a) in Oxley, then delete column of {p}
 def TwoSumSummandRepr.compose {R : Type} [Ring R] {M₁ M₂ : Matroid α} {p : α} {hp₁ : p ∈ M₁.E} {hp₂ : p ∈ M₂.E}
-    [∀ a, ∀ A : Set α, Decidable (a ∈ A)] -- todo: avoid?
+    [∀ a : α, ∀ A : Set α, Decidable (a ∈ A)] -- todo: avoid?
     (S₁ : TwoSumSummandRepr M₁ hp₁ R) (S₂ : TwoSumSummandRepr M₂ hp₂ R) (assumptions : TwoSumAssumptions M₁ M₂) :
     Matrix ((S₁.X \ {S₁.r}) ∪ {S₁.r} ∪ (S₂.X \ {S₂.r})).Elem (twoSumGround M₁ M₂) R :=
   Matrix.setUnion_castCols
@@ -95,7 +95,7 @@ lemma TwoSumSummandRepr.exists {R : Type} [Ring R] {M : Matroid α} {p : α}
 
 /-- todo: desc -/
 lemma TwoSumSummandRepr.twoSum_repr {R : Type} [Ring R] {M₁ M₂ : Matroid α} {p : α} {hp₁ : p ∈ M₁.E} {hp₂ : p ∈ M₂.E}
-    [∀ a, ∀ A : Set α, Decidable (a ∈ A)] -- todo: avoid?
+    [∀ a : α, ∀ A : Set α, Decidable (a ∈ A)] -- todo: avoid?
     (assumptions : TwoSumAssumptions M₁ M₂) (S₁ : TwoSumSummandRepr M₁ hp₁ R) (S₂ : TwoSumSummandRepr M₂ hp₂ R) :
     assumptions.build2sum.IsRepresentedBy (S₁.compose S₂ assumptions) :=
   sorry
