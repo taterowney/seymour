@@ -59,12 +59,19 @@ lemma Matroid.Circuit.ssubset_not_circuit {M : Matroid α} {C C' : Set α} (hC :
     ¬(M.Circuit C') :=
   (·.not_ssubset_circuit hC hC')
 
-/-- A set is dependent iff it contains a circuit. -/
+/-- A set is dependent iff it contains a circuit. TODO the direction `←` does not hold! Consider `D = Set.univ` for example. -/
+@[deprecated "Only `→` holds!"]
 lemma Matroid.dep_iff_has_circuit (M : Matroid α) {D : Set α} :
     M.Dep D ↔ ∃ C, M.Circuit C ∧ C ⊆ D := by
   constructor
   · sorry
-  · sorry
+  · intro ⟨C, hMC, hCD⟩
+    obtain ⟨hMC, hCE⟩ := Matroid.dep_iff.→ hMC.dep
+    constructor
+    · intro hMD
+      apply hMC
+      exact hMD.subset hCD
+    · sorry -- cannot be proved
 
 /-- todo: desc -/
 lemma Matroid.Indep.circuit_of_insert_dep {M : Matroid α} {I : Set α} (hI : M.Indep I) {a : α} (hIa : M.Dep (a ᕃ I)) :
