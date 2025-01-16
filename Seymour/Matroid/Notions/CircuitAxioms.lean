@@ -184,14 +184,14 @@ lemma CircuitPredicate.toIndep_toCircuit (P : CircuitPredicate α) (E C : Set α
 lemma CircuitPredicate.toIndep_toCircuit_iff {P : CircuitPredicate α} (hP : P.circuit_not_ssubset) (E C : Set α) :
     (P.toIndepPredicate E).ToCircuitPredicate E C ↔ C ⊆ E ∧ P C := by
   constructor
-  · exact CircuitPredicate.toIndep_toCircuit P E C
+  · exact P.toIndep_toCircuit E C
   · intro ⟨hCE, hC⟩
     constructor
     · exact ⟨fun ⟨_, hCsub⟩ => (hCsub C Set.Subset.rfl) hC, hCE⟩
-    · intro D ⟨hDnindep, hDE⟩ hDC
-      unfold CircuitPredicate.toIndepPredicate at hDnindep
-      push_neg at hDnindep
-      obtain ⟨D', ⟨hD'D, hD'⟩⟩ := hDnindep hDE
+    · intro D ⟨D_notIndep, hDE⟩ hDC
+      unfold CircuitPredicate.toIndepPredicate at D_notIndep
+      push_neg at D_notIndep
+      obtain ⟨D', hD'D, hD'⟩ := D_notIndep hDE
       rw [CircuitPredicate.circuit_not_ssubset_iff] at hP
       exact (hP C D' hC hD' (hD'D.trans hDC)).trans hD'D
 

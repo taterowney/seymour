@@ -58,7 +58,7 @@ def TwoSumSummandRepr.A_block_p_zero {R : Type} [Ring R] {M : Matroid α} {p : �
     (S : TwoSumSummandRepr M hp R) (Y : Set α) [∀ a, Decidable (a ∈ Y)] (t : α) [∀ a, Decidable (a ∈ ({t} : Set α))] :
     Matrix (S.X \ {S.r} ∪ {t} ∪ Y).Elem (M.E \ {p}).Elem R :=
   Matrix.setUnion_fromRows
-    (Matrix.setUnion_fromRows S.A_block (S.row_p_del_1.reindex (Equiv.equivOfUnique _ _) (Equiv.setCongr rfl))) 0
+    (Matrix.setUnion_fromRows S.A_block (S.row_p_del_1.reindex (Equiv.ofUnique _ _) (Equiv.setCongr rfl))) 0
 
 -- todo: move
 lemma set_union_union_eq_rev {α : Type} (X Y Z : Set α) : X ∪ Y ∪ Z = Z ∪ Y ∪ X := by

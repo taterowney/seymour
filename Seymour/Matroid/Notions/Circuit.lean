@@ -59,24 +59,23 @@ lemma Matroid.Circuit.ssubset_not_circuit {M : Matroid α} {C C' : Set α} (hC :
     ¬(M.Circuit C') :=
   (·.not_ssubset_circuit hC hC')
 
-/-- A set is dependent iff it contains a circuit. TODO the direction `←` does not hold! Consider `D = Set.univ` for example. -/
-@[deprecated "Only `→` holds!"]
+/-- A set is dependent iff it is grounded and contains a circuit. -/
 lemma Matroid.dep_iff_has_circuit (M : Matroid α) {D : Set α} :
-    M.Dep D ↔ ∃ C, M.Circuit C ∧ C ⊆ D := by
+    M.Dep D ↔ D ⊆ M.E ∧ ∃ C, M.Circuit C ∧ C ⊆ D := by
   constructor
   · sorry
-  · intro ⟨C, hMC, hCD⟩
+  · intro ⟨hDE, C, hMC, hCD⟩
     obtain ⟨hMC, hCE⟩ := Matroid.dep_iff.→ hMC.dep
     constructor
     · intro hMD
       apply hMC
       exact hMD.subset hCD
-    · sorry -- cannot be proved
+    · exact hDE
 
 /-- todo: desc -/
 lemma Matroid.Indep.circuit_of_insert_dep {M : Matroid α} {I : Set α} (hI : M.Indep I) {a : α} (hIa : M.Dep (a ᕃ I)) :
     ∃ C, M.Circuit C ∧ C ⊆ a ᕃ I ∧ a ∈ C := by
-  obtain ⟨C, hC, hCIa⟩ := M.dep_iff_has_circuit.→ hIa
+  obtain ⟨-, C, hC, hCIa⟩ := M.dep_iff_has_circuit.→ hIa
   exact ⟨C, hC, hCIa, by
     by_contra haC
     exact hC.left.left (hI.subset ((Set.disjoint_singleton_right.← haC).subset_right_of_subset_union hCIa))
@@ -88,7 +87,7 @@ theorem Matroid.ext_circuit {M₁ M₂ : Matroid α} (hE : M₁.E = M₂.E) (hC 
   apply Matroid.ext_indep hE
   intro I hI₁
   have hI₂ : I ⊆ M₂.E := hE ▸ hI₁
-  simp only [Matroid.indep_iff_not_dep, hI₁, hI₂, Matroid.dep_iff_has_circuit, and_true, not_iff_not]
+  simp only [Matroid.indep_iff_not_dep, hI₁, hI₂, Matroid.dep_iff_has_circuit, true_and, and_true, not_iff_not]
   constructor <;> intro ⟨C, hMC, hCI⟩ <;> have hCE := hCI.trans hI₁ <;> refine ⟨C, ?_, hCI⟩
   · rwa [hC _ hCE] at hMC
   · rwa [hC _ hCE]

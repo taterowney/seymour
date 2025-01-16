@@ -15,7 +15,7 @@ def BinaryMatroid.Is3sumOf {α : Type} [DecidableEq α] (M M₁ M₂ : BinaryMat
 
 /-- Every regular matroid `M` can be constructed using direct sums, 2-sums, and 3-sums starting
   with matroids each of which is either graphic, cographic, or isomorphic to R10,
-  and each of which is isomorphic to a minor of `M`. -/
+  and each of which is isomorphic to a minor of `M`. TODO this is not what the definition says! -/
 inductive BinaryMatroid.IsGood {α : Type} [DecidableEq α] : BinaryMatroid α → Prop
 -- leaf constructors
 | graphic {M : BinaryMatroid α} (hM : M.toMatroid.IsGraphic) : M.IsGood

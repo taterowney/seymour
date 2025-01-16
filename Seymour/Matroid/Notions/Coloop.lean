@@ -19,8 +19,9 @@ lemma Matroid.coloop_iff_in_no_circuit (M : Matroid α) {a : α} :
     have haB := (Matroid.dual_dep_iff_forall.→ M_dual_Dep_a).left B hB
     have hMB : M.Dep B
     · rw [Matroid.dep_iff_has_circuit]
-      exact ⟨C, hC, Set.diff_union_of_subset (Set.singleton_subset_iff.← haC) ▸ Set.union_subset hCaB
-        (Set.singleton_subset_iff.← (Set.singleton_inter_nonempty.→ haB))⟩
+      have hCB := Set.diff_union_of_subset (Set.singleton_subset_iff.← haC) ▸ Set.union_subset hCaB
+        (Set.singleton_subset_iff.← (Set.singleton_inter_nonempty.→ haB))
+      exact ⟨M.subset_ground B hB, C, hC, hCB⟩
     exact hMB.not_indep hB.indep
   · intro ⟨haE, haC⟩
     constructor
