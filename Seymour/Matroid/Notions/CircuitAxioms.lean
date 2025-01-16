@@ -171,21 +171,14 @@ def IndepPredicate.ToCircuitPredicate (P : IndepPredicate α) (E : Set α) : Cir
     yields original independence predicate.-/
 lemma CircuitPredicate.toIndep_toCircuit (P : CircuitPredicate α) (E C : Set α) :
     (P.toIndepPredicate E).ToCircuitPredicate E C → C ⊆ E ∧ P C := by
-  intro ⟨⟨hCdep, hCE⟩, hCmin⟩
+  intro ⟨⟨C_dep, hCE⟩, C_min⟩
   constructor
   · exact hCE
-  · unfold CircuitPredicate.toIndepPredicate at hCdep hCmin
-    push_neg at hCdep
-    obtain ⟨D, hDC, hD⟩ := hCdep hCE
-    have hDok : (fun K => ¬(K ⊆ E ∧ ∀ C ⊆ K, ¬P C) ∧ K ⊆ E) D := ⟨
-      (by
-        push_neg
-        intro _hDE
-        use D),
-      hDC.trans hCE,
-    ⟩
-    specialize hCmin hDok hDC
-    exact Set.eq_of_subset_of_subset hCmin hDC ▸ hD
+  · unfold CircuitPredicate.toIndepPredicate at C_dep C_min
+    push_neg at C_dep
+    obtain ⟨D, hDC, hD⟩ := C_dep hCE
+    have D_ok : ¬(D ⊆ E ∧ ∀ C ⊆ D, ¬P C) ∧ D ⊆ E := ⟨(by push_neg; intro; use D), hDC.trans hCE⟩
+    exact Set.eq_of_subset_of_subset (C_min D_ok hDC) hDC ▸ hD
 
 /-- todo: desc-/
 lemma CircuitPredicate.toIndep_toCircuit_iff {P : CircuitPredicate α} (hP : P.circuit_not_ssubset) (E C : Set α) :
