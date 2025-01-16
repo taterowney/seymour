@@ -93,13 +93,13 @@ lemma CircuitMatroid.maximal_iff (M : CircuitMatroid α) (B : Set α) :
     obtain ⟨⟨hCdep, hCE⟩, hCmin⟩ := hC
     obtain ⟨D, ⟨_, ⟨⟨hDindep, hDC⟩, hDmax⟩⟩⟩ :=
       M.circuit_maximal C hCE ∅ (CircuitPredicate.toIndepPredicate_indep_empty M.not_circuit_empty M.E) (Set.empty_subset C)
-    have hDneqC : D ≠ C := by
-      intro hDeqC
-      rw [←hDeqC] at hCdep
+    have D_neq_C : D ≠ C
+    · intro D_eq_C
+      rw [←D_eq_C] at hCdep
       exact hCdep hDindep
-    have hDssubC := Set.ssubset_iff_subset_ne.← ⟨hDC, hDneqC⟩
-    obtain ⟨x, hxC, hxnD⟩ := Set.exists_of_ssubset hDssubC
-    have hDextC : x ᕃ D = C := sorry
+    have D_ssub_C := Set.ssubset_iff_subset_ne.← ⟨hDC, D_neq_C⟩
+    obtain ⟨x, hxC, hxD⟩ := Set.exists_of_ssubset D_ssub_C
+    have hxDC : x ᕃ D = C := sorry
     sorry -- todo: finish
   · intro ⟨_, hC⟩
     constructor

@@ -65,7 +65,7 @@ lemma Matroid.separator_coloop {α : Type} {M : Matroid α} {x : α} (hx : M.Col
 /-- Every singleton separator is a loop or a coloop -/
 lemma Matroid.singleton_separator_loop_coloop {α : Type} {M : Matroid α} {x : α} (hx : x ∈ M.E) :
     M.Separator {x} → M.Loop x ∨ M.Coloop x := by
-  intro hSep
+  intro sep_x
   by_contra! contr
   obtain ⟨notLoop, notColoop⟩ := contr
   rw [Matroid.loop_iff_circuit] at notLoop
@@ -73,10 +73,10 @@ lemma Matroid.singleton_separator_loop_coloop {α : Type} {M : Matroid α} {x : 
   push_neg at notColoop
   specialize notColoop hx
   obtain ⟨C, hC, hxC⟩ := notColoop
-  have ⟨f, hfC, hfx⟩ : ∃ f ∈ C, f ≠ x := by
-    by_contra! hf
-    have hCx : ∀ f ∈ C, f ∈ ({x} : Set α) := by
-      by_contra! hg
+  obtain ⟨f, hfC, hfx⟩ : ∃ f ∈ C, f ≠ x
+  · by_contra! hf
+    have hCx : ∀ f ∈ C, f ∈ ({x} : Set α)
+    · by_contra! hg
       obtain ⟨f', hf'⟩ := hg
       exact (hf f' hf'.left ▸ hf'.right) rfl
     have x_sub_C : {x} ⊆ C := Set.singleton_subset_iff.← hxC
@@ -84,7 +84,7 @@ lemma Matroid.singleton_separator_loop_coloop {α : Type} {M : Matroid α} {x : 
     rw [hCeqx] at notLoop
     exact notLoop hC
   have hCE := hC.subset_ground
-  exact hfx (hSep x rfl f (hCE hfC) (Or.inr ⟨C, hCE, hC, hxC, hfC⟩))
+  exact hfx (sep_x x rfl f (hCE hfC) (Or.inr ⟨C, hCE, hC, hxC, hfC⟩))
 
 /-- Singleton element is a separator iff it is a loop or a coloop -/
 lemma Matroid.singleton_separator_iff {α : Type} {M : Matroid α} (x : α) :
