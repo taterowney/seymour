@@ -134,7 +134,7 @@ variable [DecidableEq α]
 
 /-- Vector matroid constructed from standard representation. -/
 def StandardRepr.toVectorMatroid (S : StandardRepr α R) : VectorMatroid α R :=
-  ⟨S.X, S.X ∪ S.Y, Matrix.setUnion_fromCols 1 S.B⟩
+  ⟨S.X, S.X ∪ S.Y, Matrix.fromColsSetUnion 1 S.B⟩
 
 /-- Ground set of a vector matroid is union of row and column index sets of its standard matrix representation. -/
 @[simp]
@@ -145,7 +145,7 @@ lemma StandardRepr.toVectorMatroid_E (S : StandardRepr α R) :
 /-- Full representation matrix of vector matroid is `[I | B]`. -/
 @[simp]
 lemma StandardRepr.toVectorMatroid_A (S : StandardRepr α R) :
-    S.toVectorMatroid.A = Matrix.setUnion_fromCols 1 S.B :=
+    S.toVectorMatroid.A = Matrix.fromColsSetUnion 1 S.B :=
   rfl
 
 /-- Set is independent in vector matroid iff corresponding set of columns of `[I | B]` is linearly independent over `R`. -/
@@ -183,7 +183,7 @@ lemma StandardRepr.toMatroid_base (S : StandardRepr α R) :
     S.toMatroid.Base S.X := by
   unfold StandardRepr.toMatroid StandardRepr.toVectorMatroid VectorMatroid.toMatroid
   apply Matroid.Indep.base_of_forall_insert
-  · simp [Matrix.setUnion_fromCols, VectorMatroid.toIndepMatroid, VectorMatroid.IndepCols, Matrix.IndepCols]
+  · simp [Matrix.fromColsSetUnion, VectorMatroid.toIndepMatroid, VectorMatroid.IndepCols, Matrix.IndepCols]
     show LinearIndependent R ((Matrix.fromCols 1 S.B).transpose.submatrix _ id)
     rw [Matrix.transpose_fromCols, Matrix.transpose_one]
     simpa [Matrix.fromRows, Matrix.submatrix, Subtype.toSum, HasSubset.Subset.elem] using Matrix.one_linearIndependent

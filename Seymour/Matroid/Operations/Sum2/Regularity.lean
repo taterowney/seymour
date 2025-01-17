@@ -57,8 +57,8 @@ def TwoSumSummandRepr.A_block {R : Type} [Ring R] {M : Matroid α} {p : α} {hp 
 def TwoSumSummandRepr.A_block_p_zero {R : Type} [Ring R] {M : Matroid α} {p : α} {hp : p ∈ M.E}
     (S : TwoSumSummandRepr M hp R) (Y : Set α) [∀ a, Decidable (a ∈ Y)] (t : α) [∀ a, Decidable (a ∈ ({t} : Set α))] :
     Matrix (S.X \ {S.r} ∪ {t} ∪ Y).Elem (M.E \ {p}).Elem R :=
-  Matrix.setUnion_fromRows
-    (Matrix.setUnion_fromRows S.A_block (S.row_p_del_1.reindex (Equiv.ofUnique _ _) (Equiv.setCongr rfl))) 0
+  Matrix.fromRowsSetUnion
+    (Matrix.fromRowsSetUnion S.A_block (S.row_p_del_1.reindex (Equiv.ofUnique _ _) (Equiv.setCongr rfl))) 0
 
 -- todo: move
 lemma set_union_union_eq_rev {α : Type} (X Y Z : Set α) : X ∪ Y ∪ Z = Z ∪ Y ∪ X := by
@@ -68,7 +68,7 @@ lemma set_union_union_eq_rev {α : Type} (X Y Z : Set α) : X ∪ Y ∪ Z = Z �
 def TwoSumSummandRepr.A_zero_p_block {R : Type} [Ring R] {M : Matroid α} {p : α} {hp : p ∈ M.E}
     (S : TwoSumSummandRepr M hp R) (Y : Set α) [∀ a, Decidable (a ∈ Y)] (t : α) [∀ a, Decidable (a ∈ ({t} : Set α))] :
     Matrix (Y ∪ {t} ∪ S.X \ {S.r}).Elem (M.E \ {p}).Elem R :=
-  Matrix.setUnion_castRows (S.A_block_p_zero Y t) (set_union_union_eq_rev (S.X \ {S.r}) {t} Y)
+  Matrix.castRowsSetUnion (S.A_block_p_zero Y t) (set_union_union_eq_rev (S.X \ {S.r}) {t} Y)
 
 /-- todo: desc -/
 lemma TwoSumSummandRepr.twoSumGround_eq {M₁ M₂ : Matroid α} {p : α} (hp₁ : p ∈ M₁.E) (hp₂ : p ∈ M₂.E)
@@ -82,8 +82,8 @@ def TwoSumSummandRepr.compose {R : Type} [Ring R] {M₁ M₂ : Matroid α} {p : 
     [∀ a : α, ∀ A : Set α, Decidable (a ∈ A)] -- todo: avoid?
     (S₁ : TwoSumSummandRepr M₁ hp₁ R) (S₂ : TwoSumSummandRepr M₂ hp₂ R) (assumptions : TwoSumAssumptions M₁ M₂) :
     Matrix ((S₁.X \ {S₁.r}) ∪ {S₁.r} ∪ (S₂.X \ {S₂.r})).Elem (twoSumGround M₁ M₂) R :=
-  Matrix.setUnion_castCols
-    (Matrix.setUnion_fromCols (S₁.A_block_p_zero (S₂.X \ {S₂.r}) S₁.r) (S₂.A_zero_p_block (S₁.X \ {S₁.r}) S₁.r))
+  Matrix.castColsSetUnion
+    (Matrix.fromColsSetUnion (S₁.A_block_p_zero (S₂.X \ {S₂.r}) S₁.r) (S₂.A_zero_p_block (S₁.X \ {S₁.r}) S₁.r))
     (twoSumGround_eq hp₁ hp₂ assumptions)
 
 /-- todo: desc -/

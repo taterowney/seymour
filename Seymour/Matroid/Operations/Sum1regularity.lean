@@ -13,10 +13,10 @@ lemma Matroid.disjointSum.ofRepresented_repr {R X₁ X₂ : Type} {A₁ : Matrix
     [Ring R] [∀ a, Decidable (a ∈ M₁.E)] [∀ a, Decidable (a ∈ M₂.E)]
     (hE : M₁.E ⫗ M₂.E) (hA₁ : M₁.IsRepresentedBy A₁) (hA₂ : M₂.IsRepresentedBy A₂) :
     (M₁.disjointSum M₂ hE).IsRepresentedBy
-      ((Matrix.setUnion_fromBlocks' A₁ 0 0 A₂).setUnion_castCols Matroid.disjointSum_ground_eq.symm) := by
+      ((Matrix.fromBlocksSetUnion' A₁ 0 0 A₂).castColsSetUnion Matroid.disjointSum_ground_eq.symm) := by
   ext I hI
   · simp
-  · rw [Matroid.disjointSum_indep_iff, VectorMatroid.toMatroid_indep, Matrix.setUnion_castCols, Matrix.setUnion_fromBlocks']
+  · rw [Matroid.disjointSum_indep_iff, VectorMatroid.toMatroid_indep, Matrix.castColsSetUnion, Matrix.fromBlocksSetUnion']
     constructor <;> intro hIMM
     · simp [VectorMatroid.IndepCols, Matrix.IndepCols]
       rw [Matroid.disjointSum_ground_eq] at hI
