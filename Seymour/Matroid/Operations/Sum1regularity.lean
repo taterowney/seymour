@@ -28,7 +28,15 @@ lemma Matroid.disjointSum.ofRepresented_repr {R X₁ X₂ : Type} {A₁ : Matrix
       obtain ⟨hI₁, hIA₁⟩ := hIM₁
       obtain ⟨hI₂, hIA₂⟩ := hIM₂
       sorry -- TODO linear independence in the smaller matrices implies linear independence in the block matrix
-    · sorry
+    · simp only [VectorMatroid.IndepCols, Matrix.IndepCols, Matrix.transpose_submatrix] at hIMM
+      --conv at hIMM => congr; ext hIE; congr; congr; rw [Matrix.transpose_fromRows]
+      refine ⟨?_, ?_, Matroid.disjointSum_ground_eq ▸ hI⟩
+      · rw [hA₁]
+        simp only [VectorMatroid.toMatroid_indep, VectorMatroid.IndepCols, Matrix.IndepCols]
+        sorry
+      · rw [hA₂]
+        simp only [VectorMatroid.toMatroid_indep, VectorMatroid.IndepCols, Matrix.IndepCols]
+        sorry
 
 end Composition
 
