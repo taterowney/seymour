@@ -32,3 +32,18 @@ lemma Matrix.fromColsSetUnion_zero_indepCols {α R X : Type} [Ring R] {E : Set �
     congr
     have hkE : k.val ∈ E := hSE k.property
     simp [Matrix.fromColsSetUnion, Matrix.fromCols, Subtype.toSum, HasSubset.Subset.elem, hkE]
+
+lemma Matrix.fromBlocksSetUnion_zeros_indepCols {α R X : Type} [Ring R] {E : Set α}
+    (A : Matrix X E R) (S : Set α) (X₀ : Type) (E₀ : Set α)
+    [∀ a, Decidable (a ∈ E)] [∀ a, Decidable (a ∈ E₀)]
+    (hA : A.IndepCols S) :
+    (Matrix.fromBlocksSetUnion A (0 : Matrix X E₀ R) (0 : Matrix X₀ E R) 0).IndepCols S := by
+  unfold Matrix.fromBlocksSetUnion
+  convert_to ((A.fromColsSetUnion 0).fromRows (0 : Matrix X₀ (E ∪ E₀).Elem R)).IndepCols S
+  · ext i j
+    cases i with
+    | inl => rfl
+    | inr i₀ => simp [Matrix.fromRows, Matrix.fromColsSetUnion]
+  apply Matrix.fromRows_zero_indepCols
+  apply Matrix.fromColsSetUnion_zero_indepCols
+  exact hA

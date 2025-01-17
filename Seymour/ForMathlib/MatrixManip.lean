@@ -45,14 +45,14 @@ def Matrix.toRowsSetUnion₂ (A : Matrix (X₁ ∪ X₂).Elem Y R) : Matrix X₂
 
 
 /-- todo: desc -/
-def Matrix.fromBlocksSetUnion
+def Matrix.fromBlocksSetUnionSetUnion
     [∀ a, Decidable (a ∈ X₁)] [∀ a, Decidable (a ∈ X₂)] [∀ a, Decidable (a ∈ Y₁)] [∀ a, Decidable (a ∈ Y₂)]
     (A : Matrix X₁ Y₁ R) (B : Matrix X₁ Y₂ R) (C : Matrix X₂ Y₁ R) (D : Matrix X₂ Y₂ R) :
     Matrix (X₁ ∪ X₂).Elem (Y₁ ∪ Y₂).Elem R :=
   Matrix.fromRowsSetUnion (Matrix.fromColsSetUnion A B) (Matrix.fromColsSetUnion C D)
 
 /-- todo: desc -/
-def Matrix.fromBlocksSetUnion' {T₁ T₂ : Type}
+def Matrix.fromBlocksSetUnion {T₁ T₂ : Type}
     [∀ a, Decidable (a ∈ Y₁)] [∀ a, Decidable (a ∈ Y₂)]
     (A : Matrix T₁ Y₁ R) (B : Matrix T₁ Y₂ R) (C : Matrix T₂ Y₁ R) (D : Matrix T₂ Y₂ R) :
     Matrix (T₁ ⊕ T₂) (Y₁ ∪ Y₂).Elem R :=
