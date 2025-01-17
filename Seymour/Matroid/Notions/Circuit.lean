@@ -1,4 +1,4 @@
-import Mathlib.Data.Matroid.Basic
+import Mathlib.Data.Matroid.Closure
 import Seymour.Basic
 
 
@@ -63,14 +63,23 @@ lemma Matroid.Circuit.ssubset_not_circuit {M : Matroid α} {C C' : Set α} (hC :
 lemma Matroid.dep_iff_has_circuit (M : Matroid α) {D : Set α} :
     M.Dep D ↔ D ⊆ M.E ∧ ∃ C, M.Circuit C ∧ C ⊆ D := by
   constructor
-  · sorry
+  · intro ⟨hMD, hDE⟩
+    refine ⟨hDE, ?_⟩
+    -- Source: https://github.com/apnelson1/Matroid/blob/1c75a026d1ea5162210ec53d0204d5900098b31c/Matroid/Circuit.lean#L300
+    rw [Matroid.indep_iff_forall_not_mem_closure_diff] at hMD
+    push_neg at hMD
+    obtain ⟨a, haD, haM⟩ := hMD
+    obtain ⟨B, hBDa⟩ := M.exists_basis (D \ {a}) (Set.diff_subset.trans hDE)
+    rw [←hBDa.closure_eq_closure] at haM
+    obtain ⟨hDaB, hDaE⟩ := hBDa
+    -- `B` is the maximal independent subset of `D \ {a}`
+    use D
+    constructor
+    · sorry -- Can we finish the proof the same way Peter Nelson did?
+    · rfl
   · intro ⟨hDE, C, hMC, hCD⟩
     obtain ⟨hMC, hCE⟩ := Matroid.dep_iff.→ hMC.dep
-    constructor
-    · intro hMD
-      apply hMC
-      exact hMD.subset hCD
-    · exact hDE
+    exact ⟨(hMC <| ·.subset hCD), hDE⟩
 
 /-- todo: desc -/
 lemma Matroid.Indep.circuit_of_insert_dep {M : Matroid α} {I : Set α} (hI : M.Indep I) {a : α} (hIa : M.Dep (a ᕃ I)) :
