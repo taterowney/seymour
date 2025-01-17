@@ -39,7 +39,7 @@ lemma Matroid.disjointCircuitFamily.union_subset_ground {M : Matroid α} (F : M.
 lemma Matroid.disjointCircuitFamily.union_indep_empty {M : Matroid α} (F : M.disjointCircuitFamily) (hMF : M.Indep F.union):
     F.union = ∅ := by
   by_contra
-  obtain ⟨x, hx⟩ : ∃ x, (F.F x).Nonempty
+  obtain ⟨x, hx⟩ : ∃ x : F.ι.Elem, (F.F x).Nonempty
   · by_contra!
     simp_all only [Matroid.disjointCircuitFamily.union, Set.iUnion_coe_set, Set.iUnion_empty, not_true_eq_false]
   apply (F.AllCircuits x).left.not_indep

@@ -11,7 +11,7 @@ def Matroid.Coloop (M : Matroid α) (a : α) : Prop :=
 
 /-- An element is a coloop iff it belongs to no circuit. -/
 lemma Matroid.coloop_iff_in_no_circuit (M : Matroid α) {a : α} :
-    M.Coloop a ↔ a ∈ M.E ∧ ∀ C, M.Circuit C → a ∉ C := by
+    M.Coloop a ↔ a ∈ M.E ∧ ∀ C : Set α, M.Circuit C → a ∉ C := by
   constructor
   · intro ⟨haE, M_dual_Dep_a⟩
     refine ⟨haE, fun C hC haC => ?_⟩

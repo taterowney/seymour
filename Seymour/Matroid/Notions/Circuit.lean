@@ -61,7 +61,7 @@ lemma Matroid.Circuit.ssubset_not_circuit {M : Matroid α} {C C' : Set α} (hC :
 
 /-- A set is dependent iff it is grounded and contains a circuit. -/
 lemma Matroid.dep_iff_has_circuit (M : Matroid α) {D : Set α} :
-    M.Dep D ↔ D ⊆ M.E ∧ ∃ C, M.Circuit C ∧ C ⊆ D := by
+    M.Dep D ↔ D ⊆ M.E ∧ ∃ C : Set α, M.Circuit C ∧ C ⊆ D := by
   constructor
   · intro ⟨hMD, hDE⟩
     refine ⟨hDE, ?_⟩
@@ -83,7 +83,7 @@ lemma Matroid.dep_iff_has_circuit (M : Matroid α) {D : Set α} :
 
 /-- todo: desc -/
 lemma Matroid.Indep.circuit_of_insert_dep {M : Matroid α} {I : Set α} (hI : M.Indep I) {a : α} (hIa : M.Dep (a ᕃ I)) :
-    ∃ C, M.Circuit C ∧ C ⊆ a ᕃ I ∧ a ∈ C := by
+    ∃ C : Set α, M.Circuit C ∧ C ⊆ a ᕃ I ∧ a ∈ C := by
   obtain ⟨-, C, hC, hCIa⟩ := M.dep_iff_has_circuit.→ hIa
   exact ⟨C, hC, hCIa, by
     by_contra haC

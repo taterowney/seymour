@@ -87,7 +87,7 @@ lemma TwoSumAssumptions.inter_nonempty (assumptions : TwoSumAssumptions M₁ M�
 
 /-- Intersection of ground sets is a singleton set -/
 lemma TwoSumAssumptions.inter_singleton (assumptions : TwoSumAssumptions M₁ M₂) :
-    ∃ p, M₁.E ∩ M₂.E = {p} :=
+    ∃ p : α, M₁.E ∩ M₂.E = {p} :=
   Set.encard_eq_one.→ assumptions.interSingleton
 
 variable {p : α}

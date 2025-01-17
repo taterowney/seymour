@@ -44,7 +44,7 @@ section CircuitAxioms
 
 /-- Circuit predicate `P` defines independence predicate: independent sets are all non-circuits. -/
 def CircuitPredicate.toIndepPredicate (P : CircuitPredicate α) (E : Set α) : IndepPredicate α :=
-  fun I : Set α => I ⊆ E ∧ ∀ C, C ⊆ I → ¬(P C)
+  fun I : Set α => I ⊆ E ∧ ∀ C : Set α, C ⊆ I → ¬(P C)
 
 /-- Axiom (C1): empty set is not a circuit. -/
 def CircuitPredicate.not_circuit_empty (P : CircuitPredicate α) : Prop :=
@@ -121,7 +121,7 @@ lemma CircuitPredicate.C3_strong_circuit_elim (P : CircuitPredicate α) :
 lemma CircuitPredicate.strong_circuit_elim_weak_circuit_elim (P : CircuitPredicate α) :
     P.strong_circuit_elim → P.weak_circuit_elim := by
   intro hP C₁ C₂ hCC hC₁ hC₂ e he
-  if hf : ∃ f, f ∈ C₁ \ C₂ then
+  if hf : ∃ f : α, f ∈ C₁ \ C₂ then
     obtain ⟨f, hf⟩ := hf
     specialize hP C₁ C₂ e f (And.intro hC₁ (And.intro hC₂ (And.intro he hf)))
     obtain ⟨C₃, ⟨hC₃, ⟨-, _⟩⟩⟩ := hP
@@ -150,7 +150,7 @@ lemma CircuitPredicate.support_eq (P : CircuitPredicate α) :
 
 /-- Condition for circuit predicate to have finite support. -/
 lemma CircuitPredicate.finite_support_iff (P : CircuitPredicate α) :
-    P.support.Finite ↔ ∃ S : Set α, S.Finite ∧ ∀ C, P C → C ⊆ S := by
+    P.support.Finite ↔ ∃ S : Set α, S.Finite ∧ ∀ C : Set α, P C → C ⊆ S := by
   sorry
 
 /-- If `P` is finitely supported and `P` satisfies weak circuit elimination, then `P` satisfies (C3). -/
@@ -226,10 +226,10 @@ lemma IndepPredicate.Matroid_toCircuit_toIndep_iff (M : Matroid α) (I : Set α)
       simp at hJ
       have J_eq_I : J = I
       · by_contra hJneqI
-        have haIJ : ∃ a, a ∈ I \ J := Set.nonempty_of_ssubset (HasSubset.Subset.ssubset_of_ne hJI hJneqI)
+        have haIJ : ∃ a : α, a ∈ I \ J := Set.nonempty_of_ssubset (HasSubset.Subset.ssubset_of_ne hJI hJneqI)
         obtain ⟨a, ha⟩ := haIJ
         have notIndep_J_a : ¬M.Indep (J ∪ {a}) := sorry
-        have hC : ∃ C, C ⊆ J ∪ {a} ∧ ¬M.Indep C ∧ ∀ C' ⊂ C, M.Indep C' := sorry
+        have hC : ∃ C : Set α, C ⊆ J ∪ {a} ∧ ¬M.Indep C ∧ ∀ C' ⊂ C, M.Indep C' := sorry
         obtain ⟨C, hCJa, C_notIndep, indep_ssub_C⟩ := hC
         have hJE : J ⊆ M.E := fun ⦃a⦄ a_1 => hIE (hJI a_1)
         have haE : {a} ⊆ M.E := Set.singleton_subset_iff.← (hIE (Set.mem_of_mem_diff ha))

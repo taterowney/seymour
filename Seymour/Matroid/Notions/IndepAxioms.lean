@@ -29,11 +29,11 @@ alias IndepPredicate.axiom_i3 := IndepPredicate.indep_aug
 
 /-- Axiom (IM): set of all independent sets has the maximal subset property. -/
 def IndepPredicate.indep_maximal (P : IndepPredicate α) (E : Set α) : Prop :=
-  ∀ X, X ⊆ E → Matroid.ExistsMaximalSubsetProperty P X
+  ∀ X : Set α, X ⊆ E → Matroid.ExistsMaximalSubsetProperty P X
 alias IndepPredicate.axiom_im := IndepPredicate.indep_maximal
 
 /-- Every independent set is a subset of the ground set. -/
-def IndepPredicate.subset_ground (P : IndepPredicate α) (E : Set α) : Prop := ∀ C, P C → C ⊆ E
+def IndepPredicate.subset_ground (P : IndepPredicate α) (E : Set α) : Prop := ∀ C : Set α, P C → C ⊆ E
 alias IndepPredicate.axiom_ce := IndepPredicate.subset_ground
 
 end IndepAxioms

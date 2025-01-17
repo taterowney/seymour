@@ -7,7 +7,7 @@ variable {α : Type}
 
 /-- Connectivity relation, aka ξ in Oxley's book -/
 def Matroid.ConnectivityRelation {α : Type} (M : Matroid α) (e f : α) : Prop :=
-  e = f ∨ ∃ C, C ⊆ M.E ∧ M.Circuit C ∧ e ∈ C ∧ f ∈ C
+  e = f ∨ ∃ C : Set α, C ⊆ M.E ∧ M.Circuit C ∧ e ∈ C ∧ f ∈ C
 
 /-- Connectivity relation is an equivalence relation on M.E -/
 lemma Matroid.connectivityRelation_is_equiv_rel {α : Type} (M : Matroid α) :
