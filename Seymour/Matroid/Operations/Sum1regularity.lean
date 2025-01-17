@@ -1,6 +1,6 @@
 import Mathlib.Data.Matroid.Sum
 
-import Seymour.ForMathlib.MatrixManip
+import Seymour.ForMathlib.LinearIndependence
 import Seymour.Matroid.Classes.Regular
 
 
