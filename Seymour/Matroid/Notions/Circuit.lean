@@ -1,6 +1,7 @@
 import Mathlib.Data.Matroid.Closure
 import Seymour.Basic
 
+-- we should use https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Data/Matroid/Circuit.lean instead
 
 variable {α : Type}
 

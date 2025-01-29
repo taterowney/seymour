@@ -43,7 +43,7 @@ lemma Matrix.fromBlocksSetUnion_zeros_indepCols {α R X : Type} [Ring R] {E : Se
   · ext i j
     cases i with
     | inl => rfl
-    | inr i₀ => simp [Matrix.fromRows, Matrix.fromColsSetUnion]
+    | inr => simp [Matrix.fromRows, Matrix.fromColsSetUnion]
   apply Matrix.fromRows_zero_indepCols
   apply Matrix.fromColsSetUnion_zero_indepCols
   exact hA

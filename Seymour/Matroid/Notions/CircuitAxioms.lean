@@ -15,26 +15,25 @@ variable {α : Type}
 section ValidFamily
 
 /-- Family of circuits satisfying assumptions of circuit axiom (C3) from Bruhn et al. -/
-structure ValidFamily (P : CircuitPredicate α) (C X : Set α) where
+structure ValidFamily (P : CircuitPredicate α) (X : Set α) where
   F : X.Elem → Set α
   hPF : ∀ x : X.Elem, P (F x)
-  hF : ∀ x ∈ X, ∀ y : X, x ∈ F y ↔ x = y
+  hF : ∀ x y : X.Elem, x.val ∈ F y ↔ x = y -- `F y` may nevertheless contain multiple elements of `Xᶜ`
 
 /-- Shorthand for union of sets in `ValidFamily` -/
-abbrev ValidFamily.union {P : CircuitPredicate α} {C X : Set α} (F : ValidFamily P C X) : Set α :=
+abbrev ValidFamily.union {P : CircuitPredicate α} {X : Set α} (F : ValidFamily P X) : Set α :=
   Set.iUnion F.F
 
 -- question: unused API?
-lemma ValidFamily.mem_of_elem {P : CircuitPredicate α} {C X : Set α} (F : ValidFamily P C X) (x : X.Elem) :
+lemma ValidFamily.mem_of_elem {P : CircuitPredicate α} {X : Set α} (F : ValidFamily P X) (x : X.Elem) :
     x.val ∈ F.F x := by
   rw [F.hF]
-  exact x.property
 
 -- question: unused API?
-lemma ValidFamily.outside {P : CircuitPredicate α} {C X : Set α} {F : ValidFamily P C X} {z : α} (hzCF : z ∈ C \ F.union) :
+lemma ValidFamily.outside {P : CircuitPredicate α} {C X : Set α} {F : ValidFamily P X} {z : α} (hzCF : z ∈ C \ F.union) :
     z ∉ X := by
   intro hz
-  have := F.hF z hz ⟨z, hz⟩
+  have := F.hF ⟨z, hz⟩ ⟨z, hz⟩
   simp_all
 
 end ValidFamily
@@ -58,7 +57,7 @@ alias CircuitPredicate.axiom_c2 := CircuitPredicate.circuit_not_ssubset
 
 /-- Axiom (C3) from Bruhn et al. -/
 def CircuitPredicate.axiom_c3 (P : CircuitPredicate α) : Prop :=
-  ∀ X C : Set α, ∀ F : ValidFamily P C X, ∀ z ∈ C \ F.union, ∃ C', P C' ∧ z ∈ C' ∧ C' ⊆ (C ∪ F.union) \ X
+  ∀ X C : Set α, ∀ F : ValidFamily P X, ∀ z ∈ C \ F.union, ∃ C' : Set α, P C' ∧ z ∈ C' ∧ C' ⊆ (C ∪ F.union) \ X
 
 /-- Axiom (CM) from Bruhn et al.: set of all independent sets has the maximal subset property. -/
 def CircuitPredicate.circuit_maximal (P : CircuitPredicate α) (E : Set α) : Prop :=
@@ -104,13 +103,11 @@ lemma CircuitPredicate.C3_strong_circuit_elim (P : CircuitPredicate α) :
     P.axiom_c3 → P.strong_circuit_elim := by
   intro hPC3 C₁ C₂ x z hxz
   obtain ⟨_hC₁, hC₂, hx, hz⟩ := hxz
-  let F : ValidFamily P C₁ {x} :=
+  let F : ValidFamily P {x} :=
   ⟨
     (fun _ => C₂),
     (fun _ => hC₂),
-    (by
-      simp only [Set.mem_singleton_iff, Subtype.forall, forall_eq, iff_true]
-      exact Set.mem_of_mem_inter_right hx)
+    (by simpa using Set.mem_of_mem_inter_right hx)
   ⟩
   specialize hPC3 {x} C₁ F
   simp only [ValidFamily.union, Set.iUnion_coe_set, Set.mem_singleton_iff, Set.iUnion_iUnion_eq_left] at hPC3
