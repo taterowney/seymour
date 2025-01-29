@@ -51,7 +51,45 @@ theorem VectorMatroid.indepCols_subset (M : VectorMatroid α R) (I J : Set α) (
 theorem VectorMatroid.indepCols_aug (M : VectorMatroid α R) (I J : Set α)
     (hMI : M.IndepCols I) (hMI' : ¬Maximal M.IndepCols I) (hMJ : Maximal M.IndepCols J) :
     ∃ x ∈ J \ I, M.IndepCols (x ᕃ I) := by
-  sorry -- TODO important
+  by_contra! non_aug
+  rw [Maximal] at hMI'
+  push_neg at hMI'
+  -- obtain ⟨K, hMK, hIK, hKI⟩ := hMI' hMI
+  obtain ⟨hI, I_indep⟩ := hMI
+  obtain ⟨⟨hJ, J_indep⟩, hJ'⟩ := hMJ
+
+  let I' : Set M.E := { x : M.E.Elem | x.val ∈ I }
+  let J' : Set M.E := { x : M.E.Elem | x.val ∈ J }
+  let Iᵥ : Set (M.X → R) := M.A.transpose '' I'
+  let Jᵥ : Set (M.X → R) := M.A.transpose '' J'
+  let Iₛ : Submodule R (M.X → R) := Submodule.span R Iᵥ
+  let Jₛ : Submodule R (M.X → R) := Submodule.span R Jᵥ
+
+  have Jᵥ_ss_Iₛ : Jᵥ ⊆ Iₛ
+  · intro v ⟨x, hxJ, hxv⟩
+    by_cases hvI : v ∈ Iᵥ
+    · aesop
+    · have x_in_J : ↑x ∈ J := hxJ
+      have x_ni_I : ↑x ∉ I := by aesop
+      have x_in_JwoI : ↑x ∈ J \ I := Set.mem_diff_of_mem x_in_J x_ni_I
+      have hMxI : ¬M.IndepCols (↑x ᕃ I) := non_aug ↑x x_in_JwoI
+      sorry
+  have Iᵥ_ss_Jₛ : Iᵥ ⊆ Jₛ
+  · intro v ⟨x, hxI, hxv⟩
+    have hMxJ : M.IndepCols (↑x ᕃ J)
+    · have hxJ : (↑x ᕃ J) ⊆ M.E := Set.insert_subset (hI hxI) hJ
+      have hvJ : (M.A.submatrix id hxJ.elem).transpose '' Set.univ = v ᕃ Jᵥ
+      · sorry
+      -- apply LinearIndependent.not_mem_span_image at J_indep
+      sorry
+    have v_in_Jᵥ : v ∈ Jᵥ := by aesop
+    exact Set.mem_of_mem_of_subset v_in_Jᵥ Submodule.subset_span
+  have Jₛ_le_Iₛ : Jₛ ≤ Iₛ := Submodule.span_le.← Jᵥ_ss_Iₛ
+  have Iₛ_le_Jₛ : Iₛ ≤ Jₛ := Submodule.span_le.← Iᵥ_ss_Jₛ
+  have Iₛ_eq_Jₛ : Iₛ = Jₛ := Submodule.span_eq_span Iᵥ_ss_Jₛ Jᵥ_ss_Iₛ
+  clear Jᵥ_ss_Iₛ Iᵥ_ss_Jₛ Jₛ_le_Iₛ Iₛ_le_Jₛ
+  -- TODO how can `Iₛ_eq_Jₛ` be used?
+  sorry
 
 /-- Every set of columns contains a maximal independent subset of columns. -/
 theorem VectorMatroid.indepCols_maximal (M : VectorMatroid α R) (S : Set α) :
