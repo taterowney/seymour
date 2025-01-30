@@ -1,6 +1,7 @@
 import Seymour.Matroid.Operations.SumDelta.Basic
 import Seymour.ForMathlib.SetTheory
 
+set_option linter.unusedVariables false
 
 variable {α : Type}
 

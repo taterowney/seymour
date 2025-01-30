@@ -25,10 +25,14 @@ postfix:max ".←" => Iff.mpr
 
 section utils
 
-variable {α : Type}
+lemma Fin2_eq_1_of_ne_0 {a : Fin 2} (ha : a ≠ 0) : a = 1 := by
+  omega
 
-lemma nmem_insert {z x : α} {I : Set α} (hx : z ≠ x) (hI : z ∉ I) : z ∉ x ᕃ I := by -- TODO move
-  simp_all [Set.insert]
+lemma Fin3_eq_2_of_ne_0_1 {a : Fin 3} (ha0 : a ≠ 0) (ha1 : a ≠ 1) : a = 2 := by
+  omega
+
+
+variable {α : Type}
 
 /-- Given `X ⊆ Y` cast an element of `X` as an element of `Y`. -/
 def HasSubset.Subset.elem {X Y : Set α} (hXY : X ⊆ Y) (x : X.Elem) : Y.Elem :=
@@ -114,8 +118,7 @@ lemma Matrix.overZ2_isTotallyUnimodular {X Y : Type} (A : Matrix X Y Z2) : A.IsT
     rfl
   else
     use 1
-    have h1 : (A.submatrix f g).det = 1 := by sorry
-    rewrite [h1]
+    rewrite [Fin2_eq_1_of_ne_0 h0]
     rfl
 
 lemma Matrix.overZ3_isTotallyUnimodular {X Y : Type} (A : Matrix X Y Z3) : A.IsTotallyUnimodular := by
@@ -129,15 +132,14 @@ lemma Matrix.overZ3_isTotallyUnimodular {X Y : Type} (A : Matrix X Y Z3) : A.IsT
     rewrite [h1]
     rfl
   else
-    have h2 : (A.submatrix f g).det = 2 := by sorry
     use -1
-    rewrite [h2]
+    rewrite [Fin3_eq_2_of_ne_0_1 h0 h1]
     rfl
 
 example : ¬ (!![2] : Matrix _ _ (ZMod 4)).IsTotallyUnimodular := by
-  unfold Matrix.IsTotallyUnimodular
+  rw [Matrix.isTotallyUnimodular_iff]
   push_neg
-  use 1, id, id, Function.injective_id, Function.injective_id
+  use 1, id, id
   decide
 
 end TU_tautologies

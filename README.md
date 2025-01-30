@@ -89,7 +89,7 @@ The guideline below is written primarily to assist you in reading the code.
 - Data variables (both in arguments and local variables) are always denoted by a single letter, possibly with other stuff after it like lower index or apostrophe.
 - Prop variables (both in arguments and local variables) are always denoted by multiple letters, possibly with other stuff after them like lower index or apostrophe.
   - Prefix `h` means "the statement is anything about the following variables"
-  - Not starting with `h` means that the actual statement is spelled out, not only the variables that appear in it
+  - Not starting with `h` means that the actual statement (or its substantial part) is spelled out, not only the variables that appear in it
 - Examples:
 
   `intro a b a_lt_b hab`
@@ -124,6 +124,52 @@ The guideline below is written primarily to assist you in reading the code.
   - `hMM` carries any information about both `M₁` and `M₂` (indices after `hMM` are not needed)
 - Never name anything `this` or standalone `h` (these names are acceptable neither for data nor for propositions), but leaving automatically named stuff with `this` or `h` is encouraged if the term is not explicitly referred to later.
   - Writing names like `h₁` or `h'` or `this'` or `this_` is strongly discouraged regardless of the purpose
+- Real-life example (focus on the second line – explicit arguments of the lemma):
+  - Unacceptable argument names:
+    ```
+    lemma Multiset_sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α] {s : Multiset ι} {f g : ι → α}
+        (h : ∀ i ∈ s, f i ≤ g i) (h' : ∃ i ∈ s, f i < g i) :
+        (s.map f).sum < (s.map g).sum := by
+      obtain ⟨l⟩ := s
+      simp only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.prod_coe]
+      exact l.sum_lt_sum f g h h'
+    ```
+  - Bad argument names:
+    ```
+    lemma Multiset_sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α] {s : Multiset ι} {f g : ι → α}
+        (hle : ∀ i ∈ s, f i ≤ g i) (hlt : ∃ i ∈ s, f i < g i) :
+        (s.map f).sum < (s.map g).sum := by
+      obtain ⟨l⟩ := s
+      simp only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.prod_coe]
+      exact l.sum_lt_sum f g hle hlt
+    ```
+  - Acceptable argument names:
+    ```
+    lemma Multiset_sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α] {s : Multiset ι} {f g : ι → α}
+        (hfg : ∀ i ∈ s, f i ≤ g i) (hfg' : ∃ i ∈ s, f i < g i) :
+        (s.map f).sum < (s.map g).sum := by
+      obtain ⟨l⟩ := s
+      simp only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.prod_coe]
+      exact l.sum_lt_sum f g hfg hfg'
+    ```
+  - Better argument names:
+    ```
+    lemma Multiset_sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α] {s : Multiset ι} {f g : ι → α}
+        (all_f_le_g : ∀ i ∈ s, f i ≤ g i) (exists_f_lt_g : ∃ i ∈ s, f i < g i) :
+        (s.map f).sum < (s.map g).sum := by
+      obtain ⟨l⟩ := s
+      simp only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.prod_coe]
+      exact l.sum_lt_sum f g all_f_le_g exists_f_lt_g
+    ```
+  - Best argument names:
+    ```
+    lemma Multiset_sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α] {s : Multiset ι} {f g : ι → α}
+        (all_le : ∀ i ∈ s, f i ≤ g i) (exists_lt : ∃ i ∈ s, f i < g i) :
+        (s.map f).sum < (s.map g).sum := by
+      obtain ⟨l⟩ := s
+      simp only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.prod_coe]
+      exact l.sum_lt_sum f g all_le exists_lt
+    ```
 
 ### Other
 
