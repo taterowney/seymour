@@ -3,7 +3,7 @@ import Seymour.Matroid.Operations.SumDelta.Basic
 import Seymour.Matroid.Operations.SumDelta.CircuitForms
 
 
-variable {α : Type} {M₁ M₂ : BinaryMatroid α}
+variable {α : Type} [DecidableEq α] {M₁ M₂ : BinaryMatroid α}
 
 
 section CircuitFormsProperties

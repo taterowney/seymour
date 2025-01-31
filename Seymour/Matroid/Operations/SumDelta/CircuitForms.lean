@@ -3,7 +3,7 @@ import Seymour.ForMathlib.SetTheory
 
 set_option linter.unusedVariables false
 
-variable {α : Type}
+variable {α : Type} [DecidableEq α]
 
 
 section Basic

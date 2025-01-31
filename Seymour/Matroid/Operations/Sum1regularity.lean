@@ -3,7 +3,7 @@ import Mathlib.Data.Matroid.Sum
 import Seymour.Matroid.Classes.Regular
 
 
-variable {α : Type} {M₁ M₂ : Matroid α}
+variable {α : Type} [DecidableEq α] {M₁ M₂ : Matroid α}
 
 section Composition
 

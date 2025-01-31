@@ -11,11 +11,11 @@ section Definitions
 abbrev BinaryMatroid (α : Type) := VectorMatroid α Z2
 
 /-- Matroid `M` is binary if it is representable over `Z2` -/
-def Matroid.IsBinary (M : Matroid α) : Prop :=
+def Matroid.IsBinary [DecidableEq α] (M : Matroid α) : Prop :=
   M.IsRepresentableOver Z2
 
 /-- Every `BinaryMatroid` is representable over `Z2` -/
-lemma BinaryMatroid.isBinary (M : BinaryMatroid α) : M.toMatroid.IsBinary := by
+lemma BinaryMatroid.isBinary [DecidableEq α] (M : BinaryMatroid α) : M.toMatroid.IsBinary := by
   use M
 
 /-- The dual of a binary matroid is binary -/

@@ -9,7 +9,7 @@ import Seymour.Matroid.Operations.Sum2.Regularity
 This file states the "easy" (composition) direction of the Seymour decomposition theorem.
 -/
 
-variable {α : Type}
+variable {α : Type} [DecidableEq α]
 
 theorem easySeymour.Sum1 {M₁ M₂ : Matroid α} (hM₁ : M₁.IsRegular) (hM₂ : M₂.IsRegular) (hMM : M₁.E ⫗ M₂.E)
     [∀ a : α, Decidable (a ∈ M₁.E)] [∀ a : α, Decidable (a ∈ M₂.E)] :
@@ -31,7 +31,7 @@ theorem easySeymour.Sum2 {M₁ M₂ : Matroid α} (hM₁ : M₁.IsRegular) (hM�
   convert hM₁
   convert hM₂
 
-theorem easySeymour.Sum3 [DecidableEq α] {M₁ M₂ : BinaryMatroid α}
+theorem easySeymour.Sum3 {M₁ M₂ : BinaryMatroid α}
     (hM₁ : M₁.toMatroid.IsRegular) (hM₂ : M₂.toMatroid.IsRegular)
     (assumptions : ThreeSumAssumptions M₁ M₂) :
     (BinaryMatroid.DeltaSum.toMatroid M₁ M₂).IsRegular := by

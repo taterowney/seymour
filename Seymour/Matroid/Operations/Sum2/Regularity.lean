@@ -3,7 +3,7 @@ import Seymour.Matroid.Operations.Sum2.Basic
 import Seymour.Matroid.Classes.Regular
 
 
-variable {α : Type}
+variable {α : Type} [DecidableEq α]
 
 section Representations
 
@@ -70,7 +70,7 @@ def TwoSumSummandRepr.A_zero_p_block {R : Type} [Ring R] {M : Matroid α} {p : �
     Matrix (Y ∪ {t} ∪ S.X \ {S.r}).Elem (M.E \ {p}).Elem R :=
   Matrix.castRowsSetUnion (S.A_block_p_zero Y t) (set_union_union_eq_rev (S.X \ {S.r}) {t} Y)
 
-/-- todo: desc -/
+omit [DecidableEq α] in
 lemma TwoSumSummandRepr.twoSumGround_eq {M₁ M₂ : Matroid α} {p : α} (hp₁ : p ∈ M₁.E) (hp₂ : p ∈ M₂.E)
     (assumptions : TwoSumAssumptions M₁ M₂) :  M₁.E \ {p} ∪ M₂.E \ {p} = twoSumGround M₁ M₂ := by
   have ⟨p', hp'⟩ := assumptions.inter_singleton
