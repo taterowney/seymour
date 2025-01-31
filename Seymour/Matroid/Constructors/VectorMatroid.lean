@@ -156,10 +156,13 @@ structure StandardRepr (α R : Type) where
   Y : Type
   /-- Standard representation matrix. -/
   B : Matrix X Y R
-  -- technicalities
-  fntp : Fintype (X ⊕ Y)
+  /-- The matrix has finite number of rows and columns. -/
+  fntp : Fintype (X ⊕ Y) -- TODO two things?
+  /-- The computer can distinguish the rows from each other. -/
   deceqX : DecidableEq X
+  /-- The computer can distinguish the cols from each other. -/
   deceqY : DecidableEq Y
+  /-- How the rows and columns correspond to the elements of the resulting matroid. -/
   emb : X ⊕ Y ↪ α
 
 attribute [instance] StandardRepr.fntp

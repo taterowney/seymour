@@ -8,20 +8,20 @@ variable {α : Type}
 
 section BasicDefinitions
 
-/-- Ground set of Δ-sum is symmetric difference of ground sets of summand matroids -/
+/-- Ground set of Δ-sum is symmetric difference of ground sets of summand matroids. -/
 def BinaryMatroid.DeltaSum.E (M₁ M₂ : BinaryMatroid α) : Set α := (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E)
 
 /-- Circuits in `M₁ Δ M₂` are nonempty subsets of the ground set of form `X₁ Δ X₂`
-    where `X₁`, `X₂` are disjoint unions of circuits in `M₁`, `M₂`, resp -/
+    where `X₁` and `X₂` are disjoint unions of circuits in `M₁` and `M₂` respectively. -/
 def BinaryMatroid.DeltaSum.CircuitForm.prop [DecidableEq α] (M₁ M₂ : BinaryMatroid α) (C X₁ X₂ : Set α) : Prop :=
   C = (X₁ ∪ X₂) \ (X₁ ∩ X₂) ∧ M₁.toMatroid.IsUnionDisjointCircuits X₁ ∧ M₂.toMatroid.IsUnionDisjointCircuits X₂
 
-/-- A set satisfies circuit form if for some `X₁` and `X₂` it has the form above -/
+/-- A set satisfies circuit form if for some `X₁` and `X₂` it has the form above. -/
 def BinaryMatroid.DeltaSum.CircuitForm [DecidableEq α] (M₁ M₂ : BinaryMatroid α) (C : Set α) : Prop :=
   C.Nonempty ∧ C ⊆ BinaryMatroid.DeltaSum.E M₁ M₂ ∧ ∃ X₁ X₂, BinaryMatroid.DeltaSum.CircuitForm.prop M₁ M₂ C X₁ X₂
 
 /-- Circuits of Δ-sum are minimal non-empty subsets of `M₁.E Δ M₂.E` of the form `X₁ Δ X₂`
-    where X₁ and X₂ is a disjoint union of circuits of M₁ and M₂, respectively -/
+    where `X₁` and `X₂` is a disjoint union of circuits of `M₁` and `M₂` respectively. -/
 def BinaryMatroid.DeltaSum.CircuitPred [DecidableEq α] (M₁ M₂ : BinaryMatroid α) : CircuitPredicate α :=
   Minimal (BinaryMatroid.DeltaSum.CircuitForm M₁ M₂)
 
@@ -30,23 +30,23 @@ end BasicDefinitions
 
 section BasicProperties
 
-/-- Ground set of Δ-sum is disjoint with `M₁.E ∩ M₂.E` -/
+/-- Ground set of `M₁ Δ M₂` is disjoint with `M₁.E ∩ M₂.E`. -/
 lemma BinaryMatroid.DeltaSum.E.disjoint_inter (M₁ M₂ : BinaryMatroid α) :
     BinaryMatroid.DeltaSum.E M₁ M₂ ⫗ M₁.E ∩ M₂.E :=
   Set.disjoint_sdiff_left
 
-/-- Ground sets minus their intersection are disjoint sets -/
+/-- Ground sets minus their intersection are disjoint sets. -/
 lemma BinaryMatroid.DeltaSum.disjoint_grounds_diff_inter (M₁ M₂ : BinaryMatroid α) :
     M₁.E \ (M₁.E ∩ M₂.E) ⫗ M₂.E \ (M₁.E ∩ M₂.E) := by
   rw [Set.diff_self_inter, Set.diff_inter_self_eq_diff]
   exact disjoint_sdiff_sdiff
 
-/-- A set of circuit form is nonempty -/
+/-- A set of circuit form is nonempty. -/
 lemma BinaryMatroid.DeltaSum.CircuitForm.nonempty [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C) : C.Nonempty :=
   hC.left
 
-/-- A set of circuit form is a subset of the ground set -/
+/-- A set of circuit form is a subset of the ground set. -/
 lemma BinaryMatroid.DeltaSum.CircuitForm.subset_ground [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hC : BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C) : C ⊆ BinaryMatroid.DeltaSum.E M₁ M₂ :=
   hC.right.left
