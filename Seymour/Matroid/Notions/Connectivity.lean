@@ -5,14 +5,20 @@ import Seymour.Matroid.Notions.Coloop
 
 variable {α : Type}
 
-/-- Connectivity relation, aka ξ in Oxley's book -/
-def Matroid.ConnectivityRelation {α : Type} (M : Matroid α) (e f : α) : Prop :=
+section SimpleConnectivity
+
+/-- The connectivity relation, aka ξ in Oxley's book -/
+def Matroid.ConnectivityRelation (M : Matroid α) (e f : α) : Prop :=
   e = f ∨ ∃ C : Set α, C ⊆ M.E ∧ M.Circuit C ∧ e ∈ C ∧ f ∈ C
 
-/-- Connectivity relation is an equivalence relation on M.E -/
-lemma Matroid.connectivityRelation_is_equiv_rel {α : Type} (M : Matroid α) :
-    ∀ e f : α, M.ConnectivityRelation e f → M.ConnectivityRelation f e := by
-  intro e f hef
+/-- The connectivity relation is reflexive -/
+lemma Matroid.connectivityRelation.refl (M : Matroid α) {e : α} :
+    M.ConnectivityRelation e e := Or.inl rfl
+
+/-- The connectivity relation is symmetric -/
+lemma Matroid.connectivityRelation.symm (M : Matroid α) {e f : α} :
+    M.ConnectivityRelation e f → M.ConnectivityRelation f e := by
+  intro hef
   cases hef with
   | inl hef => exact Or.inl hef.symm
   | inr hef =>
@@ -20,21 +26,38 @@ lemma Matroid.connectivityRelation_is_equiv_rel {α : Type} (M : Matroid α) :
     obtain ⟨C, _, _, _, _⟩ := hef
     use C
 
-/-- Component is an equivalence class under the connectivity relation, i.e., a ξ-equivalence class -/
-def Matroid.Component {α : Type} (M : Matroid α) (X : Set α) : Prop :=
+/-- The connectivity relation is transitive -/
+lemma Matroid.connectivityRelation.trans (M : Matroid α) {e f g : α} :
+    M.ConnectivityRelation e f → M.ConnectivityRelation f g → M.ConnectivityRelation e g := by
+  intro hef hfg
+  cases hef with
+  | inl hef => exact hef ▸ hfg
+  | inr hef =>
+    cases hfg with
+    | inl hfg => exact Or.inr (hfg ▸ hef)
+    | inr hfg =>
+      obtain ⟨C₁, hC₁E, hC₁, heC₁, hfC₁⟩ := hef
+      obtain ⟨C₂, hC₂E, hC₂, hfC₂, hgC₂⟩ := hfg
+      right
+      -- todo: see proof of Lemma 7 in Bruhn Wollman 2011 (page 5)
+      -- note: that proof uses matroid contraction
+      sorry
+
+/-- A component is an equivalence class under the connectivity relation, i.e., a ξ-equivalence class -/
+def Matroid.Component (M : Matroid α) (X : Set α) : Prop :=
   ∀ e ∈ X, ∀ f ∈ M.E, M.ConnectivityRelation e f ↔ f ∈ X
 
-/-- Separator is a union of components -/
-def Matroid.Separator {α : Type} (M : Matroid α) (X : Set α) : Prop :=
+/-- A separator is a union of components -/
+def Matroid.Separator (M : Matroid α) (X : Set α) : Prop :=
   ∀ e ∈ X, ∀ f ∈ M.E, M.ConnectivityRelation e f → f ∈ X
 
 /-- Every component is a separator -/
-lemma Matroid.separator_component {α : Type} (M : Matroid α) {X : Set α} (hX : M.Component X) :
+lemma Matroid.separator_component (M : Matroid α) {X : Set α} (hX : M.Component X) :
     M.Separator X :=
   fun e he f hf hef => (hX e he f hf).→ hef
 
 /-- Every loop is a separator -/
-lemma Matroid.separator_loop {α : Type} {M : Matroid α} {x : α} (hx : M.Loop x) :
+lemma Matroid.separator_loop {M : Matroid α} {x : α} (hx : M.Loop x) :
     M.Separator {x} := by
   intro e hex f hfE hf
   cases hf with
@@ -49,7 +72,7 @@ lemma Matroid.separator_loop {α : Type} {M : Matroid α} {x : α} (hx : M.Loop 
     exact circC heC hfC
 
 /-- Every coloop is a separator -/
-lemma Matroid.separator_coloop {α : Type} {M : Matroid α} {x : α} (hx : M.Coloop x) :
+lemma Matroid.separator_coloop {M : Matroid α} {x : α} (hx : M.Coloop x) :
     M.Separator {x} := by
   intro e hex f hfE hf
   cases hf with
@@ -63,7 +86,7 @@ lemma Matroid.separator_coloop {α : Type} {M : Matroid α} {x : α} (hx : M.Col
     tauto
 
 /-- Every singleton separator is a loop or a coloop -/
-lemma Matroid.singleton_separator_loop_coloop {α : Type} {M : Matroid α} {x : α} (hx : x ∈ M.E) :
+lemma Matroid.singleton_separator_loop_coloop {M : Matroid α} {x : α} (hx : x ∈ M.E) :
     M.Separator {x} → M.Loop x ∨ M.Coloop x := by
   intro sep_x
   by_contra! contr
@@ -87,7 +110,7 @@ lemma Matroid.singleton_separator_loop_coloop {α : Type} {M : Matroid α} {x : 
   exact hfx (sep_x x rfl f (hCE hfC) (Or.inr ⟨C, hCE, hC, hxC, hfC⟩))
 
 /-- Singleton element is a separator iff it is a loop or a coloop -/
-lemma Matroid.singleton_separator_iff {α : Type} {M : Matroid α} (x : α) :
+lemma Matroid.singleton_separator_iff {M : Matroid α} (x : α) :
     x ∈ M.E ∧ M.Separator {x} ↔ M.Loop x ∨ M.Coloop x := by
   constructor
   · intro hxE
@@ -96,3 +119,41 @@ lemma Matroid.singleton_separator_iff {α : Type} {M : Matroid α} (x : α) :
     cases hxx with
     | inl xLoop => exact ⟨xLoop.left, Matroid.separator_loop xLoop⟩
     | inr xColoop => exact ⟨xColoop.left, Matroid.separator_coloop xColoop⟩
+
+end SimpleConnectivity
+
+
+section FiniteConnectivity
+
+def Matroid.FiniteConnectivity {M : Matroid α} (hM : M.Finite) {X : Set α} (hX : X ⊆ M.E) : ℕ :=
+  sorry -- todo: r(X) + r(E - X) - r(M), see Oxley
+
+end FiniteConnectivity
+
+
+section InfiniteConnectivity
+
+lemma bruhn_wollan_14_a {M : Matroid α} {I J : Set α} (hI : M.Indep I) (hJ : M.Indep J) :
+    ∀ F₁ ⊆ I ∪ J, ∀ F₂ ⊆ I ∪ J, M.Base ((I ∪ J) \ F₁) → M.Base ((I ∪ J) \ F₂) → F₁.encard = F₂.encard := by
+  intro F₁ hF₁ F₂ hF₂ hF₁B hF₂B
+  sorry
+
+def Matroid.DelUnionIndep {M : Matroid α} {I J : Set α} (hI : M.Indep I) (hJ : M.Indep J) : ℕ∞ :=
+  sorry
+  -- todo: min {|F| : F ⊆ I ∪ J, (I ∪ J) \ F ∈ I}, or ∞ if no such F exists, see Bruhn Wollan 2011
+
+def Matroid.Connectivity' (M : Matroid α) {X : Set α}
+    {B B' : Set α} (hB : M.Basis B X) (hB' : M.Basis B' (M.E \ X)) : ℕ∞ :=
+  M.DelUnionIndep hB.indep hB'.indep
+
+def Matroid.Connectivity (M : Matroid α) {X : Set α} : X ⊆ M.E → ℕ∞ :=
+  sorry
+  -- todo: choice of B and B' is arbitrary by Lemma 14 in Bruhn Wollan 2011
+
+def Matroid.kSeparation (M : Matroid α) {X : Set α} (hX : X ⊆ M.E) (k : ℕ) : Prop :=
+  M.Connectivity hX < k ∧ X.encard ≥ k ∧ (M.E \ X).encard ≥ k
+
+def Matroid.kConnected (M : Matroid α) (k : ℕ) : Prop :=
+  ∀ X, ∃ hX : X ⊆ M.E, ∀ ℓ : ℕ, 1 < ℓ → ℓ < k → ¬M.kSeparation hX ℓ
+
+end InfiniteConnectivity
