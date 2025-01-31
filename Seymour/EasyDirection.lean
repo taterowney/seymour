@@ -17,11 +17,12 @@ theorem easySeymour.Sum1 {M₁ M₂ : Matroid α} (hM₁ : M₁.IsRegular) (hM�
   intro F hF
   obtain ⟨⟨X₁, E₁, A₁⟩, hM₁⟩ := hM₁ F hF
   obtain ⟨⟨X₂, E₂, A₂⟩, hM₂⟩ := hM₂ F hF
-  have hE₁ : M₁.E = E₁ := by rw [←hM₁, VectorMatroid.toMatroid_E]
-  have hE₂ : M₂.E = E₂ := by rw [←hM₂, VectorMatroid.toMatroid_E]
-  have hMA₁ : M₁.IsRepresentedBy (hE₁ ▸ A₁) := hE₁ ▸ hM₁.symm
-  have hMA₂ : M₂.IsRepresentedBy (hE₂ ▸ A₂) := hE₂ ▸ hM₂.symm
-  exact ⟨_, (Matroid.disjointSum.ofRepresented_repr hMM hMA₁ hMA₂).symm⟩
+  -- have hE₁ : M₁.E = E₁ := by rw [←hM₁, VectorMatroid.toMatroid_E]
+  -- have hE₂ : M₂.E = E₂ := by rw [←hM₂, VectorMatroid.toMatroid_E]
+  -- have hMA₁ : M₁.IsRepresentedBy (hE₁ ▸ A₁) := hE₁ ▸ hM₁.symm
+  -- have hMA₂ : M₂.IsRepresentedBy (hE₂ ▸ A₂) := hE₂ ▸ hM₂.symm
+  -- exact ⟨_, (Matroid.disjointSum.ofRepresented_repr hMM hMA₁ hMA₂).symm⟩
+  sorry
 
 theorem easySeymour.Sum2 {M₁ M₂ : Matroid α} (hM₁ : M₁.IsRegular) (hM₂ : M₂.IsRegular)
     (assumptions : TwoSumAssumptions M₁ M₂) :

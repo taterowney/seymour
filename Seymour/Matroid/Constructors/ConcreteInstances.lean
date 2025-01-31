@@ -15,5 +15,9 @@ noncomputable def MatroidR10 : StandardRepr (Fin 10) Z2 where
   B := !![1, 0, 0, 1, 1; 1, 1, 0, 0, 1; 0, 1, 1, 0, 1; 0, 0, 1, 1, 1; 1, 1, 1, 1, 1].submatrix
     (fun i => ⟨i.val, i.property⟩)
     (fun j => ⟨j.val - 5, by omega⟩)
+  inh := by
+    use 0
+    show 0 < 5
+    decide
 
 -- todo: lemma MatroidR10.IsRegular

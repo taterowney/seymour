@@ -1,6 +1,5 @@
 import Mathlib.Data.Matroid.Sum
 
-import Seymour.ForMathlib.LinearIndependence
 import Seymour.Matroid.Classes.Regular
 
 
@@ -14,29 +13,7 @@ lemma Matroid.disjointSum.ofRepresented_repr {R X₁ X₂ : Type} {A₁ : Matrix
     (hE : M₁.E ⫗ M₂.E) (hA₁ : M₁.IsRepresentedBy A₁) (hA₂ : M₂.IsRepresentedBy A₂) :
     (M₁.disjointSum M₂ hE).IsRepresentedBy
       ((Matrix.fromBlocksSetUnion A₁ 0 0 A₂).castColsSetUnion Matroid.disjointSum_ground_eq.symm) := by
-  ext I hI
-  · simp
-  · rw [Matroid.disjointSum_indep_iff, VectorMatroid.toMatroid_indep, Matrix.castColsSetUnion, Matrix.fromBlocksSetUnion]
-    constructor <;> intro hIMM
-    · simp [VectorMatroid.IndepCols, Matrix.IndepCols]
-      rw [Matroid.disjointSum_ground_eq] at hI
-      use hI
-      rw [hA₁, hA₂] at hIMM
-      simp only [VectorMatroid.toMatroid_indep, VectorMatroid.toMatroid_E] at hIMM
-      obtain ⟨hIM₁, hIM₂, -⟩ := hIMM
-      simp only [VectorMatroid.IndepCols, Matrix.IndepCols] at hIM₁ hIM₂
-      obtain ⟨hI₁, hIA₁⟩ := hIM₁
-      obtain ⟨hI₂, hIA₂⟩ := hIM₂
-      sorry -- TODO linear independence in the smaller matrices implies linear independence in the block matrix
-    · simp only [VectorMatroid.IndepCols, Matrix.IndepCols, Matrix.transpose_submatrix] at hIMM
-      --conv at hIMM => congr; ext hIE; congr; congr; rw [Matrix.transpose_fromRows]
-      refine ⟨?_, ?_, Matroid.disjointSum_ground_eq ▸ hI⟩
-      · rw [hA₁]
-        simp only [VectorMatroid.toMatroid_indep, VectorMatroid.IndepCols, Matrix.IndepCols]
-        sorry
-      · rw [hA₂]
-        simp only [VectorMatroid.toMatroid_indep, VectorMatroid.IndepCols, Matrix.IndepCols]
-        sorry
+  sorry
 
 end Composition
 

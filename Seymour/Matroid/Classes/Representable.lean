@@ -5,7 +5,7 @@ variable {α : Type}
 
 /-- Matroid `M` is represented by matrix `A` if vector matroid `M[A]` is exactly `M` -/
 def Matroid.IsRepresentedBy {R X : Type} [Ring R] (M : Matroid α) (A : Matrix X M.E R) : Prop :=
-  M = (⟨X, M.E, A⟩ : VectorMatroid α R).toMatroid
+  ∃ hE : M.E ≠ ∅, ∃ c : ↑M.E ↪ α, M = (VectorMatroid.mk X M.E A (M.E.nonempty_iff_ne_empty'.← hE) c).toMatroid
 
 /-- Matroid `M` can be represented over field `F` if it can be represented by some matrix with entries in `F` -/
 def Matroid.IsRepresentableOver (M : Matroid α) (R : Type) [Ring R] : Prop :=

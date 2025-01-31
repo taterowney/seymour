@@ -107,9 +107,8 @@ The guideline below is written primarily to assist you in reading the code.
   - Writing names like `h₁` or `h'` or `this'` or `this_` is strongly discouraged regardless of the purpose
 - Real-life example (focus on the third line of each version – explicit arguments of the lemma):
   - Unacceptable argument names:
-
     ```lean
-    lemma Multiset_sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
+    lemma Multiset.sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
         {s : Multiset ι} {f g : ι → α}
         (h : ∀ i ∈ s, f i ≤ g i) (h' : ∃ i ∈ s, f i < g i) :
         (s.map f).sum < (s.map g).sum := by
@@ -117,11 +116,9 @@ The guideline below is written primarily to assist you in reading the code.
       simp only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.prod_coe]
       exact l.sum_lt_sum f g h h'
     ```
-
   - Bad argument names:
-
     ```lean
-    lemma Multiset_sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
+    lemma Multiset.sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
         {s : Multiset ι} {f g : ι → α}
         (hle : ∀ i ∈ s, f i ≤ g i) (hlt : ∃ i ∈ s, f i < g i) :
         (s.map f).sum < (s.map g).sum := by
@@ -129,11 +126,9 @@ The guideline below is written primarily to assist you in reading the code.
       simp only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.prod_coe]
       exact l.sum_lt_sum f g hle hlt
     ```
-
   - Acceptable argument names:
-
     ```lean
-    lemma Multiset_sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
+    lemma Multiset.sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
         {s : Multiset ι} {f g : ι → α}
         (hfg : ∀ i ∈ s, f i ≤ g i) (hfg' : ∃ i ∈ s, f i < g i) :
         (s.map f).sum < (s.map g).sum := by
@@ -141,11 +136,9 @@ The guideline below is written primarily to assist you in reading the code.
       simp only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.prod_coe]
       exact l.sum_lt_sum f g hfg hfg'
     ```
-
   - Better argument names:
-
     ```lean
-    lemma Multiset_sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
+    lemma Multiset.sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
         {s : Multiset ι} {f g : ι → α}
         (all_f_le_g : ∀ i ∈ s, f i ≤ g i) (exists_f_lt_g : ∃ i ∈ s, f i < g i) :
         (s.map f).sum < (s.map g).sum := by
@@ -153,11 +146,9 @@ The guideline below is written primarily to assist you in reading the code.
       simp only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.prod_coe]
       exact l.sum_lt_sum f g all_f_le_g exists_f_lt_g
     ```
-
   - Best argument names:
-
     ```lean
-    lemma Multiset_sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
+    lemma Multiset.sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
         {s : Multiset ι} {f g : ι → α}
         (all_le : ∀ i ∈ s, f i ≤ g i) (exists_lt : ∃ i ∈ s, f i < g i) :
         (s.map f).sum < (s.map g).sum := by

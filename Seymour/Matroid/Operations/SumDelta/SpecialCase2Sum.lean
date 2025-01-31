@@ -90,7 +90,7 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {C : Set α} {p : α
     have ⟨D_nonempty, hDE, X₁, X₂, hDXX, hX₁, hX₂⟩ := hD
     have ⟨hCpM₁, hCpM₂, hCE⟩ := hC
     have hXX := Set.inter_subset_inter hX₁.subset_ground hX₂.subset_ground
-    rw [M₁.toMatroid_E, M₂.toMatroid_E, hp] at hXX
+    erw [M₁.toMatroid_E, M₂.toMatroid_E, hp] at hXX
     have hCX₁ : X₁ ⊆ C ∩ M₁.E ∪ {p}
     · rw [(Set.diff_union_inter X₁ X₂).symm]
       rw [←symmDiff_eq_alt, symmDiff_def] at hDXX
@@ -160,8 +160,8 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
       | inr hC =>
         obtain ⟨p, hp⟩ := assumptions.inter_singleton
         have hMMCp : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p := ⟨
-          M₁.toMatroid_E ▸ hp ▸ hC.to_circuit_M₁,
-          M₂.toMatroid_E ▸ hp ▸ hC.to_circuit_M₂,
+          hp ▸ hC.to_circuit_M₁,
+          hp ▸ hC.to_circuit_M₂,
           hCE⟩
         exact hMMCp.sum2_circuit_pred assumptions
   · intro hC
