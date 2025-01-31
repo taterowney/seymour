@@ -8,7 +8,7 @@ import Seymour.ForMathlib.MatrixManip
 section Definition
 
 /-- Vector matroid `M[A]` of matrix `A`. -/
-structure VectorMatroid (α R : Type) [Ring R] where
+structure VectorMatroid (α R : Type) where
   /-- Row indices. -/
   X : Type
   /-- Column indices. -/
@@ -24,7 +24,7 @@ attribute [instance] VectorMatroid.finY
 
 open scoped Matrix
 
-variable {α R : Type} [DecidableEq α] [Ring R]
+variable {α R : Type} [DecidableEq α] [Semiring R]
 
 def VectorMatroid.E (M : VectorMatroid α R) : Set α :=
   Set.range M.emb
@@ -37,9 +37,7 @@ def VectorMatroid.IndepCols (M : VectorMatroid α R) (S : Set α) : Prop :=
 /-- A set `S` is independent in `M[A]` iff
     `S ⊆ Y` and the submatrix that contains only columns of `S` has linearly independent columns. -/
 lemma VectorMatroid.indepCols_iff_submatrix (M : VectorMatroid α R) (S : Set α) :
-    M.IndepCols S ↔
-      ∃ hS : S ⊆ M.E, LinearIndependent R (M.A.submatrix id (M.emb.invOfMemRange ∘ hS.elem))ᵀ
-    := by
+    M.IndepCols S ↔ ∃ hS : S ⊆ M.E, LinearIndependent R (M.A.submatrix id (M.emb.invOfMemRange ∘ hS.elem))ᵀ := by
   rfl
 
 /-- Empty set is independent. -/
@@ -49,15 +47,9 @@ theorem VectorMatroid.indepCols_empty (M : VectorMatroid α R) :
 
 /-- A subset of a linearly independent set of columns is linearly independent. -/
 theorem VectorMatroid.indepCols_subset (M : VectorMatroid α R) (I J : Set α) (hMJ : M.IndepCols J) (hIJ : I ⊆ J) :
-    M.IndepCols I := by
-  obtain ⟨hJ, hM⟩ := hMJ
-  use hIJ.trans hJ
-  -- show LinearIndependent R (fun i j => M.A j (hJ.elem (Subtype.map id hIJ i)))
-  -- apply hM.comp
-  -- intro _ _ hf
-  -- apply Subtype.eq
-  -- simpa [Subtype.map] using hf
-  sorry
+    M.IndepCols I :=
+  have ⟨hJ, hM⟩ := hMJ
+  ⟨hIJ.trans hJ, hM.comp hIJ.elem hIJ.elem_injective⟩
 
 /-- A non-maximal linearly independent set of columns can be augmented with another linearly independent column. -/
 theorem VectorMatroid.indepCols_aug (M : VectorMatroid α R) (I J : Set α)
@@ -120,7 +112,7 @@ end Definition
 
 section API
 
-variable {α R : Type} [DecidableEq α] [Ring R]
+variable {α R : Type} [DecidableEq α] [Semiring R]
 
 /-- Vector matroid converted to `Matroid`. -/
 def VectorMatroid.toMatroid (M : VectorMatroid α R) : Matroid α :=
@@ -157,7 +149,7 @@ end EquivalentTransformations
 section StandardRepr
 
 /-- Standard matrix representation of a vector matroid. -/
-structure StandardRepr (α R : Type) [Ring R] where
+structure StandardRepr (α R : Type) where
   /-- Row indices. -/
   X : Type
   /-- Column indices. -/

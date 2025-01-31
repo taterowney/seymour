@@ -38,6 +38,11 @@ variable {α : Type}
 def HasSubset.Subset.elem {X Y : Set α} (hXY : X ⊆ Y) (x : X.Elem) : Y.Elem :=
   ⟨x.val, hXY x.property⟩
 
+lemma HasSubset.Subset.elem_injective {X Y : Set α} (hXY : X ⊆ Y) : hXY.elem.Injective := by
+  intro x y hxy
+  ext
+  simpa [HasSubset.Subset.elem] using hxy
+
 /-- Convert `(X ∪ Y).Elem` to `X.Elem ⊕ Y.Elem`. -/
 def Subtype.toSum {X Y : Set α} [∀ a, Decidable (a ∈ X)] [∀ a, Decidable (a ∈ Y)] (i : (X ∪ Y).Elem) : X.Elem ⊕ Y.Elem :=
   if hiX : i.val ∈ X then Sum.inl ⟨i, hiX⟩ else
