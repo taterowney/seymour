@@ -158,48 +158,37 @@ section StandardRepr
 
 /-- Standard matrix representation of a vector matroid. -/
 structure StandardRepr (α R : Type) [Ring R] where
-  /-- row index set -/
-  X : Set α
-  /-- column index set -/
-  Y : Set α
-  /-- ability to check if an element belongs to `X` -/
-  decmemX : ∀ a, Decidable (a ∈ X)
-  /-- ability to check if an element belongs to `Y` -/
-  decmemY : ∀ a, Decidable (a ∈ Y)
-  /-- `X` and `Y` are disjoint -/
-  hXY : X ⫗ Y
-  /-- standard representation matrix -/
+  /-- Row indices. -/
+  X : Type
+  /-- Column indices. -/
+  Y : Type
+  /-- Standard representation matrix. -/
   B : Matrix X Y R
-  /-- The matrix has at least one row. -/
-  inh : Nonempty X
+  inh : Nonempty (X ⊕ Y)
+  deceqX : DecidableEq X
+  deceqY : DecidableEq Y
+  emb : X ⊕ Y ↪ α
+
+attribute [instance] StandardRepr.inh
+attribute [instance] StandardRepr.deceqX
+attribute [instance] StandardRepr.deceqY
 
 variable {α R : Type} [Ring R]
 
--- Automatically infer decidability when `StandardRepr` is present.
-attribute [instance] StandardRepr.decmemX
-attribute [instance] StandardRepr.decmemY
-attribute [instance] StandardRepr.inh
-
-variable [DecidableEq α]
-
 /-- Vector matroid constructed from standard representation. -/
 def StandardRepr.toVectorMatroid (S : StandardRepr α R) : VectorMatroid α R :=
-  ⟨S.X.Elem, (S.X ∪ S.Y).Elem, Matrix.fromColsSetUnion 1 S.B,
-    have ⟨_, hX⟩ := S.inh;
-    ⟨_, Or.inl hX⟩,
-  ⟨_, Subtype.val_injective⟩⟩
+  ⟨S.X, S.X ⊕ S.Y, Matrix.fromCols 1 S.B, S.inh, S.emb⟩
 
 /-- Ground set of a vector matroid is union of row and column index sets of its standard matrix representation. -/
 @[simp]
 lemma StandardRepr.toVectorMatroid_E (S : StandardRepr α R) :
-    S.toVectorMatroid.toMatroid.E = S.X ∪ S.Y := by
-  simp [StandardRepr.toVectorMatroid, VectorMatroid.toIndepMatroid]
+    S.toVectorMatroid.toMatroid.E = Set.range S.emb :=
   rfl
 
 /-- Full representation matrix of vector matroid is `[I | B]`. -/
 @[simp]
 lemma StandardRepr.toVectorMatroid_A (S : StandardRepr α R) :
-    S.toVectorMatroid.A = Matrix.fromColsSetUnion 1 S.B :=
+    S.toVectorMatroid.A = Matrix.fromCols 1 S.B :=
   rfl
 
 /-- Set is independent in vector matroid iff corresponding set of columns of `[I | B]` is linearly independent over `R`. -/
@@ -224,7 +213,7 @@ def StandardRepr.toMatroid (S : StandardRepr α R) : Matroid α :=
   S.toVectorMatroid.toMatroid
 
 /-- The identity matrix has linearly independent rows. -/
-lemma Matrix.one_linearIndependent : LinearIndependent R (1 : Matrix α α R) := by
+lemma Matrix.one_linearIndependent [DecidableEq α] : LinearIndependent R (1 : Matrix α α R) := by
 -- Riccardo Brasca proved:
   rw [linearIndependent_iff]
   intro l hl
@@ -234,25 +223,27 @@ lemma Matrix.one_linearIndependent : LinearIndependent R (1 : Matrix α α R) :=
 
 /-- todo: desc -/
 lemma StandardRepr.toMatroid_base (S : StandardRepr α R) :
-    S.toMatroid.Base S.X := by
+    S.toMatroid.Base (S.emb '' Set.range Sum.inl) := by
   unfold StandardRepr.toMatroid StandardRepr.toVectorMatroid VectorMatroid.toMatroid
   apply Matroid.Indep.base_of_forall_insert
   · simp [Matrix.fromColsSetUnion, VectorMatroid.toIndepMatroid, VectorMatroid.IndepCols]
     sorry
   · intro e he
-    have e_in_Y : e ∈ S.Y
-    · sorry
     -- TODO if you add anything extra to the identity matrix, it becomes singular.
     sorry
+
+lemma Sum.swap_inj {α β : Type} : (@Sum.swap α β).Injective := by
+  intro
+  aesop
 
 def StandardRepr.dual (S : StandardRepr α R) : StandardRepr α R where
   X := S.Y
   Y := S.X
-  decmemX := S.decmemY
-  decmemY := S.decmemX
-  hXY := S.hXY.symm
   B := - S.B.transpose
-  inh := sorry
+  inh := nonempty_sum.← (nonempty_sum.→ S.inh).symm
+  deceqX := S.deceqY
+  deceqY := S.deceqX
+  emb := ⟨(S.emb ·.swap), S.emb.injective.comp Sum.swap_inj⟩
 
 postfix:max "✶" => StandardRepr.dual
 
