@@ -6,12 +6,12 @@ variable {α : Type} [DecidableEq α] {M₁ M₂ : Matroid α}
 
 section Composition
 
--- lemma Matroid.disjointSum.ofRepresented_repr {R X₁ X₂ : Type} {A₁ : Matrix X₁ M₁.E R} {A₂ : Matrix X₂ M₂.E R}
---     [Ring R] [∀ a, Decidable (a ∈ M₁.E)] [∀ a, Decidable (a ∈ M₂.E)]
---     (hE : M₁.E ⫗ M₂.E) (hA₁ : M₁.IsRepresentedBy A₁) (hA₂ : M₂.IsRepresentedBy A₂) :
---     hE.build1sum.IsRepresentedBy
---       ((Matrix.fromBlocksSetUnion A₁ 0 0 A₂).castColsSetUnion Matroid.disjointSum_ground_eq.symm) := by
---   sorry
+lemma Disjoint.build1sum_isRepresentedBy {R X₁ X₂ : Type} {A₁ : Matrix X₁ M₁.E R} {A₂ : Matrix X₂ M₂.E R}
+    [Ring R] [∀ a, Decidable (a ∈ M₁.E)] [∀ a, Decidable (a ∈ M₂.E)]
+    (hE : M₁.E ⫗ M₂.E) (hA₁ : M₁.IsRepresentedBy A₁) (hA₂ : M₂.IsRepresentedBy A₂) :
+    have hEE : hE.build1sum.E = (M₁.E ⊕ M₂.E) := by sorry -- sus
+    hE.build1sum.IsRepresentedBy (hEE ▸ Matrix.fromBlocks A₁ 0 0 A₂) := by
+  sorry
 
 end Composition
 
@@ -37,8 +37,8 @@ lemma Disjoint.decomposition_isRegular_left (hE : M₁.E ⫗ M₂.E) (regularity
 
 /-- If a regular matroid is a 1-sum of binary matroids, the right summand is regular. -/
 lemma Disjoint.decomposition_isRegular_right (hE : M₁.E ⫗ M₂.E) (regularity : hE.build1sum.IsRegular) :
-    M₂.IsRegular := by
-  sorry
+    M₂.IsRegular :=
+  hE.symm.decomposition_isRegular_left (hE.symm.build1sum_comm ▸ regularity)
 
 /-- If a regular matroid is a 1-sum of binary matroids, both summand matroids are regular. -/
 lemma Disjoint.decomposition_isRegular_both (hE : M₁.E ⫗ M₂.E) (regularity : hE.build1sum.IsRegular) :

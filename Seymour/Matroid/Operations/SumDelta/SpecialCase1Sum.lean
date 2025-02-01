@@ -67,7 +67,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase1Sum (hE : M₁.toMatroid.E ⫗ M₂.toM
         have hC₂ : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ C := ⟨hCM₂, disjoint_inter_disjoint C hE⟩
         exact hC₂.disjoint_circuit_pred hE
     · intro hC
-      have ⟨⟨hCnempty, hCE, X₁, X₂, hXX, hX₁, hX₂⟩, min_C⟩ := hC
+      have ⟨⟨_, hCE, X₁, X₂, hXX, hX₁, hX₂⟩, min_C⟩ := hC
       if X₂_empty : X₂ = ∅ then
           left
           rw [X₂_empty, Set.union_empty, Set.inter_empty, Set.diff_empty] at hXX
