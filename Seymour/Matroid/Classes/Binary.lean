@@ -14,7 +14,11 @@ abbrev BinaryMatroid (α : Type) := VectorMatroid α Z2
 def Matroid.IsBinary [DecidableEq α] (M : Matroid α) : Prop :=
   M.IsRepresentableOver Z2
 
-/-- Every `BinaryMatroid` is representable over `Z2` -/
+/-- `Matroid` is binary iff it can be constructed from a `BinaryMatroid`. -/
+lemma Matroid.isBinary_iff [DecidableEq α] (M : Matroid α) : M.IsBinary ↔ ∃ B : BinaryMatroid α, B.toMatroid = M := by
+  rfl
+
+/-- Every `BinaryMatroid` is binary. -/
 lemma BinaryMatroid.isBinary [DecidableEq α] (M : BinaryMatroid α) : M.toMatroid.IsBinary := by
   use M
 

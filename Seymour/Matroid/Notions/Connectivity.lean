@@ -12,11 +12,14 @@ def Matroid.ConnectivityRelation (M : Matroid α) (e f : α) : Prop :=
   e = f ∨ ∃ C : Set α, C ⊆ M.E ∧ M.Circuit C ∧ e ∈ C ∧ f ∈ C
 
 /-- The connectivity relation is reflexive -/
-lemma Matroid.connectivityRelation.refl (M : Matroid α) {e : α} :
-    M.ConnectivityRelation e e := Or.inl rfl
+@[refl]
+lemma Matroid.ConnectivityRelation.refl (M : Matroid α) {e : α} :
+    M.ConnectivityRelation e e :=
+  Or.inl rfl
 
 /-- The connectivity relation is symmetric -/
-lemma Matroid.connectivityRelation.symm (M : Matroid α) {e f : α} :
+@[symm]
+lemma Matroid.ConnectivityRelation.symm (M : Matroid α) {e f : α} :
     M.ConnectivityRelation e f → M.ConnectivityRelation f e := by
   intro hef
   cases hef with
@@ -27,7 +30,8 @@ lemma Matroid.connectivityRelation.symm (M : Matroid α) {e f : α} :
     use C
 
 /-- The connectivity relation is transitive -/
-lemma Matroid.connectivityRelation.trans (M : Matroid α) {e f g : α} :
+@[trans]
+lemma Matroid.ConnectivityRelation.trans (M : Matroid α) {e f g : α} :
     M.ConnectivityRelation e f → M.ConnectivityRelation f g → M.ConnectivityRelation e g := by
   intro hef hfg
   cases hef with
@@ -36,8 +40,8 @@ lemma Matroid.connectivityRelation.trans (M : Matroid α) {e f g : α} :
     cases hfg with
     | inl hfg => exact Or.inr (hfg ▸ hef)
     | inr hfg =>
-      obtain ⟨C₁, hC₁E, hC₁, heC₁, hfC₁⟩ := hef
-      obtain ⟨C₂, hC₂E, hC₂, hfC₂, hgC₂⟩ := hfg
+      obtain ⟨C₁, hC₁, hMC₁, heC₁, hfC₁⟩ := hef
+      obtain ⟨C₂, hC₂, hMC₂, hfC₂, hgC₂⟩ := hfg
       right
       -- todo: see proof of Lemma 7 in Bruhn Wollman 2011 (page 5)
       -- note: that proof uses matroid contraction
@@ -125,7 +129,7 @@ end SimpleConnectivity
 
 section FiniteConnectivity
 
-def Matroid.FiniteConnectivity {M : Matroid α} (hM : M.Finite) {X : Set α} (hX : X ⊆ M.E) : ℕ :=
+def Matroid.finiteConnectivity {M : Matroid α} (hM : M.Finite) {X : Set α} (hX : X ⊆ M.E) : ℕ :=
   sorry -- todo: r(X) + r(E - X) - r(M), see Oxley
 
 end FiniteConnectivity
@@ -135,25 +139,26 @@ section InfiniteConnectivity
 
 lemma bruhn_wollan_14_a {M : Matroid α} {I J : Set α} (hI : M.Indep I) (hJ : M.Indep J) :
     ∀ F₁ ⊆ I ∪ J, ∀ F₂ ⊆ I ∪ J, M.Base ((I ∪ J) \ F₁) → M.Base ((I ∪ J) \ F₂) → F₁.encard = F₂.encard := by
-  intro F₁ hF₁ F₂ hF₂ hF₁B hF₂B
+  intro F₁ hF₁ F₂ hF₂ hMF₁ hMF₂ -- TODO why not arguments?
   sorry
 
-def Matroid.DelUnionIndep {M : Matroid α} {I J : Set α} (hI : M.Indep I) (hJ : M.Indep J) : ℕ∞ :=
+def Matroid.delUnionIndep {M : Matroid α} {I J : Set α} (hI : M.Indep I) (hJ : M.Indep J) : ℕ∞ :=
   sorry
   -- todo: min {|F| : F ⊆ I ∪ J, (I ∪ J) \ F ∈ I}, or ∞ if no such F exists, see Bruhn Wollan 2011
 
-def Matroid.Connectivity' (M : Matroid α) {X : Set α}
-    {B B' : Set α} (hB : M.Basis B X) (hB' : M.Basis B' (M.E \ X)) : ℕ∞ :=
-  M.DelUnionIndep hB.indep hB'.indep
+def Matroid.Connectivity' (M : Matroid α) {X : Set α} {B B' : Set α} (hB : M.Basis B X) (hB' : M.Basis B' (M.E \ X)) : ℕ∞ :=
+  M.delUnionIndep hB.indep hB'.indep
 
-def Matroid.Connectivity (M : Matroid α) {X : Set α} : X ⊆ M.E → ℕ∞ :=
+def Matroid.connectivity (M : Matroid α) {X : Set α} : X ⊆ M.E → ℕ∞ :=
   sorry
   -- todo: choice of B and B' is arbitrary by Lemma 14 in Bruhn Wollan 2011
 
+-- TODO rename
 def Matroid.kSeparation (M : Matroid α) {X : Set α} (hX : X ⊆ M.E) (k : ℕ) : Prop :=
-  M.Connectivity hX < k ∧ X.encard ≥ k ∧ (M.E \ X).encard ≥ k
+  M.connectivity hX < k ∧ X.encard ≥ k ∧ (M.E \ X).encard ≥ k
 
+-- TODO rename
 def Matroid.kConnected (M : Matroid α) (k : ℕ) : Prop :=
-  ∀ X, ∃ hX : X ⊆ M.E, ∀ ℓ : ℕ, 1 < ℓ → ℓ < k → ¬M.kSeparation hX ℓ
+  ∀ X, ∃ hX : X ⊆ M.E, ∀ ℓ : ℕ, 1 < ℓ → ℓ < k → ¬(M.kSeparation hX ℓ)
 
 end InfiniteConnectivity

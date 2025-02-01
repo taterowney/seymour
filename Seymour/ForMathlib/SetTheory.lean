@@ -14,6 +14,9 @@ variable {α : Type}
 
 section Other
 
+lemma set_union_union_eq_rev (X Y Z : Set α) : X ∪ Y ∪ Z = Z ∪ Y ∪ X := by
+  rw [Set.union_assoc, Set.union_comm, Set.union_comm Y Z]
+
 lemma setminus_inter_union_eq_union {X Y : Set α} : X \ (X ∩ Y) ∪ Y = X ∪ Y := by
   tauto_set
 

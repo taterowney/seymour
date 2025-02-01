@@ -444,7 +444,7 @@ lemma TwoSumAssumptions.build2sumCircuitMatroid_circuitPred {M₁ M₂ : Matroid
     assumptions.build2sumCircuitMatroid.CircuitPred = TwoSumCircuitPred M₁ M₂ :=
   rfl
 
-/-- todo: desc -/
+/-- The main way of creating a 2-sum of any matroids. -/
 def TwoSumAssumptions.build2sum {M₁ M₂ : Matroid α} (assumptions : TwoSumAssumptions M₁ M₂) : Matroid α :=
   assumptions.build2sumCircuitMatroid.toMatroid
 

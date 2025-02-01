@@ -2,7 +2,6 @@ import Mathlib.Data.Matroid.IndepAxioms
 import Mathlib.Data.Matroid.Dual
 
 import Seymour.Basic
-import Seymour.ForMathlib.MatrixManip
 
 
 section Definition
@@ -222,7 +221,7 @@ lemma StandardRepr.toMatroid_base [DecidableEq α] (S : StandardRepr α R) :
     S.toMatroid.Base (S.emb '' Set.range Sum.inl) := by
   unfold StandardRepr.toMatroid StandardRepr.toVectorMatroid VectorMatroid.toMatroid
   apply Matroid.Indep.base_of_forall_insert
-  · simp [Matrix.fromColsSetUnion, VectorMatroid.toIndepMatroid, VectorMatroid.IndepCols]
+  · simp [VectorMatroid.toIndepMatroid, VectorMatroid.IndepCols]
     sorry
   · intro e he
     -- TODO if you add anything extra to the identity matrix, it becomes singular.

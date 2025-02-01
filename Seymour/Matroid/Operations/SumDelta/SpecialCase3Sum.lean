@@ -7,33 +7,27 @@ variable {α : Type} [DecidableEq α]
 
 section Definition
 
-/-- Assumptions for Δ-sum  -/
+/-- Assumptions for Δ-sum in the 3-sum case. -/
 structure ThreeSumAssumptions (M₁ M₂ : BinaryMatroid α) where
   /-- `M₁` is finite -/
-  hM₁_finite : M₁.E.Finite
+  M₁_finite : M₁.E.Finite
   /-- `M₂` is finite -/
-  hM₂_finite : M₂.E.Finite
+  M₂_finite : M₂.E.Finite
   /-- `M₁` contains at least 7 elements -/
-  hM₁_card : M₁.E.encard ≥ 7
+  M₁_card : M₁.E.encard ≥ 7
   /-- `M₂` contains at least 7 elements -/
-  hM₂_card : M₂.E.encard ≥ 7
+  M₂_card : M₂.E.encard ≥ 7
   -- `M₁` and `M₂` meet at a set `T` that is a triangle in both
-  hT : (M₁.E ∩ M₂.E).encard = 3
-  hTM₁ : M₁.toMatroid.Circuit (M₁.E ∩ M₂.E)
-  hTM₂ : M₂.toMatroid.Circuit (M₁.E ∩ M₂.E)
+  Triangle_inter : (M₁.E ∩ M₂.E).encard = 3
+  Triangle_in_M₁ : M₁.toMatroid.Circuit (M₁.E ∩ M₂.E)
+  Triangle_in_M₂ : M₂.toMatroid.Circuit (M₁.E ∩ M₂.E)
   /-- Neither `M₁` nor `M₂` has a cocircuit contained in `T` -/
-  hT_no_sub_cocircuit : ∀ T' ⊆ M₁.E ∩ M₂.E, ¬(M₁.toMatroid✶.Circuit T') ∧ ¬(M₂.toMatroid✶.Circuit T')
+  Triangle_no_cocircuit : ∀ T' ⊆ M₁.E ∩ M₂.E, ¬(M₁.toMatroid✶.Circuit T') ∧ ¬(M₂.toMatroid✶.Circuit T')
 
--- TODO so do we assume `assumptions` or not ?!
--- Is it that Δ-sum general but 3-sum is considered only when the `ThreeSumAssumptions` hold?
-
-/-- todo: desc -/
+set_option linter.unusedVariables false in
+/-- The main way of creating a 3-sum of binary matroids. -/
 def ThreeSumAssumptions.build3sum {M₁ M₂ : BinaryMatroid α} (assumptions : ThreeSumAssumptions M₁ M₂) : Matroid α :=
   BinaryMatroid.DeltaSum.toMatroid M₁ M₂
-
-/-- 3-sum of two matroids -/
-def BinaryMatroid.threeSum (M₁ M₂ : BinaryMatroid α) (assumptions : ThreeSumAssumptions M₁ M₂) : Matroid α :=
-  assumptions.build3sum
 
 end Definition
 
@@ -60,28 +54,28 @@ end Representation
 
 section Regularity
 
-/-- todo: desc -/
-lemma BinaryMatroid.ThreeSum.IsRegular_of_IsRegular {M₁ M₂ : BinaryMatroid α}
-    (assumptions : ThreeSumAssumptions M₁ M₂) (hM₁ : M₁.toMatroid.IsRegular) (hM₂ : M₂.toMatroid.IsRegular) :
-    (M₁.threeSum M₂ assumptions).IsRegular :=
+/-- Any 3-sum of regular matroids is regular. -/
+lemma ThreeSumAssumptions.composition_isRegular {M₁ M₂ : BinaryMatroid α}
+    (assumptions : ThreeSumAssumptions M₁ M₂) (regularity₁ : M₁.toMatroid.IsRegular) (regularity₂ : M₂.toMatroid.IsRegular) :
+    assumptions.build3sum.IsRegular :=
   sorry
 
-/-- todo: desc -/
-lemma BinaryMatroid.ThreeSum.of_IsRegular₁ {M₁ M₂ : BinaryMatroid α}
-    (assumptions : ThreeSumAssumptions M₁ M₂) (h : (M₁.threeSum M₂ assumptions).IsRegular) :
+/-- If a regular matroid is a 3-sum of binary matroids, the left summand is regular. -/
+lemma ThreeSumAssumptions.decomposition_isRegular_left {M₁ M₂ : BinaryMatroid α}
+    (assumptions : ThreeSumAssumptions M₁ M₂) (regularity : assumptions.build3sum.IsRegular) :
     M₁.toMatroid.IsRegular :=
   sorry
 
-/-- todo: desc -/
-lemma BinaryMatroid.ThreeSum.of_IsRegular₂ {M₁ M₂ : BinaryMatroid α}
-    (assumptions : ThreeSumAssumptions M₁ M₂) (h : (M₁.threeSum M₂ assumptions).IsRegular) :
+/-- If a regular matroid is a 3-sum of binary matroids, the right summand is regular. -/
+lemma ThreeSumAssumptions.decomposition_isRegular_right {M₁ M₂ : BinaryMatroid α}
+    (assumptions : ThreeSumAssumptions M₁ M₂) (regularity : assumptions.build3sum.IsRegular) :
     M₂.toMatroid.IsRegular :=
   sorry
 
-/-- todo: desc -/
-lemma BinaryMatroid.ThreeSum.of_IsRegular_both {M₁ M₂ : BinaryMatroid α}
-    (assumptions : ThreeSumAssumptions M₁ M₂) (h : (M₁.threeSum M₂ assumptions).IsRegular) :
+/-- If a regular matroid is a 3-sum of binary matroids, both summands are regular. -/
+lemma ThreeSumAssumptions.decomposition_isRegular_both {M₁ M₂ : BinaryMatroid α}
+    (assumptions : ThreeSumAssumptions M₁ M₂) (regularity : assumptions.build3sum.IsRegular) :
     M₁.toMatroid.IsRegular ∧ M₂.toMatroid.IsRegular :=
-  ⟨BinaryMatroid.ThreeSum.of_IsRegular₁ assumptions h, BinaryMatroid.ThreeSum.of_IsRegular₂ assumptions h⟩
+  ⟨assumptions.decomposition_isRegular_left regularity, assumptions.decomposition_isRegular_right regularity⟩
 
 end Regularity
