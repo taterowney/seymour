@@ -40,7 +40,7 @@ lemma Disjoint.decomposition_isRegular_right (hE : M₁.E ⫗ M₂.E) (regularit
     M₂.IsRegular := by
   sorry
 
-/-- If a regular matroid is a 1-sum of binary matroids, both summands are regular. -/
+/-- If a regular matroid is a 1-sum of binary matroids, both summand matroids are regular. -/
 lemma Disjoint.decomposition_isRegular_both (hE : M₁.E ⫗ M₂.E) (regularity : hE.build1sum.IsRegular) :
     M₁.IsRegular ∧ M₂.IsRegular :=
   ⟨hE.decomposition_isRegular_left regularity, hE.decomposition_isRegular_right regularity⟩

@@ -54,27 +54,29 @@ end Representation
 
 section Regularity
 
+variable {M₁ M₂ : BinaryMatroid α}
+
 /-- Any 3-sum of regular matroids is regular. -/
-lemma ThreeSumAssumptions.composition_isRegular {M₁ M₂ : BinaryMatroid α}
-    (assumptions : ThreeSumAssumptions M₁ M₂) (regularity₁ : M₁.toMatroid.IsRegular) (regularity₂ : M₂.toMatroid.IsRegular) :
+lemma ThreeSumAssumptions.composition_isRegular (assumptions : ThreeSumAssumptions M₁ M₂)
+    (regularity₁ : M₁.toMatroid.IsRegular) (regularity₂ : M₂.toMatroid.IsRegular) :
     assumptions.build3sum.IsRegular :=
   sorry
 
 /-- If a regular matroid is a 3-sum of binary matroids, the left summand is regular. -/
-lemma ThreeSumAssumptions.decomposition_isRegular_left {M₁ M₂ : BinaryMatroid α}
-    (assumptions : ThreeSumAssumptions M₁ M₂) (regularity : assumptions.build3sum.IsRegular) :
+lemma ThreeSumAssumptions.decomposition_isRegular_left (assumptions : ThreeSumAssumptions M₁ M₂)
+    (regularity : assumptions.build3sum.IsRegular) :
     M₁.toMatroid.IsRegular :=
   sorry
 
 /-- If a regular matroid is a 3-sum of binary matroids, the right summand is regular. -/
-lemma ThreeSumAssumptions.decomposition_isRegular_right {M₁ M₂ : BinaryMatroid α}
-    (assumptions : ThreeSumAssumptions M₁ M₂) (regularity : assumptions.build3sum.IsRegular) :
+lemma ThreeSumAssumptions.decomposition_isRegular_right (assumptions : ThreeSumAssumptions M₁ M₂)
+    (regularity : assumptions.build3sum.IsRegular) :
     M₂.toMatroid.IsRegular :=
   sorry
 
-/-- If a regular matroid is a 3-sum of binary matroids, both summands are regular. -/
-lemma ThreeSumAssumptions.decomposition_isRegular_both {M₁ M₂ : BinaryMatroid α}
-    (assumptions : ThreeSumAssumptions M₁ M₂) (regularity : assumptions.build3sum.IsRegular) :
+/-- If a regular matroid is a 3-sum of binary matroids, both summand matroids are regular. -/
+lemma ThreeSumAssumptions.decomposition_isRegular_both (assumptions : ThreeSumAssumptions M₁ M₂)
+    (regularity : assumptions.build3sum.IsRegular) :
     M₁.toMatroid.IsRegular ∧ M₂.toMatroid.IsRegular :=
   ⟨assumptions.decomposition_isRegular_left regularity, assumptions.decomposition_isRegular_right regularity⟩
 

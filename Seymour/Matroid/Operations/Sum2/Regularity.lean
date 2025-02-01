@@ -122,7 +122,7 @@ lemma TwoSumAssumptions.decomposition_isRegular_right {M₁ M₂ : Matroid α}
     M₂.IsRegular :=
   sorry
 
-/-- If a regular matroid is a 2-sum of binary matroids, both summands are regular. -/
+/-- If a regular matroid is a 2-sum of binary matroids, both summand matroids are regular. -/
 lemma TwoSumAssumptions.decomposition_isRegular_both {M₁ M₂ : Matroid α}
     (assumptions : TwoSumAssumptions M₁ M₂) (regularity : assumptions.build2sum.IsRegular) :
     M₁.IsRegular ∧ M₂.IsRegular :=

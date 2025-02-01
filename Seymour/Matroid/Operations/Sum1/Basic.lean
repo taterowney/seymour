@@ -14,6 +14,7 @@ abbrev Disjoint.build1sum {M₁ M₂ : Matroid α} (hE : M₁.E ⫗ M₂.E) : Ma
 lemma Disjoint.build1sum_comm {M₁ M₂ : Matroid α} (hE : M₁.E ⫗ M₂.E) : hE.symm.build1sum = hE.build1sum :=
   Matroid.disjointSum_comm
 
+/-- Dependent set in the 1-sum is depenent in one of summand matroids. -/
 lemma Disjoint.build1sum_dep_iff {M N : Matroid α} (hE : M.E ⫗ N.E) {D : Set α} :
     hE.build1sum.Dep D ↔ (M.Dep (D ∩ M.E) ∨ N.Dep (D ∩ N.E)) ∧ D ⊆ M.E ∪ N.E := by
   constructor
@@ -38,6 +39,7 @@ lemma Disjoint.build1sum_dep_iff {M N : Matroid α} (hE : M.E ⫗ N.E) {D : Set 
       fun hD => (hDN.not_indep (Matroid.disjointSum_indep_iff.→ hD).right.left).elim,
         Matroid.disjointSum_ground_eq ▸ hDE⟩
 
+/-- Circuit in the 1-sum is circuit in one of summand matroids. -/
 lemma Matroid.build1sum_circuit_iff (M N : Matroid α) (hE : M.E ⫗ N.E) {C : Set α} :
     hE.build1sum.Circuit C ↔ M.Circuit C ∨ N.Circuit C := by
   constructor
