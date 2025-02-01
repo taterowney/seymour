@@ -83,7 +83,7 @@ lemma TwoSumSummandRepr.twoSumGround_eq {M₁ M₂ : Matroid α} {p : α} (hp₁
 --     (twoSumGround_eq hp₁ hp₂ assumptions)
 
 /-- todo: desc -/
-lemma TwoSumSummandRepr.exists {R : Type} [Ring R] {M : Matroid α} {p : α}
+lemma TwoSumSummandRepr.exists {R : Type} [Ring R] {M : Matroid α} [Fintype M.E] {p : α}
     (hp : p ∈ M.E) (hM : M.IsRepresentableOver R) :
     ∃ S : TwoSumSummandRepr M hp R, M.IsRepresentedBy S.A :=
   sorry

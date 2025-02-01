@@ -29,11 +29,11 @@ def Matroid.IsRegular [DecidableEq α] (M : Matroid α) : Prop :=
 
 /-- Matroid `M` that can be represented by a matrix over `Z2` with a TU signing -/
 def Matroid.HasTuSigning [DecidableEq α] (M : Matroid α) : Prop :=
-  ∃ X : Type, ∃ A : Matrix X M.E Z2, A.HasTuSigning ∧ M.IsRepresentedBy A
+  ∃ X Y : Type, ∃ _ : Fintype Y, ∃ A : Matrix X Y Z2, A.HasTuSigning ∧ M.IsRepresentedBy A
 
 /-- Matroid `M` that can be represented by a TU matrix -/
 def Matroid.HasTuRepr [DecidableEq α] (M : Matroid α) : Prop :=
-  ∃ X : Type, ∃ A : Matrix X M.E ℚ, A.IsTotallyUnimodular ∧ M.IsRepresentedBy A
+  ∃ X Y : Type, ∃ _ : Fintype Y, ∃ A : Matrix X Y ℚ, A.IsTotallyUnimodular ∧ M.IsRepresentedBy A
 
 end Definitions
 
@@ -65,7 +65,7 @@ section Corollaries
 
 -- note: if M is regular, every minor of M is regular. however, matroid minors are not currently in mathlib
 
-lemma Matroid.IsRegular.hasTuSigning_of_reprZ2 [DecidableEq α] {X : Type} {M : Matroid α} {A : Matrix X M.E Z2}
+lemma Matroid.IsRegular.hasTuSigning_of_reprZ2 {X Y : Type} [DecidableEq α] [Fintype Y] {M : Matroid α} {A : Matrix X Y Z2}
     (hM : M.IsRegular) (hMA : M.IsRepresentedBy A) :
     A.HasTuSigning := by
   sorry

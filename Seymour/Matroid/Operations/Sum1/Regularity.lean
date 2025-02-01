@@ -2,15 +2,13 @@ import Seymour.Matroid.Operations.Sum1.Basic
 import Seymour.Matroid.Classes.Regular
 
 
-variable {α : Type} [DecidableEq α] {M₁ M₂ : Matroid α}
+variable {α : Type} [DecidableEq α] {M₁ M₂ : Matroid α} [Fintype M₁.E.Elem] [Fintype M₂.E.Elem]
 
 section Composition
 
-lemma Disjoint.build1sum_isRepresentedBy {R X₁ X₂ : Type} {A₁ : Matrix X₁ M₁.E R} {A₂ : Matrix X₂ M₂.E R}
-    [Ring R] [∀ a, Decidable (a ∈ M₁.E)] [∀ a, Decidable (a ∈ M₂.E)]
+lemma Disjoint.build1sum_isRepresentedBy {R X₁ X₂ : Type} [Ring R] {A₁ : Matrix X₁ M₁.E R} {A₂ : Matrix X₂ M₂.E R}
     (hE : M₁.E ⫗ M₂.E) (hA₁ : M₁.IsRepresentedBy A₁) (hA₂ : M₂.IsRepresentedBy A₂) :
-    have hEE : hE.build1sum.E = (M₁.E ⊕ M₂.E) := by sorry -- sus
-    hE.build1sum.IsRepresentedBy (hEE ▸ Matrix.fromBlocks A₁ 0 0 A₂) := by
+    hE.build1sum.IsRepresentedBy (Matrix.fromBlocks A₁ 0 0 A₂) := by
   sorry
 
 end Composition
@@ -20,13 +18,15 @@ section Decomposition
 
 /-- todo: desc-/
 lemma Matroid.oneSum.ofRepr₁ {X R : Type} [Ring R] (hE : M₁.E ⫗ M₂.E) {A : Matrix X hE.build1sum.E R}
-    (hA : hE.build1sum.IsRepresentedBy A) :
+    (hA : have : Fintype hE.build1sum.E := (by sorry); -- should be somewhere already
+      hE.build1sum.IsRepresentedBy A) :
     ∃ X₁ : Type, ∃ A₁ : Matrix X₁ M₁.E R, M₁.IsRepresentedBy A₁ :=
   sorry
 
 /-- todo: desc-/
 lemma Matroid.oneSum.ofRepr₂ {X R : Type} [Ring R] (hE : M₁.E ⫗ M₂.E) {A : Matrix X hE.build1sum.E R}
-    (hA : hE.build1sum.IsRepresentedBy A) :
+    (hA : have : Fintype hE.build1sum.E := (by sorry); -- should be somewhere already
+      hE.build1sum.IsRepresentedBy A) :
     ∃ X₂ : Type, ∃ A₂ : Matrix X₂ M₂.E R, M₂.IsRepresentedBy A₂ :=
   sorry
 

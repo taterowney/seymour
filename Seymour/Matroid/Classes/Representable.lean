@@ -3,13 +3,19 @@ import Seymour.Matroid.Constructors.VectorMatroid
 
 variable {α : Type} [DecidableEq α]
 
-/-- Matroid `M` is represented by matrix `A` if vector matroid `M[A]` is exactly `M` -/
-def Matroid.IsRepresentedBy {R X : Type} [Ring R] (M : Matroid α) (A : Matrix X M.E R) : Prop :=
-  ∃ hE : Fintype M.E, ∃ c : M.E ↪ α, M = (VectorMatroid.mk X M.E A hE c).toMatroid
+-- Having both `Matroid.IsRepresentedBy` and `Matroid.IsRepresentableOver` is sus since the defs are independent of each other.
 
-/-- Matroid `M` can be represented over field `F` if it can be represented by some matrix with entries in `F` -/
+/-- Matroid `M` is represented by matrix `A` if vector matroid `M[A]` is exactly `M` -/
+def Matroid.IsRepresentedBy {R X Y : Type} [Ring R] [hY : Fintype Y] (M : Matroid α) (A : Matrix X Y R) : Prop :=
+  ∃ c : Y ↪ α, M = (VectorMatroid.mk X Y A hY c).toMatroid
+
+/-- Matroid `M` can be represented over ring `R` if it can be represented by some matrix with entries in `R` -/
 def Matroid.IsRepresentableOver (M : Matroid α) (R : Type) [Ring R] : Prop :=
   ∃ M' : VectorMatroid α R, M'.toMatroid = M
+
+lemma Matroid.isRepresentableOver_iff (M : Matroid α) (R : Type) [Ring R] :
+    M.IsRepresentableOver R ↔ ∃ X Y : Type, ∃ hY : Fintype Y, ∃ A : Matrix X Y R, M.IsRepresentedBy A := by
+  sorry -- TODO important sanity check
 
 /-- Matroid `M` is representable if it is representable over some field -/
 def Matroid.IsRepresentable (M : Matroid α) : Prop :=
