@@ -76,6 +76,16 @@ variable {X Y : Type} [DecidableEq X] [DecidableEq Y]
   -- 3. interchange values in the columns corresponding to `x` and `y`
   -- 4. remove the identity matrix
 
+private def Matrix.mulRow {F : Type} [Semiring F]
+    (A : Matrix X Y F) (x : X) (c : F) :
+    Matrix X Y F :=
+  fun i => if i = x then c • A x else A i
+
+private lemma Matrix.IsTotallyUnimodular.mulRow {F : Type} [CommRing F]
+    {A : Matrix X Y F} (hA : A.IsTotallyUnimodular) (x : X) {c : F} (hc : c ∈ Set.range SignType.cast) :
+    (A.mulRow x c).IsTotallyUnimodular := by
+  sorry
+
 /-- Add `c` times the `x`th row to the `r`th row. -/
 private def Matrix.addRowMul {F : Type} [Semiring F]
     (A : Matrix X Y F) (x r : X) (c : F) :
@@ -108,13 +118,29 @@ private lemma Matrix.IsTotallyUnimodular.getSmallTableau {F : Type} [CommRing F]
   sorry
 
 private lemma Matrix.shortTableauPivot_eq {F : Type} [Field F]
-    (A : Matrix X Y F) (x : X) (y : Y) (hxy : A x y ≠ 0) :
-    A.shortTableauPivot x y hxy = ((Matrix.fromCols 1 A).addMultiple x (A · y / A x y)).getSmallTableau x y := by
-  sorry
+    (A : Matrix X Y F) (x : X) (y : Y) (hxy : A x y ≠ 0) : -- TODO the `x`th row must be divided by `A x y`
+    A.shortTableauPivot x y hxy =
+    (((Matrix.fromCols 1 A).addMultiple x (- A · y / A x y)).getSmallTableau x y).mulRow x (1 / A x y) := by
+  ext i j
+  if hj : j = y then
+    by_cases hi : i = x <;>
+      simp [Matrix.shortTableauPivot, Matrix.fromCols, Matrix.addMultiple, Matrix.getSmallTableau, Matrix.mulRow, hj, hi]
+  else
+    if hi : i = x then
+      simp [Matrix.shortTableauPivot, Matrix.fromCols, Matrix.addMultiple, Matrix.getSmallTableau, Matrix.mulRow, hj, hi]
+      exact div_eq_inv_mul (A x j) (A x y)
+    else
+      simp [Matrix.shortTableauPivot, Matrix.fromCols, Matrix.addMultiple, Matrix.getSmallTableau, Matrix.mulRow, hj, hi]
+      ring
 
 /-- Pivoting preserves total unimodularity -/
-lemma Matrix.shortTableauPivot_isTotallyUnimodular {F : Type} [Field F]
-    {A : Matrix X Y F} (x : X) (y : Y) (hxy : A x y ≠ 0) (hA : A.IsTotallyUnimodular) :
+lemma Matrix.IsTotallyUnimodular.shortTableauPivot {F : Type} [Field F]
+    {A : Matrix X Y F} (hA : A.IsTotallyUnimodular) (x : X) (y : Y) (hxy : A x y ≠ 0) :
     (A.shortTableauPivot x y hxy).IsTotallyUnimodular := by
   rw [Matrix.shortTableauPivot_eq]
-  exact ((hA.one_fromCols).addMultiple x _).getSmallTableau x y
+  have hAxy : 1 / A x y ∈ Set.range SignType.cast
+  · have hA' := hA.apply x y
+    have hAxy' : 1 / A x y = A x y
+    · sorry
+    rwa [hAxy']
+  exact (((hA.one_fromCols).addMultiple x _).getSmallTableau x y).mulRow x hAxy
