@@ -153,16 +153,20 @@ lemma TwoSumAssumptions.build2sum_eq_deltaSumMatroid
   constructor
   · intro ⟨_, hC⟩
     cases hC with
-    | inl hC => exact DeltaSumCircuitForm1.sum2_circuit_pred hC assumptions -- TODO . notation?
+    | inl hC =>
+      have hhC : DeltaSumCircuitForm1 M₁ M₂ C := hC
+      exact hhC.sum2_circuit_pred assumptions
     | inr hC => cases hC with
-      | inl hC => exact DeltaSumCircuitForm2.sum2_circuit_pred hC assumptions -- TODO . notation?
+      | inl hC =>
+        have hhC : DeltaSumCircuitForm2 M₁ M₂ C := hC
+        exact hhC.sum2_circuit_pred assumptions
       | inr hC =>
         obtain ⟨p, hp⟩ := assumptions.inter_singleton
         have hMMCp : DeltaSumCircuitForm3 M₁ M₂ C p := ⟨
           hp ▸ hC.to_circuit_M₁,
           hp ▸ hC.to_circuit_M₂,
           hCE⟩
-        exact DeltaSumCircuitForm3.sum2_circuit_pred hMMCp assumptions -- TODO . notation?
+        exact hMMCp.sum2_circuit_pred assumptions
   · intro hC
     constructor
     · exact hCE

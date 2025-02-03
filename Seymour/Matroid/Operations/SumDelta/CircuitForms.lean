@@ -146,8 +146,8 @@ lemma DeltaSumCircuitForm2.circuit_form {M₁ M₂ : BinaryMatroid α} {C : Set 
 lemma DeltaSumCircuitPred.udc_M₂ {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hCpred : DeltaSumCircuitPred M₁ M₂ C) (hCudc : M₂.toMatroid.IsUnionDisjointCircuits C) :
     M₂.toMatroid.Circuit C :=
-  have ⟨⟨hCnempty, hCE, _⟩, hCmin⟩ := hCpred
-  ⟨hCudc.nonempty_dep hCnempty, fun D hD hDC =>
+  have ⟨⟨C_nempty, hCE, _⟩, hCmin⟩ := hCpred
+  ⟨hCudc.nonempty_dep C_nempty, fun D hD hDC =>
     have ⟨_, D', hD', hDD'⟩ := M₂.toMatroid.dep_iff_has_circuit.→ hD
     (hCmin
         (DeltaSumCircuitForm2.circuit_form ⟨hD', (Set.subset_diff.→ ((hDD'.trans hDC).trans hCE)).right⟩)
