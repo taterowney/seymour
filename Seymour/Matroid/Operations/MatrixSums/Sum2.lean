@@ -7,7 +7,7 @@ This file contains everything about 2-sum of binary matroids — the old version
 variable {α : Type}
 
 /-- `Matrix`-level 2-sum for matroids defined by their standard representation matrices; does not check legitimacy. -/
-abbrev Matrix_2sumComposition {β : Type*} [Semiring β] {X₁ Y₁ X₂ Y₂ : Set α}
+abbrev Matrix_2sumComposition {β : Type} [Semiring β] {X₁ Y₁ X₂ Y₂ : Set α}
     (A₁ : Matrix X₁ Y₁ β) (x : Y₁ → β) (A₂ : Matrix X₂ Y₂ β) (y : X₂ → β) :
     Matrix (X₁ ⊕ X₂) (Y₁ ⊕ Y₂) β :=
   Matrix.fromBlocks A₁ 0 (fun i j => y i * x j) A₂

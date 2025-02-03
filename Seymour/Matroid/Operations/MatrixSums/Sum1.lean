@@ -8,7 +8,7 @@ This file contains everything about 1-sum of binary matroids — the old version
 variable {α : Type}
 
 /-- `Matrix`-level 1-sum for matroids defined by their standard representation matrices. -/
-abbrev Matrix_1sumComposition {β : Type*} [Zero β] {X₁ Y₁ X₂ Y₂ : Set α}
+abbrev Matrix_1sumComposition {β : Type} [Zero β] {X₁ Y₁ X₂ Y₂ : Set α}
     (A₁ : Matrix X₁ Y₁ β) (A₂ : Matrix X₂ Y₂ β) :
     Matrix (X₁ ⊕ X₂) (Y₁ ⊕ Y₂) β :=
   Matrix.fromBlocks A₁ 0 0 A₂

@@ -108,7 +108,7 @@ The guideline below is written primarily to assist you in reading the code.
 - Real-life example (focus on the third line of each version – explicit arguments of the lemma):
   - Unacceptable argument names:
     ```lean
-    lemma Multiset.sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
+    lemma Multiset.sum_lt_sum {ι α : Type} [OrderedCancelAddCommMonoid α]
         {s : Multiset ι} {f g : ι → α}
         (h : ∀ i ∈ s, f i ≤ g i) (h' : ∃ i ∈ s, f i < g i) :
         (s.map f).sum < (s.map g).sum := by
@@ -118,7 +118,7 @@ The guideline below is written primarily to assist you in reading the code.
     ```
   - Bad argument names:
     ```lean
-    lemma Multiset.sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
+    lemma Multiset.sum_lt_sum {ι α : Type} [OrderedCancelAddCommMonoid α]
         {s : Multiset ι} {f g : ι → α}
         (hle : ∀ i ∈ s, f i ≤ g i) (hlt : ∃ i ∈ s, f i < g i) :
         (s.map f).sum < (s.map g).sum := by
@@ -128,7 +128,7 @@ The guideline below is written primarily to assist you in reading the code.
     ```
   - Acceptable argument names:
     ```lean
-    lemma Multiset.sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
+    lemma Multiset.sum_lt_sum {ι α : Type} [OrderedCancelAddCommMonoid α]
         {s : Multiset ι} {f g : ι → α}
         (hfg : ∀ i ∈ s, f i ≤ g i) (hfg' : ∃ i ∈ s, f i < g i) :
         (s.map f).sum < (s.map g).sum := by
@@ -138,7 +138,7 @@ The guideline below is written primarily to assist you in reading the code.
     ```
   - Better argument names:
     ```lean
-    lemma Multiset.sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
+    lemma Multiset.sum_lt_sum {ι α : Type} [OrderedCancelAddCommMonoid α]
         {s : Multiset ι} {f g : ι → α}
         (all_f_le_g : ∀ i ∈ s, f i ≤ g i) (exists_f_lt_g : ∃ i ∈ s, f i < g i) :
         (s.map f).sum < (s.map g).sum := by
@@ -148,7 +148,7 @@ The guideline below is written primarily to assist you in reading the code.
     ```
   - Best argument names:
     ```lean
-    lemma Multiset.sum_lt_sum {ι α : Type*} [OrderedCancelAddCommMonoid α]
+    lemma Multiset.sum_lt_sum {ι α : Type} [OrderedCancelAddCommMonoid α]
         {s : Multiset ι} {f g : ι → α}
         (all_le : ∀ i ∈ s, f i ≤ g i) (exists_lt : ∃ i ∈ s, f i < g i) :
         (s.map f).sum < (s.map g).sum := by
@@ -159,6 +159,7 @@ The guideline below is written primarily to assist you in reading the code.
 
 ### Other
 
+- We currently prefer `Type` over universe-polymorphic types. Genralization to `Type*` will probably be done at the end of the project.
 - We usually annotate types even in situations where they can be inferred automatically.
 - We prefer not to write parentheses after quantifiers.
 - We do not write a space after `¬` but we write redundant parentheses around the negated expression unless it is a single token.
@@ -168,3 +169,8 @@ The guideline below is written primarily to assist you in reading the code.
 - We prefer Mathlib's `have` over Lean's `have` inside tactic-block proofs.
 - We do not write a space after `←` in the `rw` syntax.
 - We do not write `↦` as this syntax does not work everywhere. Write `=>` instead.
+
+### TODO
+
+- We want to write `_subset_` not `_sub_` when referring to the `⊆` relation.
+- We want to write `_ssubset_` not `_ss_` when referring to the `⊂` relation.
