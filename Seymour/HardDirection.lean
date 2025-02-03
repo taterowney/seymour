@@ -18,8 +18,8 @@ def BinaryMatroid.Is3sumOf {α : Type} [DecidableEq α] (M M₁ M₂ : BinaryMat
   and each of which is isomorphic to a minor of `M`. TODO this is not what the definition says! -/
 inductive BinaryMatroid.IsGood {α : Type} [DecidableEq α] : BinaryMatroid α → Prop
 -- leaf constructors
--- TODO finiteness | graphic {M : BinaryMatroid α} (hM : M.toMatroid.IsGraphic) : M.IsGood
--- TODO finiteness | cographic {M : BinaryMatroid α} (hM : M.toMatroid.IsCographic) : M.IsGood
+| graphic {M : BinaryMatroid α} (hM : M.toMatroid.IsGraphic) : M.IsGood
+| cographic {M : BinaryMatroid α} (hM : M.toMatroid.IsCographic) : M.IsGood
 | isomR10 {M : BinaryMatroid α} {e : α ≃ Fin 10} (hM : M.toMatroid.mapEquiv e = MatroidR10.toVectorMatroid.toMatroid) : M.IsGood
 -- fork constructors
 | is1sum {M M₁ M₂ : BinaryMatroid α} (hM : M.Is1sumOf M₁ M₂) : M.IsGood
