@@ -9,7 +9,7 @@ def Matrix.shortTableauPivot {X Y R : Type} [Field R] [DecidableEq X] [Decidable
   Matrix.of <| fun i j =>
     if j = y then
       if i = x then
-        - A x y
+        1 / A x y
       else
         - A i y / A x y
     else
@@ -26,7 +26,7 @@ open scoped Matrix
 lemma Matrix.shortTableauPivot_row_pivot {X Y R : Type} [Field R] [DecidableEq X] [DecidableEq Y]
     (A : Matrix X Y R) (x : X) (y : Y) (hxy : A x y ≠ 0) :
     A.shortTableauPivot x y hxy x =
-    (fun j : Y => if j = y then - A x y else A x j / A x y) := by
+    (fun j : Y => if j = y then 1 / A x y else A x j / A x y) := by
   ext
   simp [Matrix.shortTableauPivot]
 
