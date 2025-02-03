@@ -231,6 +231,11 @@ lemma disjoint_inter_disjoint {A B : Set α} (C : Set α) (hAB : A ⫗ B) : C �
   rw [hAB.inter_eq]
   exact Set.disjoint_empty C
 
+lemma diff_inter_disjoint_diff_inter (X₁ X₂ : Set α) :
+    X₁ \ (X₁ ∩ X₂) ⫗ X₂ \ (X₁ ∩ X₂) := by
+  rw [Set.diff_self_inter, Set.diff_inter_self_eq_diff]
+  exact disjoint_sdiff_sdiff
+
 end Disjoint
 
 

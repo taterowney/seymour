@@ -63,7 +63,7 @@ lemma DeltaSumCircuitForm1.subset_M₁_diff_inter {M₁ M₂ : BinaryMatroid α}
 lemma DeltaSumCircuitForm1.disjoint_M₂ {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hC : DeltaSumCircuitForm1 M₁ M₂ C) :
     C ⫗ M₂.E := by
-  have hMM := old_disjoint_grounds_diff_inter M₁ M₂
+  have hMM := diff_inter_disjoint_diff_inter M₁.E M₂.E
   have hCM₂ := Set.disjoint_of_subset_left hC.subset_M₁_diff_inter hMM
   have hCM₂ := Set.disjoint_union_right.← ⟨hCM₂, hC.disjoint_inter⟩
   rw [Set.diff_union_of_subset Set.inter_subset_right] at hCM₂
@@ -130,7 +130,7 @@ lemma DeltaSumCircuitForm2.subset_M₂_diff_inter {M₁ M₂ : BinaryMatroid α}
 lemma DeltaSumCircuitForm2.disjoint_M₁ {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hC : DeltaSumCircuitForm2 M₁ M₂ C) :
     C ⫗ M₁.E := by
-  have hMM := old_disjoint_grounds_diff_inter M₁ M₂
+  have hMM := diff_inter_disjoint_diff_inter M₁.E M₂.E
   have hCM₂ := Set.disjoint_of_subset_right hC.subset_M₂_diff_inter hMM
   have hCM₂ := Set.disjoint_union_right.← ⟨hCM₂.symm, hC.disjoint_inter⟩
   rw [Set.diff_union_of_subset Set.inter_subset_left] at hCM₂

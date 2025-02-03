@@ -27,12 +27,6 @@ end BasicDefinitions
 
 section BasicProperties
 
-/-- Ground sets minus their intersection are disjoint sets. -/
-lemma old_disjoint_grounds_diff_inter (M₁ M₂ : BinaryMatroid α) :
-    M₁.E \ (M₁.E ∩ M₂.E) ⫗ M₂.E \ (M₁.E ∩ M₂.E) := by -- TODO make a `Set` lemma instead!
-  rw [Set.diff_self_inter, Set.diff_inter_self_eq_diff]
-  exact disjoint_sdiff_sdiff
-
 /-- A set of circuit form is nonempty. -/
 lemma deltaSumCircuitForm.nonempty [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
     (hC : DeltaSumCircuitForm M₁ M₂ C) :
