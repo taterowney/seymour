@@ -4,7 +4,6 @@ import Seymour.Basic
 
 variable {X Y F : Type} [DecidableEq X] [DecidableEq Y]
 
-set_option linter.unusedVariables false in
 /-- The result of the pivot operation in a short tableau (without exchanging the indices that define the pivot).
 This definition makes sense only if `A x y` is nonzero. -/
 def Matrix.shortTableauPivot [Field F] (A : Matrix X Y F) (x : X) (y : Y) :
@@ -21,58 +20,54 @@ def Matrix.shortTableauPivot [Field F] (A : Matrix X Y F) (x : X) (y : Y) :
       else
         A i j - A i y * A x j / A x y
 
-open scoped Matrix
-
 -- private def A : Matrix (Fin 3) (Fin 3) ℚ := !![1, 2, 3; 4, 5, 6; 7, 8, 9]
--- #eval A.shortTableauPivot 0 0 (by decide)
+-- #eval A.shortTableauPivot 0 0
 
-lemma Matrix.shortTableauPivot_row_pivot [Field F]
-    (A : Matrix X Y F) (x : X) (y : Y) :
+lemma Matrix.shortTableauPivot_row_pivot [Field F] (A : Matrix X Y F) (x : X) (y : Y) :
     A.shortTableauPivot x y x =
     (fun j : Y => if j = y then 1 / A x y else A x j / A x y) := by
   ext
   simp [Matrix.shortTableauPivot]
 
-lemma Matrix.shortTableauPivot_row_other [Field F]
-    (A : Matrix X Y F) (x : X) (y : Y) (i : X) (hix : i ≠ x) :
+lemma Matrix.shortTableauPivot_row_other [Field F] (A : Matrix X Y F) (x : X) (y : Y) (i : X) (hix : i ≠ x) :
     A.shortTableauPivot x y i =
     (fun j : Y => if j = y then - A i y / A x y else A i j - A i y * A x j / A x y) := by
   ext
   simp [Matrix.shortTableauPivot, hix]
 
-private def Matrix.mulRow [Semiring F]
-    (A : Matrix X Y F) (x : X) (c : F) :
+/-- Multiply the `x`th row of `A` by `c` and keep the rest of `A` unchanged. -/
+private def Matrix.mulRow [Semiring F] (A : Matrix X Y F) (x : X) (c : F) :
     Matrix X Y F :=
-  fun i => if i = x then c • A x else A i
+  fun i : X => if i = x then c • A x else A i
 
-private lemma Matrix.IsTotallyUnimodular.mulRow [CommRing F]
-    {A : Matrix X Y F} (hA : A.IsTotallyUnimodular) (x : X) {c : F} (hc : c ∈ Set.range SignType.cast) :
+private lemma Matrix.IsTotallyUnimodular.mulRow [CommRing F] {A : Matrix X Y F}
+    (hA : A.IsTotallyUnimodular) (x : X) {c : F} (hc : c ∈ Set.range SignType.cast) :
     (A.mulRow x c).IsTotallyUnimodular := by
   sorry
 
-/-- Add `c` times the `x`th row to the `r`th row. -/
-private def Matrix.addRowMul [Semiring F]
-    (A : Matrix X Y F) (x r : X) (c : F) :
+/-- Add `c` times the `x`th row of `A` to the `r`th row of `A` and keep the rest of `A` unchanged. -/
+private def Matrix.addRowMul [Semiring F] (A : Matrix X Y F) (x r : X) (c : F) :
     Matrix X Y F :=
-  fun i => if i = r then A i + c • A x else A i
+  fun i : X => if i = r then A i + c • A x else A i
 
-private lemma Matrix.IsTotallyUnimodular.addRowMul [CommRing F]
-    {A : Matrix X Y F} (hA : A.IsTotallyUnimodular) (x r : X) (c : F) :
+private lemma Matrix.IsTotallyUnimodular.addRowMul [CommRing F] {A : Matrix X Y F}
+    (hA : A.IsTotallyUnimodular) (x r : X) (c : F) :
     (A.addRowMul x r c).IsTotallyUnimodular := by
   sorry
 
-private def Matrix.addMultiple [Semifield F]
-    (A : Matrix X Y F) (x : X) (q : X → F) :
+/-- Add `q` times the `x`th row of `A` to all rows of `A` except the `x`th row (where `q` is different for each row). -/
+private def Matrix.addMultiple [Semifield F] (A : Matrix X Y F) (x : X) (q : X → F) :
     Matrix X Y F :=
-  fun i => if i = x then A x else A i + q i • A x
+  fun i : X => if i = x then A x else A i + q i • A x
+-- TODO (lemma) express `Matrix.addMultiple` as a sequence of `Matrix.addRowMul` operations.
 
 private lemma Matrix.IsTotallyUnimodular.addMultiple [Field F]
     {A : Matrix X Y F} (hA : A.IsTotallyUnimodular) (x : X) (q : X → F) :
     (A.addMultiple x q).IsTotallyUnimodular := by
   sorry
 
-private def Matrix.getSmallTableau {F : Type}
-    (A : Matrix X (X ⊕ Y) F) (x : X) (y : Y) :
+/-- The small tableau consists of all columns but `x`th from the original matrix and the `y`th column of the square matrix. -/
+private def Matrix.getSmallTableau (A : Matrix X (X ⊕ Y) F) (x : X) (y : Y) :
     Matrix X Y F :=
   Matrix.of (fun i : X => fun j : Y => if j = y then A i (Sum.inl x) else A i (Sum.inr j))
 
@@ -81,8 +76,7 @@ private lemma Matrix.IsTotallyUnimodular.getSmallTableau [CommRing F]
     (A.getSmallTableau x y).IsTotallyUnimodular := by
   sorry
 
-private lemma Matrix.shortTableauPivot_eq [Field F]
-    (A : Matrix X Y F) (x : X) (y : Y) :
+private lemma Matrix.shortTableauPivot_eq [Field F] (A : Matrix X Y F) (x : X) (y : Y) :
     A.shortTableauPivot x y =
     (((Matrix.fromCols 1 A).addMultiple x (- A · y / A x y)).getSmallTableau x y).mulRow x (1 / A x y) := by
   ext i j
@@ -105,3 +99,4 @@ lemma Matrix.IsTotallyUnimodular.shortTableauPivot [Field F]
   have hAxy : 1 / A x y ∈ Set.range SignType.cast
   · rw [inv_eq_self_of_in_set_range_singType_cast] <;> exact hA.apply x y
   exact (((hA.one_fromCols).addMultiple x _).getSmallTableau x y).mulRow x hAxy
+-- The other implication should hold as well afaik.
