@@ -151,7 +151,7 @@ lemma CircuitPredicate.finite_support_iff (P : CircuitPredicate α) :
   sorry
 
 /-- If `P` is finitely supported and `P` satisfies weak circuit elimination, then `P` satisfies (C3). -/
-lemma CircuitPredicate.FinSup_weak_circuit_elim_C3 {P : CircuitPredicate α} (hP_fin : P.support.Finite) :
+lemma CircuitPredicate.finSup_weakCircuitElim_bruhnC3 {P : CircuitPredicate α} (hP_fin : P.support.Finite) :
     P.WeakCircuitElim → P.BruhnC3 := by
   sorry
 
@@ -184,13 +184,13 @@ lemma CircuitPredicate.toIndep_toCircuit_iff {P : CircuitPredicate α} (hP : P.C
   · exact P.toIndep_toCircuit E C
   · intro ⟨hCE, hC⟩
     constructor
-    · exact ⟨fun ⟨_, hCsub⟩ => (hCsub C Set.Subset.rfl) hC, hCE⟩
+    · exact ⟨fun ⟨_, C_subset_E⟩ => (C_subset_E C Set.Subset.rfl) hC, hCE⟩
     · intro D ⟨D_notIndep, hDE⟩ hDC
       unfold CircuitPredicate.toIndepPredicate at D_notIndep
       push_neg at D_notIndep
-      obtain ⟨D', hD'D, hD'⟩ := D_notIndep hDE
+      obtain ⟨D', hDD, hD'⟩ := D_notIndep hDE
       rw [CircuitPredicate.circuit_not_ssubset_iff] at hP
-      exact (hP C D' hC hD' (hD'D.trans hDC)).trans hD'D
+      exact (hP C D' hC hD' (hDD.trans hDC)).trans hDD
 
 /-- Converting independence predicate to circuit predicate and then to independence predicate
     yields original independence predicate.-/
@@ -208,7 +208,7 @@ lemma IndepPredicate.toCircuit_toIndep_iff (P : IndepPredicate α) (E I : Set α
 
 /-- Converting independence predicate of matroid to circuit predicate and then to independence predicate
     yields original independence predicate. -/
-lemma IndepPredicate.Matroid_toCircuit_toIndep_iff (M : Matroid α) (I : Set α) :
+lemma IndepPredicate.matroid_toCircuit_toIndep_iff (M : Matroid α) (I : Set α) :
     (M.IndepPredicate.ToCircuitPredicate M.E).toIndepPredicate M.E I ↔ I ⊆ M.E ∧ M.Indep I := by
   constructor
   · intro ⟨hIE, hI⟩
@@ -217,7 +217,6 @@ lemma IndepPredicate.Matroid_toCircuit_toIndep_iff (M : Matroid α) (I : Set α)
     · -- hI : I contains no circuit
       let hIE' := hIE
       apply M.maximality at hIE
-      unfold Matroid.ExistsMaximalSubsetProperty at hIE
       specialize hIE ∅ M.empty_indep I.empty_subset
       obtain ⟨J, -, ⟨J_indep, hJI⟩, hJ⟩ := hIE
       simp at hJ
@@ -252,21 +251,21 @@ end PredicateRelations
 section CircuitToIndepAxioms
 
 /-- Independence predicate constructed from circuit predicate satisfies (I1): empty set is independent. -/
-lemma CircuitPredicate.toIndepPredicate_indep_empty {P : CircuitPredicate α}
+lemma CircuitPredicate.toIndepPredicate_indepEmpty {P : CircuitPredicate α}
     (hP : P.NotCircuitEmpty) (E : Set α) :
-    (P.toIndepPredicate E).indep_empty :=
+    (P.toIndepPredicate E).IndepEmpty :=
   ⟨E.empty_subset, fun _ C_empty hC => hP (Set.subset_eq_empty C_empty rfl ▸ hC)⟩
 
 /-- Independence predicate constructed from circuit predicate satisfies (I2): subsets of independent sets are independent. -/
-lemma CircuitPredicate.toIndepPredicate_indep_subset (P : CircuitPredicate α) (E : Set α) :
-    (P.toIndepPredicate E).indep_subset := by
-  unfold IndepPredicate.indep_subset
+lemma CircuitPredicate.toIndepPredicate_indepSubset (P : CircuitPredicate α) (E : Set α) :
+    (P.toIndepPredicate E).IndepSubset := by
+  unfold IndepPredicate.IndepSubset
   exact fun I J hJ hIJ => ⟨hIJ.trans hJ.left, fun C hCI hPC => hJ.right C (hCI.trans hIJ) hPC⟩
 
 /-- Independence predicate constructed from circuit predicate satisfies (I3): independent sets have augmentation property. -/
-lemma CircuitPredicate.toIndepPredicate_indep_aug {P : CircuitPredicate α} {E : Set α}
+lemma CircuitPredicate.toIndepPredicate_indepAug {P : CircuitPredicate α} {E : Set α}
     (hPCM : P.CircuitMaximal E) (hPC3 : P.BruhnC3) :
-    (P.toIndepPredicate E).indep_aug := by
+    (P.toIndepPredicate E).IndepAug := by
   -- Proof adapted from Bruhn et al., Theorem 4.2 (ii), backward direction
   intro I B hI hInmax hBmax
   sorry -- todo : fix
@@ -359,13 +358,13 @@ lemma CircuitPredicate.toIndepPredicate_indep_aug {P : CircuitPredicate α} {E :
   -- rfl
 
 /-- Independence predicate constructed from circuit predicate satisfies (IM): independent sets have maximal property. -/
-lemma CircuitPredicate.toIndepPredicate_indep_maximal (P : CircuitPredicate α) (E : Set α) :
-    (P.toIndepPredicate E).indep_maximal E :=
+lemma CircuitPredicate.toIndepPredicate_indepMaximal (P : CircuitPredicate α) (E : Set α) :
+    (P.toIndepPredicate E).IndepMaximal E :=
   sorry
 
 /-- Independence predicate constructed from circuit predicate satisfies (IE): independent sets are subsets of ground set. -/
-lemma CircuitPredicate.toIndepPredicate_subset_ground (P : CircuitPredicate α) (E : Set α) :
-    (P.toIndepPredicate E).subset_ground E :=
+lemma CircuitPredicate.toIndepPredicate_subsetGround (P : CircuitPredicate α) (E : Set α) :
+    (P.toIndepPredicate E).SubsetGround E :=
   fun _ => And.left
 
 /-- Independence predicate constructed from circuit predicate satisfies augmentation property

@@ -70,19 +70,19 @@ lemma deltaSumCircuitPred_not_circuit_empty [DecidableEq α] (M₁ M₂ : Binary
     true_and, false_and, exists_const, exists_and_left, implies_true, and_true, not_false_eq_true]
 
 /-- In circuit construction of Δ-sum, no circuit is strict subset of another circuit -/
-lemma deltaSumCircuitPred_circuit_not_ssubset [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
+lemma deltaSumCircuitPred_circuitNotSsubset [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
     (DeltaSumCircuitPred M₁ M₂).CircuitNotSsubset := by
   intro C C' hC hC'
   sorry
 
 /-- In circuit construction of Δ-sum, circuit predicate satisfies axiom (C3) -/
-lemma deltaSumCircuitPred_circuit_c3 [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
+lemma deltaSumCircuitPred_bruhnC3 [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
     (DeltaSumCircuitPred M₁ M₂).BruhnC3 := by
   intro X C F z hz
   sorry
 
 /-- In circuit construction of Δ-sum, set of all circuit-independent sets has the maximal subset prop -/
-lemma deltaSumCircuitPred_circuit_maximal [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
+lemma deltaSumCircuitPred_circuitMaximal [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
     (DeltaSumCircuitPred M₁ M₂).CircuitMaximal ((M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E)) := by
   intro X hXE
   sorry
@@ -103,9 +103,9 @@ def deltaSumCircuitMatroid [DecidableEq α] (M₁ M₂ : BinaryMatroid α) : Cir
   E := (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E)
   CircuitPred := Minimal (DeltaSumCircuitForm M₁ M₂)
   not_circuit_empty := deltaSumCircuitPred_not_circuit_empty M₁ M₂
-  circuit_not_ssubset := deltaSumCircuitPred_circuit_not_ssubset M₁ M₂
-  circuit_c3 := deltaSumCircuitPred_circuit_c3 M₁ M₂
-  circuit_maximal := deltaSumCircuitPred_circuit_maximal M₁ M₂
+  circuit_not_ssubset := deltaSumCircuitPred_circuitNotSsubset M₁ M₂
+  circuit_c3 := deltaSumCircuitPred_bruhnC3 M₁ M₂
+  circuit_maximal := deltaSumCircuitPred_circuitMaximal M₁ M₂
   subset_ground := DeltaSumCircuitPred.subset_ground
 
 /-- Matroid corresponding to Δ-sum -/

@@ -7,7 +7,7 @@ variable {α : Type}
 section DisjointCircuitFamily
 
 /-- Family of disjoint circuits of matroid `M`. -/
-structure Matroid.disjointCircuitFamily (M : Matroid α) where
+structure Matroid.DisjointCircuitFamily (M : Matroid α) where
   /-- Indexing set -/
   ι : Set α
   -- question: upgrade from indexing by Set α to indexing by Sort v (see Set.iUnion in Mathlib.Order.SetNotation)?
@@ -20,38 +20,38 @@ structure Matroid.disjointCircuitFamily (M : Matroid α) where
   /-- All sets in family are disjoint -/
   AllDisjoint : ∀ x y : ι, x ≠ y → F x ⫗ F y
 
-/-- Shorthand for union of sets in `M.disjointCircuitFamily`. -/
-def Matroid.disjointCircuitFamily.union {M : Matroid α} (F : M.disjointCircuitFamily) : Set α :=
+/-- Shorthand for union of sets in `M.DisjointCircuitFamily`. -/
+def Matroid.DisjointCircuitFamily.union {M : Matroid α} (F : M.DisjointCircuitFamily) : Set α :=
   Set.iUnion F.F
 
-/-- Every element in `M.disjointCircuitFamily` is subset of ground set. -/
-lemma Matroid.disjointCircuitFamily.mem_subset_ground {M : Matroid α} (F : M.disjointCircuitFamily) (x : F.ι) :
+/-- Every element in `M.DisjointCircuitFamily` is subset of ground set. -/
+lemma Matroid.DisjointCircuitFamily.mem_subset_ground {M : Matroid α} (F : M.DisjointCircuitFamily) (x : F.ι) :
     F.F x ⊆ M.E :=
   (F.AllCircuits x).subset_ground
 
-/-- Union of sets in `M.disjointCircuitFamily` is subset of ground set. -/
-lemma Matroid.disjointCircuitFamily.union_subset_ground {M : Matroid α} (F : M.disjointCircuitFamily) :
+/-- Union of sets in `M.DisjointCircuitFamily` is subset of ground set. -/
+lemma Matroid.DisjointCircuitFamily.union_subset_ground {M : Matroid α} (F : M.DisjointCircuitFamily) :
     F.union ⊆ M.E := by
-  simp only [Matroid.disjointCircuitFamily.union, Set.iUnion_coe_set, Set.iUnion_subset_iff]
+  simp only [Matroid.DisjointCircuitFamily.union, Set.iUnion_coe_set, Set.iUnion_subset_iff]
   exact fun i hi => mem_subset_ground F ⟨i, hi⟩
 
 /-- If union of disjoint circuits is independent, then it is empty. -/
-lemma Matroid.disjointCircuitFamily.union_indep_empty {M : Matroid α} (F : M.disjointCircuitFamily) (hMF : M.Indep F.union):
+lemma Matroid.DisjointCircuitFamily.union_indep_empty {M : Matroid α} (F : M.DisjointCircuitFamily) (hMF : M.Indep F.union):
     F.union = ∅ := by
   by_contra
   obtain ⟨x, -⟩ : ∃ x : F.ι.Elem, (F.F x).Nonempty
   · by_contra!
-    simp_all only [Matroid.disjointCircuitFamily.union, Set.iUnion_coe_set, Set.iUnion_empty, not_true_eq_false]
+    simp_all only [Matroid.DisjointCircuitFamily.union, Set.iUnion_coe_set, Set.iUnion_empty, not_true_eq_false]
   exact (F.AllCircuits x).left.not_indep (hMF.subset (Set.subset_iUnion_of_subset x Set.Subset.rfl))
 
 /-- Nonempty union of disjoint circuits is dependent. -/
-lemma Matroid.disjointCircuitFamily.union_nonempty_dep {M : Matroid α} (F : M.disjointCircuitFamily) (hF : F.union.Nonempty) :
+lemma Matroid.DisjointCircuitFamily.union_nonempty_dep {M : Matroid α} (F : M.DisjointCircuitFamily) (hF : F.union.Nonempty) :
     M.Dep F.union := by
   by_contra contr
   exact Set.not_nonempty_empty (F.union_indep_empty (Matroid.indep_of_not_dep contr F.union_subset_ground) ▸ hF)
 
 /-- Union of disjoint circuits is either dependent or empty. -/
-lemma Matroid.disjointCircuitFamily.dep_or_empty {M : Matroid α} (F : M.disjointCircuitFamily) :
+lemma Matroid.DisjointCircuitFamily.dep_or_empty {M : Matroid α} (F : M.DisjointCircuitFamily) :
     M.Dep F.union ∨ F.union = ∅ := by
   if hMF : M.Indep F.union then
     exact Or.inr (F.union_indep_empty hMF)
@@ -60,7 +60,7 @@ lemma Matroid.disjointCircuitFamily.dep_or_empty {M : Matroid α} (F : M.disjoin
 
 /-- Empty family of disjoint circuits. -/
 def Matroid.emptyDisjointCircuitFamily (M : Matroid α) :
-    M.disjointCircuitFamily where
+    M.DisjointCircuitFamily where
   ι := ∅
   F _ := ∅
   AllCircuits x := x.property.elim
@@ -73,7 +73,7 @@ lemma Matroid.emptyDisjointCircuitFamily_union (M : Matroid α) :
 
 /-- Family of one circuit, indexed by one element --- that circuit. -/
 def Matroid.Circuit.singleDisjointCircuitFamily {M : Matroid α} {C : Set α} (hC : M.Circuit C) (p : α) :
-    M.disjointCircuitFamily where
+    M.DisjointCircuitFamily where
   ι := {p}
   F _ := C
   AllCircuits _ := hC
@@ -82,7 +82,7 @@ def Matroid.Circuit.singleDisjointCircuitFamily {M : Matroid α} {C : Set α} (h
 /-- Union of sets in family of one circuit is that circuit. -/
 lemma Matroid.Circuit.singleDisjointCircuitFamily_union {M : Matroid α} {C : Set α} (hC : M.Circuit C) (p : α) :
     (hC.singleDisjointCircuitFamily p).union = C := by
-  simp only [Matroid.Circuit.singleDisjointCircuitFamily, Matroid.disjointCircuitFamily.union, Set.iUnion_coe_set,
+  simp only [Matroid.Circuit.singleDisjointCircuitFamily, Matroid.DisjointCircuitFamily.union, Set.iUnion_coe_set,
     Set.mem_singleton_iff, Set.iUnion_iUnion_eq_left]
 
 end DisjointCircuitFamily
@@ -92,7 +92,7 @@ section UnionDisjointCircuits
 
 /-- Set `C` can be represented as disjoint union of circuits of `M`. -/
 def Matroid.IsUnionDisjointCircuits (M : Matroid α) (C : Set α) : Prop :=
-  ∃ F : M.disjointCircuitFamily, F.union = C
+  ∃ F : M.DisjointCircuitFamily, F.union = C
 
 /-- Empty set is disjoint union of circuits. -/
 lemma Matroid.emptyUnionDisjointCircuits (M : Matroid α) :

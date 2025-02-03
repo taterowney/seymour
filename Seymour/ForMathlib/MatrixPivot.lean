@@ -61,8 +61,8 @@ private def Matrix.addMultiple [Semifield F] (A : Matrix X Y F) (x : X) (q : X �
   fun i : X => if i = x then A x else A i + q i • A x
 -- TODO (lemma) express `Matrix.addMultiple` as a sequence of `Matrix.addRowMul` operations.
 
-private lemma Matrix.IsTotallyUnimodular.addMultiple [Field F]
-    {A : Matrix X Y F} (hA : A.IsTotallyUnimodular) (x : X) (q : X → F) :
+private lemma Matrix.IsTotallyUnimodular.addMultiple [Field F] {A : Matrix X Y F}
+    (hA : A.IsTotallyUnimodular) (x : X) (q : X → F) :
     (A.addMultiple x q).IsTotallyUnimodular := by
   sorry
 
@@ -92,8 +92,8 @@ private lemma Matrix.shortTableauPivot_eq [Field F] (A : Matrix X Y F) (x : X) (
       ring
 
 /-- Pivoting preserves total unimodularity -/
-lemma Matrix.IsTotallyUnimodular.shortTableauPivot [Field F]
-    {A : Matrix X Y F} (hA : A.IsTotallyUnimodular) (x : X) (y : Y) :
+lemma Matrix.IsTotallyUnimodular.shortTableauPivot [Field F] {A : Matrix X Y F}
+    (hA : A.IsTotallyUnimodular) (x : X) (y : Y) :
     (A.shortTableauPivot x y).IsTotallyUnimodular := by
   rw [Matrix.shortTableauPivot_eq]
   have hAxy : 1 / A x y ∈ Set.range SignType.cast

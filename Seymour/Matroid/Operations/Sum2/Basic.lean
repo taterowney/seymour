@@ -392,7 +392,7 @@ end PropertiesCircuitTypePairs3
 section PropertiesCircuitPred
 
 /-- In definition of 2-sum, empty set is not a circuit -/
-lemma TwoSumAssumptions.twoSumCircuitPred_not_circuit_empty {M₁ M₂ : Matroid α} (assumptions : TwoSumAssumptions M₁ M₂) :
+lemma TwoSumAssumptions.twoSumCircuitPred_notCircuitEmpty {M₁ M₂ : Matroid α} (assumptions : TwoSumAssumptions M₁ M₂) :
     (TwoSumCircuitPred M₁ M₂).NotCircuitEmpty := by
   unfold CircuitPredicate.NotCircuitEmpty TwoSumCircuitPred
   push_neg
@@ -402,7 +402,7 @@ lemma TwoSumAssumptions.twoSumCircuitPred_not_circuit_empty {M₁ M₂ : Matroid
   exact (hp ▸ assumptions.M₁sep) (Matroid.separator_loop hpM₁)
 
 /-- In definition of 2-sum, no circuit is a strict subset of another -/
-lemma TwoSumAssumptions.twoSumCircuitPred_circuit_not_ssubset {M₁ M₂ : Matroid α} (assumptions : TwoSumAssumptions M₁ M₂) :
+lemma TwoSumAssumptions.twoSumCircuitPred_circuitNotSsubset {M₁ M₂ : Matroid α} (assumptions : TwoSumAssumptions M₁ M₂) :
     (TwoSumCircuitPred M₁ M₂).CircuitNotSsubset := by
   intro C₁ C₂ hC₁ hC₂
   cases hC₂ with
@@ -433,8 +433,8 @@ def TwoSumAssumptions.build2sumCircuitMatroid {M₁ M₂ : Matroid α} (assumpti
     CircuitMatroid α where
   E := twoSumGround M₁ M₂
   CircuitPred := TwoSumCircuitPred M₁ M₂
-  not_circuit_empty := assumptions.twoSumCircuitPred_not_circuit_empty
-  circuit_not_ssubset := assumptions.twoSumCircuitPred_circuit_not_ssubset
+  not_circuit_empty := assumptions.twoSumCircuitPred_notCircuitEmpty
+  circuit_not_ssubset := assumptions.twoSumCircuitPred_circuitNotSsubset
   circuit_c3 := sorry -- todo: should simplify in finite case
   circuit_maximal := sorry -- todo: should simplify in finite case
   subset_ground := CircuitPred.subset_ground M₁ M₂

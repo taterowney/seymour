@@ -33,28 +33,28 @@ def CircuitMatroid.IndepPred (M : CircuitMatroid α) :
 
 /-- Corresponding independence predicate of circuit matroid satisfies (I1): empty set is independent. -/
 lemma CircuitMatroid.indep_empty (M : CircuitMatroid α) :
-    M.IndepPred.indep_empty :=
-  CircuitPredicate.toIndepPredicate_indep_empty M.not_circuit_empty M.E
+    M.IndepPred.IndepEmpty :=
+  CircuitPredicate.toIndepPredicate_indepEmpty M.not_circuit_empty M.E
 
 /-- Corresponding independence predicate of circuit matroid satisfies (I2): subsets of independent sets are independent. -/
 lemma CircuitMatroid.indep_subset (M : CircuitMatroid α) :
-    M.IndepPred.indep_subset :=
-  CircuitPredicate.toIndepPredicate_indep_subset M.CircuitPred M.E
+    M.IndepPred.IndepSubset :=
+  CircuitPredicate.toIndepPredicate_indepSubset M.CircuitPred M.E
 
 /-- Corresponding independence predicate of circuit matroid satisfies (I3): independent sets have augmentation property. -/
 lemma CircuitMatroid.indep_aug (M : CircuitMatroid α) :
-    M.IndepPred.indep_aug :=
-  CircuitPredicate.toIndepPredicate_indep_aug M.circuit_maximal M.circuit_c3
+    M.IndepPred.IndepAug :=
+  CircuitPredicate.toIndepPredicate_indepAug M.circuit_maximal M.circuit_c3
 
 /-- Corresponding independence predicate of circuit matroid satisfies (IM): independent sets have maximal property. -/
 lemma CircuitMatroid.indep_maximal (M : CircuitMatroid α) :
-    M.IndepPred.indep_maximal M.E :=
-  CircuitPredicate.toIndepPredicate_indep_maximal M.CircuitPred M.E
+    M.IndepPred.IndepMaximal M.E :=
+  CircuitPredicate.toIndepPredicate_indepMaximal M.CircuitPred M.E
 
 /-- Corresponding independence predicate of circuit matroid satisfies (IE): independent sets are subsets of ground set. -/
 lemma CircuitMatroid.indep_subset_ground (M : CircuitMatroid α) :
-    M.IndepPred.subset_ground M.E :=
-  CircuitPredicate.toIndepPredicate_subset_ground M.CircuitPred M.E
+    M.IndepPred.SubsetGround M.E :=
+  CircuitPredicate.toIndepPredicate_subsetGround M.CircuitPred M.E
 
 /-- `IndepMatroid` corresponding to circuit matroid. -/
 def CircuitMatroid.toIndepMatroid (M : CircuitMatroid α) : IndepMatroid α where
@@ -92,7 +92,7 @@ lemma CircuitMatroid.maximal_iff (M : CircuitMatroid α) (B : Set α) :
     · exact hC.subset_ground
     obtain ⟨⟨hCdep, hCE⟩, hCmin⟩ := hC
     obtain ⟨D, ⟨_, ⟨⟨hDindep, hDC⟩, hDmax⟩⟩⟩ :=
-      M.circuit_maximal C hCE ∅ (CircuitPredicate.toIndepPredicate_indep_empty M.not_circuit_empty M.E) (Set.empty_subset C)
+      M.circuit_maximal C hCE ∅ (CircuitPredicate.toIndepPredicate_indepEmpty M.not_circuit_empty M.E) (Set.empty_subset C)
     have D_neq_C : D ≠ C
     · intro D_eq_C
       rw [←D_eq_C] at hCdep
