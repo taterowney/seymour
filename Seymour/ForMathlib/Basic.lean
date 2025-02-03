@@ -60,3 +60,7 @@ lemma in_set_range_singType_cast_iff_abs [LinearOrderedCommRing R] (a : R) :
       rw [SignType.neg_eq_neg_one, SignType.coe_neg, SignType.coe_one] at hs
       have h0 := (abs_nonneg a).trans_eq hs
       norm_num at h0
+
+lemma inv_eq_self_of_in_set_range_singType_cast [Field R] {a : R} (ha : a ∈ Set.range SignType.cast) :
+    1 / a = a := by
+  sorry
