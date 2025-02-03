@@ -16,25 +16,25 @@ section IndepAxioms
 
 /-- Axiom (I1): empty set is independent. -/
 def IndepPredicate.indep_empty (P : IndepPredicate α) : Prop := P ∅
-alias IndepPredicate.axiom_i1 := IndepPredicate.indep_empty
+alias IndepPredicate.Bruhni1 := IndepPredicate.indep_empty
 
 /-- Axiom (I2): subset of independent set is independent. -/
 def IndepPredicate.indep_subset (P : IndepPredicate α) : Prop := ∀ I J, P J → I ⊆ J → P I
-alias IndepPredicate.axiom_i2 := IndepPredicate.indep_subset
+alias IndepPredicate.BruhnI2 := IndepPredicate.indep_subset
 
 /-- Axiom (I3): augmentation property. -/
 def IndepPredicate.indep_aug (P : IndepPredicate α) : Prop :=
   ∀ I B, P I → ¬Maximal P I → Maximal P B → ∃ x ∈ B \ I, P (x ᕃ I)
-alias IndepPredicate.axiom_i3 := IndepPredicate.indep_aug
+alias IndepPredicate.BruhnI3 := IndepPredicate.indep_aug
 
 /-- Axiom (IM): set of all independent sets has the maximal subset property. -/
 def IndepPredicate.indep_maximal (P : IndepPredicate α) (E : Set α) : Prop :=
   ∀ X : Set α, X ⊆ E → Matroid.ExistsMaximalSubsetProperty P X
-alias IndepPredicate.axiom_im := IndepPredicate.indep_maximal
+alias IndepPredicate.BruhnIM := IndepPredicate.indep_maximal
 
 /-- Every independent set is a subset of the ground set. -/
 def IndepPredicate.subset_ground (P : IndepPredicate α) (E : Set α) : Prop := ∀ C : Set α, P C → C ⊆ E
-alias IndepPredicate.axiom_ce := IndepPredicate.subset_ground
+alias IndepPredicate.BruhnCE := IndepPredicate.subset_ground
 
 end IndepAxioms
 

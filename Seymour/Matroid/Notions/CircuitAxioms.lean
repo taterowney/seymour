@@ -46,37 +46,37 @@ def CircuitPredicate.toIndepPredicate (P : CircuitPredicate α) (E : Set α) : I
   fun I : Set α => I ⊆ E ∧ ∀ C : Set α, C ⊆ I → ¬(P C)
 
 /-- Axiom (C1): empty set is not a circuit. -/
-def CircuitPredicate.not_circuit_empty (P : CircuitPredicate α) : Prop :=
+def CircuitPredicate.NotCircuitEmpty (P : CircuitPredicate α) : Prop :=
   ¬(P ∅)
-alias CircuitPredicate.axiom_c1 := CircuitPredicate.not_circuit_empty
+alias CircuitPredicate.BruhnC1 := CircuitPredicate.NotCircuitEmpty
 
 /-- Axiom (C2): no circuit is a subset of another circuit. -/
-def CircuitPredicate.circuit_not_ssubset (P : CircuitPredicate α) : Prop :=
+def CircuitPredicate.CircuitNotSsubset (P : CircuitPredicate α) : Prop :=
   ∀ C C' : Set α, P C → P C' → ¬(C' ⊂ C)  -- todo: swap to ¬C ⊂ C'
-alias CircuitPredicate.axiom_c2 := CircuitPredicate.circuit_not_ssubset
+alias CircuitPredicate.BruhnC2 := CircuitPredicate.CircuitNotSsubset
 
 /-- Axiom (C3) from Bruhn et al. -/
-def CircuitPredicate.axiom_c3 (P : CircuitPredicate α) : Prop :=
+def CircuitPredicate.BruhnC3 (P : CircuitPredicate α) : Prop :=
   ∀ X C : Set α, ∀ F : ValidFamily P X, ∀ z ∈ C \ F.union, ∃ C' : Set α, P C' ∧ z ∈ C' ∧ C' ⊆ (C ∪ F.union) \ X
 
 /-- Axiom (CM) from Bruhn et al.: set of all independent sets has the maximal subset property. -/
-def CircuitPredicate.circuit_maximal (P : CircuitPredicate α) (E : Set α) : Prop :=
+def CircuitPredicate.CircuitMaximal (P : CircuitPredicate α) (E : Set α) : Prop :=
   ∀ X : Set α, X ⊆ E → Matroid.ExistsMaximalSubsetProperty (P.toIndepPredicate E) X
-alias CircuitPredicate.axiom_cm := CircuitPredicate.circuit_maximal
+alias CircuitPredicate.BruhnCM := CircuitPredicate.CircuitMaximal
 
 /-- Every circuit is a subset of the ground set. -/
-def CircuitPredicate.subset_ground (P : CircuitPredicate α) (E : Set α) : Prop :=
+def CircuitPredicate.SubsetGround (P : CircuitPredicate α) (E : Set α) : Prop :=
   ∀ C : Set α, P C → C ⊆ E
-alias CircuitPredicate.axiom_ce := CircuitPredicate.subset_ground
+alias CircuitPredicate.BruhnCE := CircuitPredicate.SubsetGround
 
 /-- Strong circuit elimination axiom: if `C₁` and `C₂` are circuits with `e ∈ C₁ ∩ C₂` and `f ∈ C₁ \ C₂`,
     then there is circuit `C₃` such that `f ∈ C₃ ⊆ C₁ ∪ C₂ \ {e}`. -/
-def CircuitPredicate.strong_circuit_elim (P : CircuitPredicate α) : Prop :=
+def CircuitPredicate.StrongCircuitElim (P : CircuitPredicate α) : Prop :=
   ∀ C₁ C₂ : Set α, ∀ e f, P C₁ ∧ P C₂ ∧ e ∈ C₁ ∩ C₂ ∧ f ∈ C₁ \ C₂ → ∃ C₃, P C₃ ∧ f ∈ C₃ ∧ C₃ ⊆ (C₁ ∪ C₂) \ {e}
 
 /-- Weak circuit elimination axiom: if `C₁` and `C₂` are distinct circuits and `e ∈ C₁ ∩ C₂`,
     then there is circuit `C₃` such that `C₃ ⊆ C₁ ∪ C₂ \ {e}`. -/
-def CircuitPredicate.weak_circuit_elim (P : CircuitPredicate α) : Prop :=
+def CircuitPredicate.WeakCircuitElim (P : CircuitPredicate α) : Prop :=
   ∀ C₁ C₂ : Set α, C₁ ≠ C₂ → P C₁ → P C₂ → ∀ e ∈ C₁ ∩ C₂, ∃ C₃, P C₃ ∧ C₃ ⊆ (C₁ ∪ C₂) \ {e}
 
 end CircuitAxioms
@@ -86,7 +86,7 @@ section CircuitAxiomRelations
 
 /-- Alternative formulation of axiom (C2). -/
 lemma CircuitPredicate.circuit_not_ssubset_iff (P : CircuitPredicate α) :
-    P.circuit_not_ssubset ↔ ∀ C C' : Set α, P C → P C' → C' ⊆ C → C ⊆ C' := by
+    P.CircuitNotSsubset ↔ ∀ C C' : Set α, P C → P C' → C' ⊆ C → C ⊆ C' := by
   constructor
   · intro hP C C' hC hC' hCC'
     apply hP C C' hC at hC'
@@ -100,7 +100,7 @@ lemma CircuitPredicate.circuit_not_ssubset_iff (P : CircuitPredicate α) :
 
 /-- Axiom (C3) implies strong circuit elimination. -/
 lemma CircuitPredicate.C3_strong_circuit_elim (P : CircuitPredicate α) :
-    P.axiom_c3 → P.strong_circuit_elim := by
+    P.BruhnC3 → P.StrongCircuitElim := by
   intro hPC3 C₁ C₂ x z hxz
   obtain ⟨_hC₁, hC₂, hx, hz⟩ := hxz
   let F : ValidFamily P {x} :=
@@ -116,7 +116,7 @@ lemma CircuitPredicate.C3_strong_circuit_elim (P : CircuitPredicate α) :
 
 /-- Strong circuit elimination implies weak circuit elimination. -/
 lemma CircuitPredicate.strong_circuit_elim_weak_circuit_elim (P : CircuitPredicate α) :
-    P.strong_circuit_elim → P.weak_circuit_elim := by
+    P.StrongCircuitElim → P.WeakCircuitElim := by
   intro hP C₁ C₂ hCC hC₁ hC₂ e he
   if hf : ∃ f : α, f ∈ C₁ \ C₂ then
     obtain ⟨f, hf⟩ := hf
@@ -152,7 +152,7 @@ lemma CircuitPredicate.finite_support_iff (P : CircuitPredicate α) :
 
 /-- If `P` is finitely supported and `P` satisfies weak circuit elimination, then `P` satisfies (C3). -/
 lemma CircuitPredicate.FinSup_weak_circuit_elim_C3 {P : CircuitPredicate α} (hP_fin : P.support.Finite) :
-    P.weak_circuit_elim → P.axiom_c3 := by
+    P.WeakCircuitElim → P.BruhnC3 := by
   sorry
 
 end CircuitAxiomRelations
@@ -178,7 +178,7 @@ lemma CircuitPredicate.toIndep_toCircuit (P : CircuitPredicate α) (E C : Set α
     exact Set.eq_of_subset_of_subset (C_min D_ok hDC) hDC ▸ hD
 
 /-- todo: desc-/
-lemma CircuitPredicate.toIndep_toCircuit_iff {P : CircuitPredicate α} (hP : P.circuit_not_ssubset) (E C : Set α) :
+lemma CircuitPredicate.toIndep_toCircuit_iff {P : CircuitPredicate α} (hP : P.CircuitNotSsubset) (E C : Set α) :
     (P.toIndepPredicate E).ToCircuitPredicate E C ↔ C ⊆ E ∧ P C := by
   constructor
   · exact P.toIndep_toCircuit E C
@@ -253,7 +253,7 @@ section CircuitToIndepAxioms
 
 /-- Independence predicate constructed from circuit predicate satisfies (I1): empty set is independent. -/
 lemma CircuitPredicate.toIndepPredicate_indep_empty {P : CircuitPredicate α}
-    (hP : P.not_circuit_empty) (E : Set α) :
+    (hP : P.NotCircuitEmpty) (E : Set α) :
     (P.toIndepPredicate E).indep_empty :=
   ⟨E.empty_subset, fun _ C_empty hC => hP (Set.subset_eq_empty C_empty rfl ▸ hC)⟩
 
@@ -265,7 +265,7 @@ lemma CircuitPredicate.toIndepPredicate_indep_subset (P : CircuitPredicate α) (
 
 /-- Independence predicate constructed from circuit predicate satisfies (I3): independent sets have augmentation property. -/
 lemma CircuitPredicate.toIndepPredicate_indep_aug {P : CircuitPredicate α} {E : Set α}
-    (hPCM : P.circuit_maximal E) (hPC3 : P.axiom_c3) :
+    (hPCM : P.CircuitMaximal E) (hPC3 : P.BruhnC3) :
     (P.toIndepPredicate E).indep_aug := by
   -- Proof adapted from Bruhn et al., Theorem 4.2 (ii), backward direction
   intro I B hI hInmax hBmax
