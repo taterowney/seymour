@@ -147,7 +147,8 @@ end EquivalentTransformations
 
 section StandardRepr
 
-/-- Standard matrix representation of a vector matroid. -/
+/-- Standard matrix representation of a vector matroid.
+Not in sync with `Matroid.Operations.MatrixSums.Basic/StandardRepresentation` currently! -/
 structure StandardRepr (α R : Type) where
   /-- Row indices. -/
   X : Type
