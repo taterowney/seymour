@@ -27,7 +27,7 @@ structure ThreeSumAssumptions (M₁ M₂ : BinaryMatroid α) where
 set_option linter.unusedVariables false in
 /-- The main way of creating a 3-sum of binary matroids. -/
 def ThreeSumAssumptions.build3sum {M₁ M₂ : BinaryMatroid α} (assumptions : ThreeSumAssumptions M₁ M₂) : Matroid α :=
-  BinaryMatroid.DeltaSum.toMatroid M₁ M₂
+  deltaSumMatroid M₁ M₂
 
 end Definition
 

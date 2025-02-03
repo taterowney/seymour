@@ -1,6 +1,6 @@
 import Seymour.Matroid.Classes.Binary
 import Seymour.Matroid.Constructors.CircuitMatroid
-import Seymour.Matroid.Operations.SumDelta.DisjointCircuitFamily
+import Seymour.Matroid.Notions.DisjointCircuitFamily
 
 
 variable {α : Type}
@@ -8,64 +8,58 @@ variable {α : Type}
 
 section BasicDefinitions
 
-/-- Ground set of Δ-sum is symmetric difference of ground sets of summand matroids. -/
-def BinaryMatroid.DeltaSum.E (M₁ M₂ : BinaryMatroid α) : Set α := (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E)
-
 /-- Circuits in `M₁ Δ M₂` are nonempty subsets of the ground set of form `X₁ Δ X₂`
     where `X₁` and `X₂` are disjoint unions of circuits in `M₁` and `M₂` respectively. -/
-def BinaryMatroid.DeltaSum.CircuitForm.prop [DecidableEq α] (M₁ M₂ : BinaryMatroid α) (C X₁ X₂ : Set α) : Prop :=
+def DeltaSumCircuitsAux [DecidableEq α] (M₁ M₂ : BinaryMatroid α) (C X₁ X₂ : Set α) : Prop :=
   C = (X₁ ∪ X₂) \ (X₁ ∩ X₂) ∧ M₁.toMatroid.IsUnionDisjointCircuits X₁ ∧ M₂.toMatroid.IsUnionDisjointCircuits X₂
 
 /-- A set satisfies circuit form if for some `X₁` and `X₂` it has the form above. -/
-def BinaryMatroid.DeltaSum.CircuitForm [DecidableEq α] (M₁ M₂ : BinaryMatroid α) (C : Set α) : Prop :=
-  C.Nonempty ∧ C ⊆ BinaryMatroid.DeltaSum.E M₁ M₂ ∧ ∃ X₁ X₂, BinaryMatroid.DeltaSum.CircuitForm.prop M₁ M₂ C X₁ X₂
+def DeltaSumCircuitForm [DecidableEq α] (M₁ M₂ : BinaryMatroid α) (C : Set α) : Prop :=
+  C.Nonempty ∧ C ⊆ (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E) ∧ ∃ X₁ X₂ : Set α, DeltaSumCircuitsAux M₁ M₂ C X₁ X₂
 
 /-- Circuits of Δ-sum are minimal non-empty subsets of `M₁.E Δ M₂.E` of the form `X₁ Δ X₂`
     where `X₁` and `X₂` is a disjoint union of circuits of `M₁` and `M₂` respectively. -/
-def BinaryMatroid.DeltaSum.CircuitPred [DecidableEq α] (M₁ M₂ : BinaryMatroid α) : CircuitPredicate α :=
-  Minimal (BinaryMatroid.DeltaSum.CircuitForm M₁ M₂)
+def DeltaSumCircuitPred [DecidableEq α] (M₁ M₂ : BinaryMatroid α) : CircuitPredicate α :=
+  Minimal (DeltaSumCircuitForm M₁ M₂)
 
 end BasicDefinitions
 
 
 section BasicProperties
 
-/-- Ground set of `M₁ Δ M₂` is disjoint with `M₁.E ∩ M₂.E`. -/
-lemma BinaryMatroid.DeltaSum.E.disjoint_inter (M₁ M₂ : BinaryMatroid α) :
-    BinaryMatroid.DeltaSum.E M₁ M₂ ⫗ M₁.E ∩ M₂.E :=
-  Set.disjoint_sdiff_left
-
 /-- Ground sets minus their intersection are disjoint sets. -/
-lemma BinaryMatroid.DeltaSum.disjoint_grounds_diff_inter (M₁ M₂ : BinaryMatroid α) :
-    M₁.E \ (M₁.E ∩ M₂.E) ⫗ M₂.E \ (M₁.E ∩ M₂.E) := by
+lemma old_disjoint_grounds_diff_inter (M₁ M₂ : BinaryMatroid α) :
+    M₁.E \ (M₁.E ∩ M₂.E) ⫗ M₂.E \ (M₁.E ∩ M₂.E) := by -- TODO make a `Set` lemma instead!
   rw [Set.diff_self_inter, Set.diff_inter_self_eq_diff]
   exact disjoint_sdiff_sdiff
 
 /-- A set of circuit form is nonempty. -/
-lemma BinaryMatroid.DeltaSum.CircuitForm.nonempty [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C) : C.Nonempty :=
+lemma deltaSumCircuitForm.nonempty [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
+    (hC : DeltaSumCircuitForm M₁ M₂ C) :
+    C.Nonempty :=
   hC.left
 
 /-- A set of circuit form is a subset of the ground set. -/
-lemma BinaryMatroid.DeltaSum.CircuitForm.subset_ground [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm M₁ M₂ C) : C ⊆ BinaryMatroid.DeltaSum.E M₁ M₂ :=
+lemma DeltaSumCircuitForm.subset_ground [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C : Set α}
+    (hC : DeltaSumCircuitForm M₁ M₂ C) :
+    C ⊆ (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E) :=
   hC.right.left
 
 /-- A set of circuit form is the symmetric difference of `X₁` and `X₂` -/
-lemma BinaryMatroid.DeltaSum.CircuitForm.prop.eq_symmDiff [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C X₁ X₂ : Set α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm.prop M₁ M₂ C X₁ X₂) :
+lemma DeltaSumCircuitsAux.eq_symmDiff [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C X₁ X₂ : Set α}
+    (hC : DeltaSumCircuitsAux M₁ M₂ C X₁ X₂) :
     C = (X₁ ∪ X₂) \ (X₁ ∩ X₂) :=
   hC.left
 
 /-- A set of circuit form is related to a union of disjoint circuits of `M₁` -/
-lemma BinaryMatroid.DeltaSum.CircuitForm.prop.udc_left [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C X₁ X₂ : Set α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm.prop M₁ M₂ C X₁ X₂) :
+lemma DeltaSumCircuitsAux.udc_left [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C X₁ X₂ : Set α}
+    (hC : DeltaSumCircuitsAux M₁ M₂ C X₁ X₂) :
     M₁.toMatroid.IsUnionDisjointCircuits X₁ :=
   hC.right.left
 
 /-- A set of circuit form is related to a union of disjoint circuits of `M₂` -/
-lemma BinaryMatroid.DeltaSum.CircuitForm.prop.udc_right [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C X₁ X₂ : Set α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm.prop M₁ M₂ C X₁ X₂) :
+lemma DeltaSumCircuitsAux.udc_right [DecidableEq α] {M₁ M₂ : BinaryMatroid α} {C X₁ X₂ : Set α}
+    (hC : DeltaSumCircuitsAux M₁ M₂ C X₁ X₂) :
     M₂.toMatroid.IsUnionDisjointCircuits X₂ :=
   hC.right.right
 
@@ -75,35 +69,35 @@ end BasicProperties
 section CircuitAxioms
 
 /-- In circuit construction of Δ-sum, empty set is not circuit -/
-lemma BinaryMatroid.DeltaSum.CircuitPred.not_circuit_empty [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
-    ¬BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ ∅ := by
-  simp only [BinaryMatroid.DeltaSum.CircuitPred, Minimal, CircuitForm, CircuitForm.prop,
+lemma deltaSumCircuitPred_not_circuit_empty [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
+    ¬DeltaSumCircuitPred M₁ M₂ ∅ := by
+  simp only [DeltaSumCircuitPred, Minimal, DeltaSumCircuitForm, DeltaSumCircuitsAux,
     Set.not_nonempty_empty, Set.empty_subset, Set.le_eq_subset, Set.subset_empty_iff,
     true_and, false_and, exists_const, exists_and_left, implies_true, and_true, not_false_eq_true]
 
 /-- In circuit construction of Δ-sum, no circuit is strict subset of another circuit -/
-lemma BinaryMatroid.DeltaSum.CircuitPred.circuit_not_ssubset [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
-    (BinaryMatroid.DeltaSum.CircuitPred M₁ M₂).circuit_not_ssubset := by
+lemma deltaSumCircuitPred_circuit_not_ssubset [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
+    (DeltaSumCircuitPred M₁ M₂).circuit_not_ssubset := by
   intro C C' hC hC'
   sorry
 
 /-- In circuit construction of Δ-sum, circuit predicate satisfies axiom (C3) -/
-lemma BinaryMatroid.DeltaSum.CircuitPred.circuit_c3 [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
-    (BinaryMatroid.DeltaSum.CircuitPred M₁ M₂).axiom_c3 := by
+lemma deltaSumCircuitPred_circuit_c3 [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
+    (DeltaSumCircuitPred M₁ M₂).axiom_c3 := by
   intro X C F z hz
   sorry
 
 /-- In circuit construction of Δ-sum, set of all circuit-independent sets has the maximal subset prop -/
-lemma BinaryMatroid.DeltaSum.CircuitPred.circuit_maximal [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
-    (BinaryMatroid.DeltaSum.CircuitPred M₁ M₂).circuit_maximal (BinaryMatroid.DeltaSum.E M₁ M₂) := by
+lemma deltaSumCircuitPred_circuit_maximal [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
+    (DeltaSumCircuitPred M₁ M₂).circuit_maximal ((M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E)) := by
   intro X hXE
   sorry
 
 /-- In circuit construction of Δ-sum, every circuit is subset of ground set -/
-lemma BinaryMatroid.DeltaSum.CircuitPred.subset_ground [DecidableEq α] {M₁ M₂ : BinaryMatroid α} (C : Set α)
-    (hC : CircuitPred M₁ M₂ C) :
-    C ⊆ E M₁ M₂ :=
-  hC.left.subset_ground
+lemma DeltaSumCircuitPred.subset_ground [DecidableEq α] {M₁ M₂ : BinaryMatroid α} (C : Set α)
+    (hC : DeltaSumCircuitPred M₁ M₂ C) :
+    C ⊆ (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E) :=
+  hC.left.right.left
 
 end CircuitAxioms
 
@@ -111,32 +105,32 @@ end CircuitAxioms
 section API
 
 /-- Construction of Δ-sum via circuits -/
-def BinaryMatroid.DeltaSum.CircuitMatroid [DecidableEq α] (M₁ M₂ : BinaryMatroid α) : CircuitMatroid α where
-  E := BinaryMatroid.DeltaSum.E M₁ M₂
-  CircuitPred := BinaryMatroid.DeltaSum.CircuitPred M₁ M₂
-  not_circuit_empty := BinaryMatroid.DeltaSum.CircuitPred.not_circuit_empty M₁ M₂
-  circuit_not_ssubset := BinaryMatroid.DeltaSum.CircuitPred.circuit_not_ssubset M₁ M₂
-  circuit_c3 := BinaryMatroid.DeltaSum.CircuitPred.circuit_c3 M₁ M₂
-  circuit_maximal := BinaryMatroid.DeltaSum.CircuitPred.circuit_maximal M₁ M₂
-  subset_ground := BinaryMatroid.DeltaSum.CircuitPred.subset_ground
+def deltaSumCircuitMatroid [DecidableEq α] (M₁ M₂ : BinaryMatroid α) : CircuitMatroid α where
+  E := (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E)
+  CircuitPred := Minimal (DeltaSumCircuitForm M₁ M₂)
+  not_circuit_empty := deltaSumCircuitPred_not_circuit_empty M₁ M₂
+  circuit_not_ssubset := deltaSumCircuitPred_circuit_not_ssubset M₁ M₂
+  circuit_c3 := deltaSumCircuitPred_circuit_c3 M₁ M₂
+  circuit_maximal := deltaSumCircuitPred_circuit_maximal M₁ M₂
+  subset_ground := DeltaSumCircuitPred.subset_ground
 
 /-- Matroid corresponding to Δ-sum -/
-def BinaryMatroid.DeltaSum.toMatroid [DecidableEq α] (M₁ M₂ : BinaryMatroid α) : Matroid α :=
-  (BinaryMatroid.DeltaSum.CircuitMatroid M₁ M₂).toMatroid
+def deltaSumMatroid [DecidableEq α] (M₁ M₂ : BinaryMatroid α) : Matroid α :=
+  (deltaSumCircuitMatroid M₁ M₂).toMatroid
 
 @[simp]
-lemma BinaryMatroid.DeltaSum.E_eq [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
-    (BinaryMatroid.DeltaSum.toMatroid M₁ M₂).E = (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E) :=
+lemma deltaSumMatroid_E [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
+    (deltaSumMatroid M₁ M₂).E = (M₁.E ∪ M₂.E) \ (M₁.E ∩ M₂.E) :=
   rfl
 
 @[simp]
-lemma BinaryMatroid.DeltaSum.CircuitPred_iff [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
-    (BinaryMatroid.DeltaSum.CircuitMatroid M₁ M₂).CircuitPred = BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ :=
+lemma deltaSumCircuitMatroid_circuitPred [DecidableEq α] (M₁ M₂ : BinaryMatroid α) :
+    (deltaSumCircuitMatroid M₁ M₂).CircuitPred = DeltaSumCircuitPred M₁ M₂ :=
   rfl
 
 @[simp]
-lemma BinaryMatroid.DeltaSum.circuit_iff [DecidableEq α] (M₁ M₂ : BinaryMatroid α) {C : Set α} :
-    (BinaryMatroid.DeltaSum.toMatroid M₁ M₂).Circuit C ↔ BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C :=
-  (CircuitMatroid M₁ M₂).toMatroid_circuit_iff.trans ⟨And.right, fun hC => ⟨hC.subset_ground, hC⟩⟩
+lemma deltaSumCircuitMatroid_circuit_iff [DecidableEq α] (M₁ M₂ : BinaryMatroid α) {C : Set α} :
+    (deltaSumMatroid M₁ M₂).Circuit C ↔ DeltaSumCircuitPred M₁ M₂ C :=
+  (deltaSumCircuitMatroid M₁ M₂).toMatroid_circuit_iff.trans ⟨And.right, fun hC => ⟨hC.subset_ground, hC⟩⟩
 
 end API

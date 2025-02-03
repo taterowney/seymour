@@ -10,19 +10,19 @@ import Seymour.Matroid.Notions.Circuit
 /-- Matroid defined by circuit axioms. -/
 structure CircuitMatroid (α : Type) where
   /-- The ground set -/
-  (E : Set α)
+  E : Set α
   /-- The circuit predicate -/
-  (CircuitPred : CircuitPredicate α)
+  CircuitPred : CircuitPredicate α
   /-- Empty set is not a circuit -/
-  (not_circuit_empty : CircuitPred.not_circuit_empty)
+  not_circuit_empty : CircuitPred.not_circuit_empty
   /-- No circuit is a subset of another circuit -/
-  (circuit_not_ssubset : CircuitPred.circuit_not_ssubset)
+  circuit_not_ssubset : CircuitPred.circuit_not_ssubset
   /-- Condition (C3) from Bruhn et al. -/
-  (circuit_c3 : CircuitPred.axiom_c3)
+  circuit_c3 : CircuitPred.axiom_c3
   /-- Corresponding family of independent sets satisfies the maximal subset property -/
-  (circuit_maximal : CircuitPred.circuit_maximal E)
+  circuit_maximal : CircuitPred.circuit_maximal E
   /-- Every circuit is a subset of the ground set -/
-  (subset_ground : CircuitPred.subset_ground E) -- question: unused?
+  subset_ground : CircuitPred.subset_ground E -- question: unused?
 
 variable {α : Type}
 

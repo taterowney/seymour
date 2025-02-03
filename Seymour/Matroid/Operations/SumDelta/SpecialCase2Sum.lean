@@ -8,9 +8,9 @@ variable {α : Type} [DecidableEq α] {M₁ M₂ : BinaryMatroid α}
 section CircuitFormsProperties
 
 /-- Circuit of form 1 satisfies circuit predicate of `M₁ Δ M₂` if `M₁.E` and `M₂.E` satisfy the 2-sum assumptions -/
-lemma BinaryMatroid.DeltaSum.CircuitForm1.sum2_circuit_pred {C : Set α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ C) (assumptions : TwoSumAssumptions M₁.toMatroid M₂.toMatroid) :
-    BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C := by
+lemma DeltaSumCircuitForm1.sum2_circuit_pred {C : Set α}
+    (hC : DeltaSumCircuitForm1 M₁ M₂ C) (assumptions : TwoSumAssumptions M₁.toMatroid M₂.toMatroid) :
+    DeltaSumCircuitPred M₁ M₂ C := by
   constructor
   · exact hC.circuit_form
   · intro C' hC' hCC'
@@ -37,9 +37,9 @@ lemma BinaryMatroid.DeltaSum.CircuitForm1.sum2_circuit_pred {C : Set α}
       exact hC.right X₁_dep hCC'
 
 /-- Circuit of form 2 satisfies circuit predicate of `M₁ Δ M₂` if `M₁.E` and `M₂.E` satisfy the 2-sum assumptions -/
-lemma BinaryMatroid.DeltaSum.CircuitForm2.sum2_circuit_pred {C : Set α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ C) (assumptions : TwoSumAssumptions M₁.toMatroid M₂.toMatroid) :
-    BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C := by
+lemma DeltaSumCircuitForm2.sum2_circuit_pred {C : Set α}
+    (hC : DeltaSumCircuitForm2 M₁ M₂ C) (assumptions : TwoSumAssumptions M₁.toMatroid M₂.toMatroid) :
+    DeltaSumCircuitPred M₁ M₂ C := by
   constructor
   · exact hC.circuit_form
   · intro C' hC' hCC'
@@ -66,8 +66,8 @@ lemma BinaryMatroid.DeltaSum.CircuitForm2.sum2_circuit_pred {C : Set α}
       exact hC.right X₂_dep hCC'
 
 /-- Under 2-sum assumptions, `{p}` in definition of circuits of form 3 is exactly `M₁.E ∩ M₂.E` -/
-lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_singleton_eq {C : Set α} {p : α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) (assumptions : TwoSumAssumptions M₁.toMatroid M₂.toMatroid) :
+lemma DeltaSumCircuitForm3.sum2_singleton_eq {C : Set α} {p : α}
+    (hC : DeltaSumCircuitForm3 M₁ M₂ C p) (assumptions : TwoSumAssumptions M₁.toMatroid M₂.toMatroid) :
     M₁.E ∩ M₂.E = {p} := by
   have inter_encard_eq_1 := M₁.toMatroid_E ▸ M₂.toMatroid_E ▸ assumptions.interSingleton
   have inter_finite := Set.finite_of_encard_eq_coe inter_encard_eq_1
@@ -75,9 +75,9 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_singleton_eq {C : Set α} {p : α
   exact (inter_finite.eq_of_subset_of_encard_le hC.singleton_subset_inter inter_subsingleton_encard).symm
 
 /-- Circuit of form 3 satisfies circuit predicate of `M₁ Δ M₂` if `M₁.E` and `M₂.E` satisfy the 2-sum assumptions -/
-lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {C : Set α} {p : α}
-    (hC : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p) (assumptions : TwoSumAssumptions M₁.toMatroid M₂.toMatroid) :
-    BinaryMatroid.DeltaSum.CircuitPred M₁ M₂ C := by
+lemma DeltaSumCircuitForm3.sum2_circuit_pred {C : Set α} {p : α}
+    (hC : DeltaSumCircuitForm3 M₁ M₂ C p) (assumptions : TwoSumAssumptions M₁.toMatroid M₂.toMatroid) :
+    DeltaSumCircuitPred M₁ M₂ C := by
   have hp := hC.sum2_singleton_eq assumptions
   have not_loop_p := (assumptions.inter_singleton_not_loop_M₁ hp)
   rw [M₁.toMatroid.loop_iff_circuit] at not_loop_p
@@ -125,44 +125,44 @@ lemma BinaryMatroid.DeltaSum.CircuitForm3.sum2_circuit_pred {C : Set α} {p : α
         rw [X₂_empty, Set.union_empty, Set.inter_empty, Set.diff_empty] at hDXX
         rw [hDXX] at D_nonempty
         have hpX₁ := hDXX ▸ (Set.union_subset_iff.→ hCX₁).right
-        have disjoint_D_p := hp ▸ Set.disjoint_of_subset_left hDE (BinaryMatroid.DeltaSum.E.disjoint_inter M₁ M₂)
+        have disjoint_D_p := hp ▸ Set.disjoint_of_subset_left hDE Set.disjoint_sdiff_left
         exact (disjoint_D_p hpX₁ Set.Subset.rfl rfl).elim
     | inr X₁_empty =>
       rw [X₁_empty, Set.empty_union, Set.empty_inter, Set.diff_empty] at hDXX
       have X₂_dep := hX₂.nonempty_dep (hDXX ▸ D_nonempty)
       have hCX₂ := hCpM₂.right X₂_dep hCX₂
       have hpX₂ := hDXX ▸ (Set.union_subset_iff.→ hCX₂).right
-      have disjoint_D_p := hp ▸ Set.disjoint_of_subset_left hDE (BinaryMatroid.DeltaSum.E.disjoint_inter M₁ M₂)
+      have disjoint_D_p := hp ▸ Set.disjoint_of_subset_left hDE Set.disjoint_sdiff_left
       exact (disjoint_D_p hpX₂ Set.Subset.rfl rfl).elim
 
 end CircuitFormsProperties
 
 
-section Equivalence
+section SpecialCase2sum
 
 /-- If `M₁` and `M₂` satisfy the 2-sum assumptions, then `M₁ Δ M₂ = M₁ ⊕₂ M₂` -/
-lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
+lemma TwoSumAssumptions.build2sum_eq_deltaSumMatroid
     (assumptions : TwoSumAssumptions M₁.toMatroid M₂.toMatroid) :
-    assumptions.build2sum = BinaryMatroid.DeltaSum.toMatroid M₁ M₂ := by
+    assumptions.build2sum = deltaSumMatroid M₁ M₂ := by
   apply Matroid.ext_circuit (by rfl)
   intro C hCE
-  rw [assumptions.build2sum_circuit, BinaryMatroid.DeltaSum.circuit_iff]
+  rw [assumptions.build2sum_circuit, deltaSumCircuitMatroid_circuit_iff]
   unfold twoSumGround
   rw [assumptions.build2sum_E] at hCE
   rw [VectorMatroid.toMatroid_E, VectorMatroid.toMatroid_E] at hCE ⊢
   constructor
   · intro ⟨_, hC⟩
     cases hC with
-    | inl hC => exact CircuitForm1.sum2_circuit_pred hC assumptions
+    | inl hC => exact DeltaSumCircuitForm1.sum2_circuit_pred hC assumptions -- TODO . notation?
     | inr hC => cases hC with
-      | inl hC => exact CircuitForm2.sum2_circuit_pred hC assumptions
+      | inl hC => exact DeltaSumCircuitForm2.sum2_circuit_pred hC assumptions -- TODO . notation?
       | inr hC =>
         obtain ⟨p, hp⟩ := assumptions.inter_singleton
-        have hMMCp : BinaryMatroid.DeltaSum.CircuitForm3 M₁ M₂ C p := ⟨
+        have hMMCp : DeltaSumCircuitForm3 M₁ M₂ C p := ⟨
           hp ▸ hC.to_circuit_M₁,
           hp ▸ hC.to_circuit_M₂,
           hCE⟩
-        exact hMMCp.sum2_circuit_pred assumptions
+        exact DeltaSumCircuitForm3.sum2_circuit_pred hMMCp assumptions -- TODO . notation?
   · intro hC
     constructor
     · exact hCE
@@ -170,13 +170,13 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
       if is_X₂_empty : X₂ = ∅ then
         left
         rw [is_X₂_empty, Set.union_empty, Set.inter_empty, Set.diff_empty] at hCXX
-        exact ⟨BinaryMatroid.DeltaSum.CircuitPred_udc_M₁ hC (hCXX ▸ hX₁), (Set.subset_diff.→ hCE).right⟩
+        exact ⟨hC.udc_M₁ (hCXX ▸ hX₁), (Set.subset_diff.→ hCE).right⟩
       else
         right
         if is_X₁_empty : X₁ = ∅ then
           left
           rw [is_X₁_empty, Set.empty_union, Set.empty_inter, Set.diff_empty] at hCXX
-          exact ⟨BinaryMatroid.DeltaSum.CircuitPred_udc_M₂ hC (hCXX ▸ hX₂), (Set.subset_diff.→ hCE).right⟩
+          exact ⟨hC.udc_M₂ (hCXX ▸ hX₂), (Set.subset_diff.→ hCE).right⟩
         else
           right
           apply Set.nonempty_iff_ne_empty.← at is_X₁_empty
@@ -198,7 +198,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
             have X₁_sub_C : X₁ ⊆ C := (Set.diff_empty ▸ hXX ▸ hCXX) ▸ Set.subset_union_left
             obtain ⟨-, Y₁, hY₁, Y₁_sub_X₁⟩ := M₁.toMatroid.dep_iff_has_circuit.→ X₁_dep
             have disjoint_Y₁_inter := Set.disjoint_of_subset_left Y₁_sub_X₁ disjoint_X₁_inter
-            have hMMY₁ : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ Y₁ := ⟨hY₁, disjoint_Y₁_inter⟩
+            have hMMY₁ : DeltaSumCircuitForm1 M₁ M₂ Y₁ := ⟨hY₁, disjoint_Y₁_inter⟩
             specialize C_min hMMY₁.circuit_form (Y₁_sub_X₁.trans X₁_sub_C)
             have C_eq_X₁ : C = X₁ := Set.Subset.antisymm (C_min.trans Y₁_sub_X₁) X₁_sub_C
             have C_eq_union := Set.diff_empty ▸ hXX ▸ hCXX
@@ -219,7 +219,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
             have X₂_sub_C : X₂ ⊆ C := (Set.diff_empty ▸ hXX ▸ hCXX) ▸ Set.subset_union_right
             obtain ⟨-, Y₂, hY₂, hY₂X₂⟩ := M₂.toMatroid.dep_iff_has_circuit.→ X₂_dep
             have disjoint_Y₂_inter := Set.disjoint_of_subset_left hY₂X₂ disjoint_X₂_inter
-            have hMMY₂ : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ Y₂ := ⟨hY₂, disjoint_Y₂_inter⟩
+            have hMMY₂ : DeltaSumCircuitForm2 M₁ M₂ Y₂ := ⟨hY₂, disjoint_Y₂_inter⟩
             specialize C_min hMMY₂.circuit_form (hY₂X₂.trans X₂_sub_C)
             have C_eq_X₂ : C = X₂ := Set.Subset.antisymm (C_min.trans hY₂X₂) X₂_sub_C
             have C_eq_union := Set.diff_empty ▸ hXX ▸ hCXX
@@ -322,7 +322,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
                 have sub_C : ((Z₁ ∪ X₂) \ (Z₁ ∩ X₂)) ⊆ C
                 · rw [hpZ₁X₂, hCXX, inter_eq_p, Set.union_diff_distrib, Set.union_diff_distrib]
                   exact Set.union_subset_union (Set.diff_subset_diff_left Z₁_sub_X₁) (by rfl)
-                have circuitform_Z₁ : CircuitForm M₁ M₂ ((Z₁ ∪ X₂) \ (Z₁ ∩ X₂))
+                have circuitform_Z₁ : DeltaSumCircuitForm M₁ M₂ ((Z₁ ∪ X₂) \ (Z₁ ∩ X₂))
                 · constructor
                   · rw [hpZ₁X₂, Set.union_diff_distrib]
                     exact Set.Nonempty.inl hZ₁dp
@@ -340,7 +340,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
               else
                 rw [Set.singleton_subset_iff] at p_sub_Z₁
                 have Z₁_disjoint_p : Z₁ ⫗ {p} := Set.disjoint_singleton_right.← p_sub_Z₁
-                have hMMZ₁ : BinaryMatroid.DeltaSum.CircuitForm1 M₁ M₂ Z₁ := ⟨hZ₁, hp ▸ Z₁_disjoint_p⟩
+                have hMMZ₁ : DeltaSumCircuitForm1 M₁ M₂ Z₁ := ⟨hZ₁, hp ▸ Z₁_disjoint_p⟩
                 have Z₁_sub_C : Z₁ ⊆ C
                 · have hZ₁X₁X₂ : Z₁ ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_left Z₁_sub_X₁ X₂
                   have hZ₁X₁X₂p : Z₁ ⊆ (X₁ ∪ X₂) \ {p} := Set.subset_diff_singleton hZ₁X₁X₂ p_sub_Z₁
@@ -365,7 +365,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
                 have sub_C : ((X₁ ∪ Z₂) \ (X₁ ∩ Z₂)) ⊆ C
                 · rw [hpX₁Z₂, hCXX, inter_eq_p, Set.union_diff_distrib, Set.union_diff_distrib]
                   exact Set.union_subset_union (by rfl) (Set.diff_subset_diff_left Z₂_sub_X₂)
-                have circuitform_Z₂ : CircuitForm M₁ M₂ ((X₁ ∪ Z₂) \ (X₁ ∩ Z₂))
+                have circuitform_Z₂ : DeltaSumCircuitForm M₁ M₂ ((X₁ ∪ Z₂) \ (X₁ ∩ Z₂))
                 · constructor
                   · rw [hpX₁Z₂, Set.union_diff_distrib]
                     exact Set.Nonempty.inr hZ₂dp
@@ -383,7 +383,7 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
               else
                 rw [Set.singleton_subset_iff] at p_sub_Z₂
                 have Z₂_disjoint_p : Z₂ ⫗ {p} := Set.disjoint_singleton_right.← p_sub_Z₂
-                have hMMZ₂ : BinaryMatroid.DeltaSum.CircuitForm2 M₁ M₂ Z₂ := ⟨hZ₂, hp ▸ Z₂_disjoint_p⟩
+                have hMMZ₂ : DeltaSumCircuitForm2 M₁ M₂ Z₂ := ⟨hZ₂, hp ▸ Z₂_disjoint_p⟩
                 have Z₂_sub_C : Z₂ ⊆ C
                 · have hZ₂X₁X₂ : Z₂ ⊆ X₁ ∪ X₂ := Set.subset_union_of_subset_right Z₂_sub_X₂ X₁
                   have hZ₂X₁X₂p : Z₂ ⊆ (X₁ ∪ X₂) \ {p} := Set.subset_diff_singleton hZ₂X₁X₂ p_sub_Z₂
@@ -393,4 +393,4 @@ lemma BinaryMatroid.DeltaSum.SpecialCase2Sum
                 exact (Set.not_nonempty_empty (hMMZ₂.disjoint_M₁.inter_eq ▸ C_eq_Z₂ ▸ C_inter_E₁_nonempty)).elim
           exact ⟨hp ▸ hCEpX₁ ▸ M₁_circ_X₁, hp ▸ hCEpX₂ ▸ M₂_circ_X₂, hCE⟩
 
-end Equivalence
+end SpecialCase2sum
