@@ -35,18 +35,20 @@ lemma Matrix.shortTableauPivot_row_other [Field F] (A : Matrix X Y F) (x : X) (y
   ext
   simp [Matrix.shortTableauPivot, hix]
 
+
 /-- Multiply the `x`th row of `A` by `c` and keep the rest of `A` unchanged. -/
-private def Matrix.mulRow [Semiring F] (A : Matrix X Y F) (x : X) (c : F) :
+private def Matrix.mulRow [NonUnitalNonAssocSemiring F] (A : Matrix X Y F) (x : X) (c : F) :
     Matrix X Y F :=
   A.updateRow x (c • A x)
 
+omit [DecidableEq Y] in
 private lemma Matrix.IsTotallyUnimodular.mulRow [CommRing F] {A : Matrix X Y F}
     (hA : A.IsTotallyUnimodular) (x : X) {c : F} (hc : c ∈ Set.range SignType.cast) :
     (A.mulRow x c).IsTotallyUnimodular := by
   intro k f g hf hg
   if hi : ∃ i : Fin k, f i = x then
     obtain ⟨i, rfl⟩ := hi
-    convert_to (((A.submatrix f id).updateRow i (c • A (f i))).submatrix id g).det ∈ Set.range SignType.cast
+    convert_to ((A.submatrix f g).updateRow i (c • (A.submatrix id g) (f i))).det ∈ Set.range SignType.cast
     · congr
       ext i' j'
       if hii : i' = i then
@@ -54,11 +56,16 @@ private lemma Matrix.IsTotallyUnimodular.mulRow [CommRing F] {A : Matrix X Y F}
       else
         have hfii : f i' ≠ f i := (hii <| hf ·)
         simp [Matrix.mulRow, hii, hfii]
-    --rw [Matrix.det_updateRow_smul]
-    --apply hA
-    sorry
+    rw [Matrix.det_updateRow_smul]
+    apply in_set_range_singType_cast_mul_in_set_range_singType_cast hc
+    have hAf := hA.submatrix f id
+    rw [Matrix.isTotallyUnimodular_iff] at hAf
+    convert hAf k id g
+    rw [Matrix.submatrix_submatrix, Function.comp_id, Function.id_comp]
+    exact (A.submatrix f g).updateRow_eq_self i
   else
-    sorry
+    convert hA k f g hf hg using 2
+    simp_all [Matrix.submatrix, Matrix.mulRow]
 
 /-- Add `c` times the `x`th row of `A` to the `r`th row of `A` and keep the rest of `A` unchanged. -/
 private def Matrix.addRowMul [Semiring F] (A : Matrix X Y F) (x r : X) (c : F) :
@@ -101,10 +108,14 @@ private def Matrix.getSmallTableau (A : Matrix X (X ⊕ Y) F) (x : X) (y : Y) :
     Matrix X Y F :=
   Matrix.of (fun i : X => fun j : Y => if j = y then A i (Sum.inl x) else A i (Sum.inr j))
 
+omit [DecidableEq X] in
 private lemma Matrix.IsTotallyUnimodular.getSmallTableau [CommRing F]
     {A : Matrix X (X ⊕ Y) F} (hA : A.IsTotallyUnimodular) (x : X) (y : Y) :
     (A.getSmallTableau x y).IsTotallyUnimodular := by
-  sorry
+  convert
+    hA.submatrix id (fun j : Y => if j = y then Sum.inl x else Sum.inr j)
+  unfold Matrix.getSmallTableau
+  aesop
 
 private lemma Matrix.shortTableauPivot_eq [Field F] (A : Matrix X Y F) (x : X) (y : Y) :
     A.shortTableauPivot x y =

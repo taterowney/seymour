@@ -25,7 +25,7 @@ variable {R : Type}
 lemma zero_in_set_range_singType_cast [LinearOrderedRing R] : (0 : R) ∈ Set.range SignType.cast :=
   ⟨0, rfl⟩
 
-lemma in_set_range_singType_cast_mul_in_set_range_singType_cast [LinearOrderedRing R] {a b : R}
+lemma in_set_range_singType_cast_mul_in_set_range_singType_cast [Ring R] {a b : R}
     (ha : a ∈ Set.range SignType.cast) (hb : b ∈ Set.range SignType.cast) :
     a * b ∈ Set.range SignType.cast := by
   obtain ⟨a', rfl⟩ := ha
