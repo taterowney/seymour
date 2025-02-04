@@ -1,5 +1,5 @@
-import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyUnimodular
 import Seymour.Basic
+import Seymour.Computable.MatrixTU
 
 
 variable {X Y F : Type} [DecidableEq X] [DecidableEq Y]
@@ -22,9 +22,18 @@ def Matrix.shortTableauPivot [Field F] (A : Matrix X Y F) (x : X) (y : Y) :
 
 -- private def A : Matrix (Fin 3) (Fin 3) ℚ := !![1, 2, 3; 4, 5, 6; 7, 8, 9]
 -- #eval A.shortTableauPivot 0 0
--- private def B : Matrix (Fin 3) (Fin 3) ℚ := !![0, 1, -1; 1, -1, 0; 1, 0, -1]
+
+-- private def B : Matrix (Fin 3) (Fin 3) ℚ := !![0, -1, 1; 1, -1, 0; 1, 0, -1]
+-- #eval B.testTotallyUnimodular
 -- private def B' := B.shortTableauPivot 1 1
--- #eval (B'.submatrix ![1, 2] ![0, 2]).det
+-- #eval B'.testTotallyUnimodular
+
+/-- info: true -/
+#guard_msgs in
+#eval ∀ m : (Fin 3) → (Fin 2) → ({0, 1, -1} : Finset ℚ),
+  let M : Matrix (Fin 3) (Fin 2) ℚ := Matrix.of (fun i j => (m i j).val)
+  M 0 0 = 0 ∨ M.testTotallyUnimodular == (M.shortTableauPivot 0 0).testTotallyUnimodular
+-- tested for matrices up to 2 × 4
 
 lemma Matrix.shortTableauPivot_row_pivot [Field F] (A : Matrix X Y F) (x : X) (y : Y) :
     A.shortTableauPivot x y x =
