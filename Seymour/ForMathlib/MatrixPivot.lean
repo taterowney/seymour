@@ -38,22 +38,58 @@ lemma Matrix.shortTableauPivot_row_other [Field F] (A : Matrix X Y F) (x : X) (y
 /-- Multiply the `x`th row of `A` by `c` and keep the rest of `A` unchanged. -/
 private def Matrix.mulRow [Semiring F] (A : Matrix X Y F) (x : X) (c : F) :
     Matrix X Y F :=
-  fun i : X => if i = x then c • A x else A i
+  A.updateRow x (c • A x)
 
 private lemma Matrix.IsTotallyUnimodular.mulRow [CommRing F] {A : Matrix X Y F}
     (hA : A.IsTotallyUnimodular) (x : X) {c : F} (hc : c ∈ Set.range SignType.cast) :
     (A.mulRow x c).IsTotallyUnimodular := by
-  sorry
+  intro k f g hf hg
+  unfold Matrix.mulRow
+  if hi : ∃ i, f i = x then
+    obtain ⟨i, hix⟩ := hi
+    rw [←hix]
+    convert_to (((A.submatrix f id).updateRow i (c • A (f i))).submatrix id g).det ∈ Set.range SignType.cast
+    · congr
+      ext i' j'
+      simp [Matrix.submatrix, Matrix.updateRow, Function.update]
+      if hii : i' = i then
+        simp [hii]
+      else
+        have hfii : f i' ≠ f i := (hii <| hf ·)
+        simp [hii, hfii]
+    --rw [Matrix.det_updateRow_smul]
+    --apply hA
+    sorry
+  else
+    sorry
 
 /-- Add `c` times the `x`th row of `A` to the `r`th row of `A` and keep the rest of `A` unchanged. -/
 private def Matrix.addRowMul [Semiring F] (A : Matrix X Y F) (x r : X) (c : F) :
     Matrix X Y F :=
-  fun i : X => if i = r then A i + c • A x else A i
+  A.updateRow r (c • A x)
 
 private lemma Matrix.IsTotallyUnimodular.addRowMul [CommRing F] {A : Matrix X Y F}
     (hA : A.IsTotallyUnimodular) (x r : X) (c : F) :
     (A.addRowMul x r c).IsTotallyUnimodular := by
-  sorry
+  intro k f g hf hg
+  unfold Matrix.addRowMul
+  if hi : ∃ i, f i = r then
+    obtain ⟨i, hir⟩ := hi
+    rw [←hir]
+    convert_to ((A.submatrix f g).updateRow i (c • (A.submatrix id g) x)).det ∈ Set.range SignType.cast
+    · congr
+      ext i' j'
+      simp [Matrix.submatrix, Matrix.updateRow, Function.update]
+      if hii : i' = i then
+        simp [hii]
+      else
+        have hfii : f i' ≠ f i := (hii <| hf ·)
+        simp [hii, hfii]
+    --rw [Matrix.det_updateRow_add_smul_self]
+    --apply hA
+    sorry
+  else
+    sorry
 
 /-- Add `q` times the `x`th row of `A` to all rows of `A` except the `x`th row (where `q` is different for each row). -/
 private def Matrix.addMultiple [Semifield F] (A : Matrix X Y F) (x : X) (q : X → F) :
@@ -91,7 +127,7 @@ private lemma Matrix.shortTableauPivot_eq [Field F] (A : Matrix X Y F) (x : X) (
       simp [Matrix.shortTableauPivot, Matrix.fromCols, Matrix.addMultiple, Matrix.getSmallTableau, Matrix.mulRow, hj, hi]
       ring
 
-/-- Pivoting preserves total unimodularity -/
+/-- Pivoting preserves total unimodularity. -/
 lemma Matrix.IsTotallyUnimodular.shortTableauPivot [Field F] {A : Matrix X Y F}
     (hA : A.IsTotallyUnimodular) (x : X) (y : Y) :
     (A.shortTableauPivot x y).IsTotallyUnimodular := by
