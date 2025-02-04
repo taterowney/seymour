@@ -44,19 +44,16 @@ private lemma Matrix.IsTotallyUnimodular.mulRow [CommRing F] {A : Matrix X Y F}
     (hA : A.IsTotallyUnimodular) (x : X) {c : F} (hc : c ∈ Set.range SignType.cast) :
     (A.mulRow x c).IsTotallyUnimodular := by
   intro k f g hf hg
-  unfold Matrix.mulRow
-  if hi : ∃ i, f i = x then
-    obtain ⟨i, hix⟩ := hi
-    rw [←hix]
+  if hi : ∃ i : Fin k, f i = x then
+    obtain ⟨i, rfl⟩ := hi
     convert_to (((A.submatrix f id).updateRow i (c • A (f i))).submatrix id g).det ∈ Set.range SignType.cast
     · congr
       ext i' j'
-      simp [Matrix.submatrix, Matrix.updateRow, Function.update]
       if hii : i' = i then
-        simp [hii]
+        simp [Matrix.mulRow, hii]
       else
         have hfii : f i' ≠ f i := (hii <| hf ·)
-        simp [hii, hfii]
+        simp [Matrix.mulRow, hii, hfii]
     --rw [Matrix.det_updateRow_smul]
     --apply hA
     sorry
@@ -72,19 +69,16 @@ private lemma Matrix.IsTotallyUnimodular.addRowMul [CommRing F] {A : Matrix X Y 
     (hA : A.IsTotallyUnimodular) (x r : X) (c : F) :
     (A.addRowMul x r c).IsTotallyUnimodular := by
   intro k f g hf hg
-  unfold Matrix.addRowMul
-  if hi : ∃ i, f i = r then
-    obtain ⟨i, hir⟩ := hi
-    rw [←hir]
+  if hi : ∃ i : Fin k, f i = r then
+    obtain ⟨i, rfl⟩ := hi
     convert_to ((A.submatrix f g).updateRow i (c • (A.submatrix id g) x)).det ∈ Set.range SignType.cast
     · congr
       ext i' j'
-      simp [Matrix.submatrix, Matrix.updateRow, Function.update]
       if hii : i' = i then
-        simp [hii]
+        simp [Matrix.addRowMul, hii]
       else
         have hfii : f i' ≠ f i := (hii <| hf ·)
-        simp [hii, hfii]
+        simp [Matrix.addRowMul, hii, hfii]
     --rw [Matrix.det_updateRow_add_smul_self]
     --apply hA
     sorry
