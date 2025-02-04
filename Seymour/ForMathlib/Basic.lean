@@ -63,15 +63,5 @@ lemma in_set_range_singType_cast_iff_abs [LinearOrderedCommRing R] (a : R) :
 
 lemma inv_eq_self_of_in_set_range_singType_cast [Field R] {a : R} (ha : a ∈ Set.range SignType.cast) :
     1 / a = a := by
-  cases' ha with s hs
-  rw [hs.symm]
-  cases s with
-    | pos =>
-      rw [SignType.pos_eq_one]
-      simp
-    | neg =>
-      rw [SignType.neg_eq_neg_one]
-      simp
-    | zero =>
-      rw [SignType.zero_eq_zero]
-      simp
+  obtain ⟨s, rfl⟩ := ha
+  cases s <;> simp
