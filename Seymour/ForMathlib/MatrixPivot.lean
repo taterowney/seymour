@@ -22,6 +22,9 @@ def Matrix.shortTableauPivot [Field F] (A : Matrix X Y F) (x : X) (y : Y) :
 
 -- private def A : Matrix (Fin 3) (Fin 3) ℚ := !![1, 2, 3; 4, 5, 6; 7, 8, 9]
 -- #eval A.shortTableauPivot 0 0
+-- private def B : Matrix (Fin 3) (Fin 3) ℚ := !![0, 1, -1; 1, -1, 0; 1, 0, -1]
+-- private def B' := B.shortTableauPivot 1 1
+-- #eval (B'.submatrix ![1, 2] ![0, 2]).det
 
 lemma Matrix.shortTableauPivot_row_pivot [Field F] (A : Matrix X Y F) (x : X) (y : Y) :
     A.shortTableauPivot x y x =
@@ -70,15 +73,15 @@ private lemma Matrix.IsTotallyUnimodular.mulRow [CommRing F] {A : Matrix X Y F}
 /-- Add `c` times the `x`th row of `A` to the `r`th row of `A` and keep the rest of `A` unchanged. -/
 private def Matrix.addRowMul [Semiring F] (A : Matrix X Y F) (x r : X) (c : F) :
     Matrix X Y F :=
-  A.updateRow r (c • A x)
+  A.updateRow r (A r + c • A x)
 
 private lemma Matrix.IsTotallyUnimodular.addRowMul [CommRing F] {A : Matrix X Y F}
-    (hA : A.IsTotallyUnimodular) (x r : X) (c : F) :
+    (hA : A.IsTotallyUnimodular) {x r : X} (hxr : x ≠ r) (c : F) :
     (A.addRowMul x r c).IsTotallyUnimodular := by
   intro k f g hf hg
   if hi : ∃ i : Fin k, f i = r then
     obtain ⟨i, rfl⟩ := hi
-    convert_to ((A.submatrix f g).updateRow i (c • (A.submatrix id g) x)).det ∈ Set.range SignType.cast
+    convert_to ((A.submatrix f g).updateRow i ((A.submatrix f g) i + c • (A.submatrix id g) x)).det ∈ Set.range SignType.cast
     · congr
       ext i' j'
       if hii : i' = i then
@@ -86,22 +89,26 @@ private lemma Matrix.IsTotallyUnimodular.addRowMul [CommRing F] {A : Matrix X Y 
       else
         have hfii : f i' ≠ f i := (hii <| hf ·)
         simp [Matrix.addRowMul, hii, hfii]
-    --rw [Matrix.det_updateRow_add_smul_self]
-    --apply hA
-    sorry
+    -- More assumption will be needed. The lemmas does not hold as is! Not even for `c = 1` does it universally hold.
+    let i' : Fin k := sorry
+    have hii : i ≠ i' := sorry
+    have hAg : A.submatrix id g x = A.submatrix f g i'
+    · sorry -- TODO what if `x` comes from the part of the matrix that `f` misses?
+    rw [hAg, Matrix.det_updateRow_add_smul_self _ hii]
+    exact hA k f g hf hg
   else
-    sorry
+    convert hA k f g hf hg using 2
+    simp_all [Matrix.submatrix, Matrix.addRowMul]
 
 /-- Add `q` times the `x`th row of `A` to all rows of `A` except the `x`th row (where `q` is different for each row). -/
 private def Matrix.addMultiple [Semifield F] (A : Matrix X Y F) (x : X) (q : X → F) :
     Matrix X Y F :=
   fun i : X => if i = x then A x else A i + q i • A x
--- TODO (lemma) express `Matrix.addMultiple` as a sequence of `Matrix.addRowMul` operations.
 
 private lemma Matrix.IsTotallyUnimodular.addMultiple [Field F] {A : Matrix X Y F}
     (hA : A.IsTotallyUnimodular) (x : X) (q : X → F) :
     (A.addMultiple x q).IsTotallyUnimodular := by
-  sorry
+  sorry -- This lemma does not hold for the same reasons are written above.
 
 /-- The small tableau consists of all columns but `x`th from the original matrix and the `y`th column of the square matrix. -/
 private def Matrix.getSmallTableau (A : Matrix X (X ⊕ Y) F) (x : X) (y : Y) :
