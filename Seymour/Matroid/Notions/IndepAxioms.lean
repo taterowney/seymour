@@ -74,11 +74,11 @@ lemma Matroid.indepAug' (M : Matroid α) :
       have hB : Maximal M.Indep B :=
         ⟨maximal_B.left.left, fun C hC hBC => maximal_B.right ⟨hC, Matroid.Indep.subset_ground hC⟩ hBC⟩
       unfold Matroid.IndepPredicate at maximal_M_I'
-      rw [←Matroid.base_iff_maximal_indep] at maximal_M_I' hB
-      obtain ⟨y, hy, hMyBx⟩ := M.base_exchange B I' hB maximal_M_I' x (Set.mem_diff_of_mem (Set.mem_of_mem_diff hx) hxI')
+      rw [←Matroid.isBase_iff_maximal_indep] at maximal_M_I' hB
+      obtain ⟨y, hy, hMyBx⟩ := M.isBase_exchange B I' hB maximal_M_I' x (Set.mem_diff_of_mem (Set.mem_of_mem_diff hx) hxI')
       exact ⟨y,
         Set.mem_diff_of_mem (Set.mem_of_mem_diff hy) (fun a => (Set.not_mem_of_mem_diff hy) (hIB a)),
-        Matroid.Indep.subset (Matroid.Base.indep hMyBx)
+        Matroid.Indep.subset (Matroid.IsBase.indep hMyBx)
           (Set.insert_subset_insert (Set.subset_diff_singleton hIB (Set.not_mem_of_mem_diff hx))),
       ⟩
   else

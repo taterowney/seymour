@@ -219,9 +219,9 @@ lemma Matrix.one_linearIndependent [DecidableEq α] : LinearIndependent R (1 : M
 
 /-- todo: desc -/
 lemma StandardRepr.toMatroid_base [DecidableEq α] (S : StandardRepr α R) :
-    S.toMatroid.Base (S.emb '' Set.range Sum.inl) := by
+    S.toMatroid.IsBase (S.emb '' Set.range Sum.inl) := by
   unfold StandardRepr.toMatroid StandardRepr.toVectorMatroid VectorMatroid.toMatroid
-  apply Matroid.Indep.base_of_forall_insert
+  apply Matroid.Indep.isBase_of_forall_insert
   · simp [VectorMatroid.toIndepMatroid, VectorMatroid.IndepCols]
     sorry
   · intro e he

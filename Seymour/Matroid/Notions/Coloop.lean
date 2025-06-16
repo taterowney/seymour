@@ -15,7 +15,7 @@ lemma Matroid.coloop_iff_in_no_circuit (M : Matroid α) {a : α} :
   constructor
   · intro ⟨haE, M_dual_Dep_a⟩
     refine ⟨haE, fun C hC haC => ?_⟩
-    obtain ⟨B, hB, hCaB⟩ := (hC.indep_diff_singleton haC).exists_base_superset
+    obtain ⟨B, hB, hCaB⟩ := (hC.indep_diff_singleton haC).exists_isBase_superset
     have haB := (Matroid.dual_dep_iff_forall.→ M_dual_Dep_a).left B hB
     have hMB : M.Dep B
     · rw [Matroid.dep_iff_has_circuit]

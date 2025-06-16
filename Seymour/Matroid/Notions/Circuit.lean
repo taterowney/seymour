@@ -70,13 +70,13 @@ lemma Matroid.dep_iff_has_circuit (M : Matroid α) {D : Set α} :
     rw [Matroid.indep_iff_forall_not_mem_closure_diff] at hMD
     push_neg at hMD
     obtain ⟨a, haD, haM⟩ := hMD
-    obtain ⟨B, hBDa⟩ := M.exists_basis (D \ {a}) (Set.diff_subset.trans hDE)
+    obtain ⟨B, hBDa⟩ := M.exists_isBasis (D \ {a}) (Set.diff_subset.trans hDE)
     rw [←hBDa.closure_eq_closure] at haM
     obtain ⟨hDaB, hDaE⟩ := hBDa
     -- `B` is the maximal independent subset of `D \ {a}`
     use D
     constructor
-    · sorry -- Can we finish the proof the same way Peter Nelson did?
+    · sorry
     · rfl
   · intro ⟨hDE, C, hMC, hCD⟩
     obtain ⟨hMC, hCE⟩ := Matroid.dep_iff.→ hMC.dep
